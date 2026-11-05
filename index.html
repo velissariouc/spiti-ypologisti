@@ -31,7 +31,7 @@ body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
 header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
 h1{font:700 clamp(24px,3.4vw,38px)/1.1 var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:6px 0 0;max-width:72ch}
-.head-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.head-tools{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:flex-end}
 .flags{display:inline-flex;gap:6px}
 .flag{padding:3px;border-radius:7px;border:2px solid transparent;background:none;line-height:0;cursor:pointer;opacity:.55}
 .flag svg{width:30px;height:20px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
@@ -39,6 +39,7 @@ h1{font:700 clamp(24px,3.4vw,38px)/1.1 var(--f-display);margin:0;text-wrap:balan
 .flag:not(:disabled):hover{opacity:1}
 .toggle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;cursor:pointer;user-select:none}
 .toggle input{width:18px;height:18px;accent-color:var(--accent)}
+.toggle.byval{background:#fff4c2;color:#5a4300;border:1px dashed #c9a227;border-radius:10px;padding:5px 10px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2);position:relative}
 .seg input{position:absolute;opacity:0;pointer-events:none}
 .seg label{padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
@@ -70,7 +71,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .speed input{flex:1;min-width:0;accent-color:var(--accent)}
 .speed output{min-width:7ch;font-weight:600;color:var(--ink)}
 
-.editor{position:relative;display:flex;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);height:420px;overflow:hidden}
+.editor{position:relative;display:flex;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);height:440px;overflow:hidden}
 .gutter{margin:0;padding:10px 8px 10px 6px;text-align:right;color:var(--muted);font:13px/1.6 var(--f-mono);user-select:none;overflow:hidden;min-width:3em;border-right:1px solid var(--line)}
 #src{flex:1;min-width:0;border:0;resize:none;background:transparent;color:var(--ink);font:13px/1.6 var(--f-mono);padding:10px;outline:none;white-space:pre;overflow:auto;tab-size:2}
 #listing{position:absolute;inset:0;overflow:auto;padding:10px 0;font:13px/1.6 var(--f-mono);background:var(--surface-2)}
@@ -130,7 +131,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .room .door::after{content:"";position:absolute;right:4px;top:38px;width:5px;height:5px;border-radius:50%;background:#e8c35a}
 .plate{position:absolute;left:46px;right:8px;top:5px;height:38px;background:#fff8e6;border:2px solid #5c3d24;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0 5px;white-space:nowrap;overflow:hidden}
 .plate b{font:700 17px/1.05 var(--f-display);color:#1b2a28;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.plate small{font:600 9px/1 var(--f-body);color:#6d5b44;letter-spacing:.08em}
+.plate small{font:600 9px/1 var(--f-body);color:#6d5b44;letter-spacing:.08em;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .board{position:absolute;left:46px;right:8px;top:48px;height:70px;background:#2e5d4b;border:5px solid #8a5a32;border-radius:3px;display:grid;place-items:center;overflow:hidden}
 .board > *,.lk > *{grid-area:1/1}
 .chalk{font:700 30px/1.05 var(--f-display);color:#f6f8f1;text-shadow:0 0 1px #fff,0 0 7px rgba(255,255,255,.28);padding:0 6px;text-align:center;word-break:break-word;transition:opacity .22s,filter .22s}
@@ -142,15 +143,19 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 @keyframes chalkIn{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .desks{position:absolute;left:60px;right:14px;bottom:6px;display:flex;justify-content:space-around}
 .desks i{width:38px;height:12px;background:#c99b5c;border-radius:2px;box-shadow:4px 9px 0 -3px #6e4a2b,-4px 9px 0 -3px #6e4a2b}
-.t-int{--wall:#cde2f4}.t-real{--wall:#ddd6f3}.t-str{--wall:#f8dbc2}.t-bool{--wall:#d1eed8}.t-const{--wall:#e3ddcf}.t-none{--wall:#d8d2c8}
+.t-int{--wall:#cde2f4}.t-real{--wall:#ddd6f3}.t-str{--wall:#f8dbc2}.t-bool{--wall:#d1eed8}.t-const{--wall:#e3ddcf}.t-none{--wall:#d8d2c8}.t-alias{--wall:#fff1b8}
 .t-const .board{border-color:#6b6b6b}
 .t-none .plate{opacity:.6}
 .t-none .plate b{font:600 12px var(--f-body);color:#6d5b44}
+/* Παράμετρος με αναφορά: ταμπέλα με βέλος, χωρίς δικό της πίνακα */
+.board.alias{background:#fffbe6;border:4px dashed #c9a227}
+.board.alias .chalk{color:#7a5a00;text-shadow:none;font-size:22px}
+.room.result .plate{border-color:#b3261e}
 
 /* Πίνακας = διάδρομος με ντουλάπια */
 .corr{position:absolute;background:var(--wall);border:3px solid #5e3326;border-bottom:0;
   background-image:linear-gradient(transparent calc(100% - 16px),rgba(94,51,38,.18) calc(100% - 16px))}
-.corr .plate{left:10px;right:auto;width:230px}
+.corr .plate{left:10px;right:auto;width:250px}
 .lk{position:absolute;background:linear-gradient(#83a0bb,#62809c);border:2px solid #3e5468;border-radius:4px;display:grid;place-items:center;overflow:hidden}
 .lk::before{content:"";position:absolute;left:5px;right:5px;top:4px;height:7px;background:repeating-linear-gradient(#3e5468 0 1px,transparent 1px 3px);opacity:.55}
 .lk .chalk{font:700 18px/1 var(--f-display);color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.35);padding:0 2px}
@@ -159,6 +164,12 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 #building.lv-beg .addr{display:none}
 .lkno{position:absolute;font:700 12px/16px var(--f-mono);color:#3a2a1f;text-align:center}
 .endwall{position:absolute;width:8px;background:#5e3326}
+
+/* Όροφος-παράρτημα μιας κλήσης (στοίβα) */
+.frameband{position:absolute;left:36px;width:788px;background:#ffd65a;border:4px dashed #b08a10;border-radius:6px}
+.framesign{position:absolute;z-index:16;left:50px;width:118px;background:#ffd23f;border:2px solid #7a5a00;border-radius:7px;padding:4px 6px;font:600 10.5px/1.2 var(--f-body);color:#3a2e00;text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.framesign b{display:block;font:700 13px/1.15 var(--f-display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.framesign.main{background:#e7f1ec;border-color:#2f6b4f;color:#1d4a35}
 
 .office{position:absolute;background:#f6e6c6;border:3px solid #5e3326;border-bottom:0}
 .office .sign{position:absolute;left:12px;top:8px;font:700 14px/1 var(--f-display);background:#2f6b4f;color:#fff;padding:6px 10px;border-radius:6px;letter-spacing:.04em}
@@ -248,7 +259,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
   <header class="top">
     <div>
       <h1 data-el="Το Σπίτι του Υπολογιστή" data-en="The Computer House">Το Σπίτι του Υπολογιστή</h1>
-      <p class="sub" data-el="Μέσα στον υπολογιστή ζει ένα ανθρωπάκι. Διαβάζει τις εντολές σου στη ΓΛΩΣΣΑ μία-μία, τρέχει στις αίθουσες (μεταβλητές) και στα ντουλάπια (πίνακες), κάνει πράξεις στο γραφείο του, περιμένει γράμματα στην εξώπορτα και γράφει τα αποτελέσματα στον μεγάλο πίνακα της ταράτσας." data-en="A little person lives inside the computer. They read your instructions one by one, run to the classrooms (variables) and lockers (arrays), do the maths at their desk, wait for letters at the front door and write the results on the big board on the roof."></p>
+      <p class="sub" data-el="Μέσα στον υπολογιστή ζει ένα ανθρωπάκι. Διαβάζει τις εντολές σου στη ΓΛΩΣΣΑ μία-μία, τρέχει στις αίθουσες (μεταβλητές) και στα ντουλάπια (πίνακες), χτίζει ορόφους για τις διαδικασίες και τις συναρτήσεις, κάνει πράξεις στο γραφείο του, περιμένει γράμματα στην εξώπορτα και γράφει τα αποτελέσματα στον μεγάλο πίνακα της ταράτσας." data-en="A little person lives inside the computer. They read your instructions one by one, run to the classrooms (variables) and lockers (arrays), build floors for procedures and functions, do the maths at their desk, wait for letters at the front door and write the results on the big board on the roof."></p>
     </div>
     <div class="head-tools">
       <div class="flags" role="group" aria-label="Γλώσσα / Language">
@@ -264,6 +275,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
         <input type="radio" name="lvl" id="lvlAdv" value="adv"><label for="lvlAdv" data-el="Προχωρημένος" data-en="Advanced">Προχωρημένος</label>
       </div>
       <label class="toggle" for="legend"><input type="checkbox" id="legend" checked> <span data-el="Δείξε τι είναι στ' αλήθεια" data-en="Show what things really are"></span></label>
+      <label class="toggle byval" for="byVal" id="byValWrap" hidden><input type="checkbox" id="byVal"> <span data-el="Δείξε τι θα γινόταν με πέρασμα με τιμή" data-en="Show what would happen with pass by value"></span></label>
     </div>
   </header>
 
@@ -330,7 +342,10 @@ button:not(:disabled):hover{filter:brightness(1.06)}
       <h2>Τι είναι τι</h2>
       <dl class="map">
         <dt>Αίθουσα με πίνακα</dt><dd><b>Μεταβλητή</b> στη μνήμη RAM. Το ταμπελάκι είναι το όνομά της, ο πίνακας η τιμή της. Κάθε αίθουσα δέχεται ένα είδος τιμής (ακέραια, πραγματική, χαρακτήρες, λογική). Όταν γράφεται νέα τιμή, η παλιά σβήνεται.</dd>
-        <dt>Διάδρομος με ντουλάπια</dt><dd><b>Πίνακας</b>: ένα όνομα για πολλές τιμές. Κάθε ντουλάπι έχει αριθμό (τον <b>δείκτη</b>). Στον δισδιάστατο τα ντουλάπια είναι σε γραμμές και στήλες. Στον Προχωρημένο φαίνεται και η διεύθυνση μνήμης: τα ντουλάπια είναι συνεχόμενες θέσεις.</dd>
+        <dt>Διάδρομος με ντουλάπια</dt><dd><b>Πίνακας</b>: ένα όνομα για πολλές τιμές. Κάθε ντουλάπι έχει αριθμό (τον <b>δείκτη</b>). Στον Προχωρημένο φαίνεται και η διεύθυνση μνήμης: τα ντουλάπια είναι συνεχόμενες θέσεις.</dd>
+        <dt>Κίτρινος όροφος</dt><dd>Μια <b>κλήση</b> διαδικασίας ή συνάρτησης. Χτίζεται με το ΚΑΛΕΣΕ, έχει τις δικές του (τοπικές) αίθουσες και γκρεμίζεται όταν τελειώσει. Οι όροφοι που στοιβάζονται είναι η <b>στοίβα κλήσεων</b>: στην αναδρομή φαίνεται ένας όροφος για κάθε κλήση.</dd>
+        <dt>Ταμπέλα με βέλος</dt><dd>Παράμετρος <b>με αναφορά</b>: δεν έχει δικό της πίνακα, δείχνει στην αίθουσα του προγράμματος που την κάλεσε. Ό,τι γράφεται, γράφεται εκεί. Έτσι δουλεύουν οι παράμετροι της ΔΙΑΔΙΚΑΣΙΑΣ στη ΓΛΩΣΣΑ.</dd>
+        <dt>Αντίγραφο</dt><dd>Παράμετρος <b>με τιμή</b>: ο νέος όροφος παίρνει φωτοτυπία της τιμής. Οι αλλαγές μένουν στο αντίγραφο και χάνονται στην επιστροφή. Έτσι δουλεύει η ΣΥΝΑΡΤΗΣΗ. Στον Προχωρημένο ο κίτρινος διακόπτης δείχνει τι θα γινόταν αν και η διαδικασία περνούσε με τιμή.</dd>
         <dt>Κλειδωμένη αίθουσα</dt><dd><b>Σταθερά</b>: παίρνει τιμή μία φορά και δεν αλλάζει ποτέ.</dd>
         <dt>Γραφείο</dt><dd><b>ΚΜΕ (CPU)</b>: εδώ γίνονται οι πράξεις και οι συγκρίσεις, και εδώ διαβάζεται η επόμενη εντολή.</dd>
         <dt>Πρόχειρο</dt><dd>Οι <b>καταχωρητές</b> της ΚΜΕ: λίγες θέσεις όπου κρατιούνται οι τιμές για την πράξη που γίνεται τώρα.</dd>
@@ -346,8 +361,21 @@ button:not(:disabled):hover{filter:brightness(1.06)}
         <li><code>ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: α, β</code><span>Χτίζει αίθουσες. Τύποι: ΑΚΕΡΑΙΕΣ, ΠΡΑΓΜΑΤΙΚΕΣ, ΧΑΡΑΚΤΗΡΕΣ, ΛΟΓΙΚΕΣ.</span></li>
         <li><code>ΑΚΕΡΑΙΕΣ: Α[10], Π[3,4]</code><span>Πίνακες: ο Α έχει 10 ντουλάπια, ο Π 3 γραμμές × 4 στήλες. Έως 3 πίνακες, έως 20 θέσεις (ή 5×8).</span></li>
-        <li><code>Α[ι] &lt;- Α[ι] + 1
-Π[2, 3] &lt;- 0</code><span>Ο δείκτης βρίσκεται πρώτα· μετά το ανθρωπάκι ξέρει σε ποιο ντουλάπι να πάει.</span></li>
+        <li><code>Α[ι] &lt;- Α[ι] + 1</code><span>Ο δείκτης βρίσκεται πρώτα· μετά το ανθρωπάκι ξέρει σε ποιο ντουλάπι να πάει.</span></li>
+        <li><code>ΚΑΛΕΣΕ Αντιμετάθεση(α, β)
+…
+ΔΙΑΔΙΚΑΣΙΑ Αντιμετάθεση(χ, ψ)
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: χ, ψ, τ
+ΑΡΧΗ
+  …
+ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ</code><span>Διαδικασία: γράφεται μετά το ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ. Οι παράμετροι δηλώνονται στις ΜΕΤΑΒΛΗΤΕΣ της. Οι αλλαγές τους επιστρέφουν στο πρόγραμμα.</span></li>
+        <li><code>μ &lt;- Μέγιστο(α, β)
+…
+ΣΥΝΑΡΤΗΣΗ Μέγιστο(χ, ψ): ΑΚΕΡΑΙΑ
+…
+  Μέγιστο &lt;- χ
+ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ</code><span>Συνάρτηση: επιστρέφει μία τιμή, που δίνεται με εκχώρηση στο όνομά της. Μπορεί να καλεί τον εαυτό της (αναδρομή).</span></li>
         <li><code>ΣΤΑΘΕΡΕΣ
   π = 3.14</code><span>Κλειδωμένη αίθουσα με σταθερή τιμή.</span></li>
         <li><code>α &lt;- β * 2</code><span>Εκχώρηση: φέρνει τιμές από αίθουσες, κάνει την πράξη στο γραφείο, γράφει το αποτέλεσμα στην αίθουσα α.</span></li>
@@ -379,7 +407,10 @@ button:not(:disabled):hover{filter:brightness(1.06)}
       <h2>What is what</h2>
       <dl class="map">
         <dt>Classroom with a board</dt><dd>A <b>variable</b> in RAM. The sign is its name, the board holds its value. Each classroom accepts one kind of value (integer, real, string, boolean). When a new value is written, the old one is erased.</dd>
-        <dt>Corridor of lockers</dt><dd>An <b>array</b>: one name for many values. Each locker has a number (the <b>index</b>). In a two-dimensional array the lockers are in rows and columns. In Advanced mode you also see the memory address: the lockers are consecutive memory cells.</dd>
+        <dt>Corridor of lockers</dt><dd>An <b>array</b>: one name for many values. Each locker has a number (the <b>index</b>). In Advanced mode you also see the memory address: the lockers are consecutive memory cells.</dd>
+        <dt>Yellow floor</dt><dd>A <b>call</b> of a procedure or function. It is built by CALL, has its own (local) classrooms and is knocked down when the call ends. The stacked floors are the <b>call stack</b>: with recursion you see one floor per call.</dd>
+        <dt>Sign with an arrow</dt><dd>A parameter passed <b>by reference</b>: it has no board of its own, it points to the classroom of the caller. Whatever is written goes there. This is how PROCEDURE parameters work in ΓΛΩΣΣΑ.</dd>
+        <dt>Copy</dt><dd>A parameter passed <b>by value</b>: the new floor gets a photocopy of the value. Changes stay in the copy and are lost on return. This is how a FUNCTION works. In Advanced mode the yellow switch shows what would happen if procedures also passed by value.</dd>
         <dt>Locked classroom</dt><dd>A <b>constant</b>: it gets its value once and never changes.</dd>
         <dt>Office</dt><dd>The <b>CPU</b>: calculations and comparisons happen here, and this is where the next instruction is read.</dd>
         <dt>Scratchpad</dt><dd>The CPU's <b>registers</b>: a few slots holding the values for the calculation happening right now.</dd>
@@ -395,8 +426,21 @@ button:not(:disabled):hover{filter:brightness(1.06)}
         <li><code>VARIABLES
   INTEGERS: a, b</code><span>Builds classrooms. Types: INTEGERS, REALS, STRINGS, BOOLEANS.</span></li>
         <li><code>INTEGERS: A[10], T[3,4]</code><span>Arrays: A has 10 lockers, T has 3 rows × 4 columns. Up to 3 arrays, up to 20 cells (or 5×8).</span></li>
-        <li><code>A[i] &lt;- A[i] + 1
-T[2, 3] &lt;- 0</code><span>The index is found first; then the little person knows which locker to go to.</span></li>
+        <li><code>A[i] &lt;- A[i] + 1</code><span>The index is found first; then the little person knows which locker to go to.</span></li>
+        <li><code>CALL Swap(a, b)
+…
+PROCEDURE Swap(x, y)
+VARIABLES
+  INTEGERS: x, y, t
+BEGIN
+  …
+END_PROCEDURE</code><span>Procedure: written after END_PROGRAM. Its parameters are declared under its VARIABLES. Changes to them go back to the program.</span></li>
+        <li><code>m &lt;- Max(a, b)
+…
+FUNCTION Max(x, y): INTEGER
+…
+  Max &lt;- x
+END_FUNCTION</code><span>Function: returns one value, given by assigning to its own name. It can call itself (recursion).</span></li>
         <li><code>CONSTANTS
   pi = 3.14</code><span>A locked classroom with a fixed value.</span></li>
         <li><code>a &lt;- b * 2</code><span>Assignment: fetch values from classrooms, calculate at the office, write the result in classroom a.</span></li>
@@ -439,6 +483,8 @@ const EN_KW = {
   'ΑΡΧΗ':'BEGIN','ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ':'END_PROGRAM','ΓΡΑΨΕ':'WRITE','ΔΙΑΒΑΣΕ':'READ','ΑΝ':'IF','ΤΟΤΕ':'THEN','ΑΛΛΙΩΣ':'ELSE','ΑΛΛΙΩΣ_ΑΝ':'ELSE_IF','ΤΕΛΟΣ_ΑΝ':'END_IF',
   'ΟΣΟ':'WHILE','ΕΠΑΝΑΛΑΒΕ':'DO','ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ':'END_LOOP','ΓΙΑ':'FOR','ΑΠΟ':'FROM','ΜΕΧΡΙ':'TO','ΜΕ_ΒΗΜΑ':'STEP','ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ':'REPEAT','ΜΕΧΡΙΣ_ΟΤΟΥ':'UNTIL',
   'ΕΠΙΛΕΞΕ':'SELECT','ΠΕΡΙΠΤΩΣΗ':'CASE','ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ':'END_SELECT','ΚΑΙ':'AND','Η':'OR','ΟΧΙ':'NOT','ΑΛΗΘΗΣ':'TRUE','ΨΕΥΔΗΣ':'FALSE',
+  'ΔΙΑΔΙΚΑΣΙΑ':'PROCEDURE','ΣΥΝΑΡΤΗΣΗ':'FUNCTION','ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ':'END_PROCEDURE','ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ':'END_FUNCTION','ΚΑΛΕΣΕ':'CALL',
+  'ΑΚΕΡΑΙΑ':'INTEGER','ΠΡΑΓΜΑΤΙΚΗ':'REAL','ΧΑΡΑΚΤΗΡΑΣ':'STRING','ΛΟΓΙΚΗ':'BOOLEAN',
   'Α_Μ':'INT','Α_Τ':'ABS','Τ_Ρ':'SQRT','ΗΜ':'SIN','ΣΥΝ':'COS','ΕΦ':'TAN','ΛΟΓ':'LN','Ε':'EXP'
 };
 const ALIAS = {CHARACTERS:'ΧΑΡΑΚΤΗΡΕΣ'};
@@ -815,6 +861,164 @@ BEGIN
     WRITE 'Row', i, ':', s
   END_LOOP
 END_PROGRAM`}},
+{el:{name:'Διαδικασία: αντιμετάθεση (ΚΑΛΕΣΕ)', src:
+`ΠΡΟΓΡΑΜΜΑ Ανταλλαγή
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: α, β
+ΑΡΧΗ
+  α <- 5
+  β <- 8
+  ΚΑΛΕΣΕ Αντιμετάθεση(α, β)
+  ΓΡΑΨΕ 'α =', α, ' β =', β
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ
+
+ΔΙΑΔΙΚΑΣΙΑ Αντιμετάθεση(χ, ψ)
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: χ, ψ, τ
+ΑΡΧΗ
+  τ <- χ
+  χ <- ψ
+  ψ <- τ
+ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ`},
+ en:{name:'Procedure: swap (CALL)', src:
+`PROGRAM Exchange
+VARIABLES
+  INTEGERS: a, b
+BEGIN
+  a <- 5
+  b <- 8
+  CALL Swap(a, b)
+  WRITE 'a =', a, ' b =', b
+END_PROGRAM
+
+PROCEDURE Swap(x, y)
+VARIABLES
+  INTEGERS: x, y, t
+BEGIN
+  t <- x
+  x <- y
+  y <- t
+END_PROCEDURE`}},
+{el:{name:'Συνάρτηση: μέγιστος δύο αριθμών', src:
+`ΠΡΟΓΡΑΜΜΑ Μεγαλύτερος2
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: α, β, μ
+ΑΡΧΗ
+  ΓΡΑΨΕ 'Δώσε δύο αριθμούς'
+  ΔΙΑΒΑΣΕ α, β
+  μ <- Μέγιστο(α, β)
+  ΓΡΑΨΕ 'Ο μεγαλύτερος είναι', μ
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ
+
+ΣΥΝΑΡΤΗΣΗ Μέγιστο(χ, ψ): ΑΚΕΡΑΙΑ
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: χ, ψ
+ΑΡΧΗ
+  ΑΝ χ > ψ ΤΟΤΕ
+    Μέγιστο <- χ
+  ΑΛΛΙΩΣ
+    Μέγιστο <- ψ
+  ΤΕΛΟΣ_ΑΝ
+ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ`},
+ en:{name:'Function: larger of two numbers', src:
+`PROGRAM Larger2
+VARIABLES
+  INTEGERS: a, b, m
+BEGIN
+  WRITE 'Give me two numbers'
+  READ a, b
+  m <- Max(a, b)
+  WRITE 'The larger is', m
+END_PROGRAM
+
+FUNCTION Max(x, y): INTEGER
+VARIABLES
+  INTEGERS: x, y
+BEGIN
+  IF x > y THEN
+    Max <- x
+  ELSE
+    Max <- y
+  END_IF
+END_FUNCTION`}},
+{el:{name:'Αναδρομή: παραγοντικό', src:
+`ΠΡΟΓΡΑΜΜΑ Παραγοντικό
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: ν
+ΑΡΧΗ
+  ν <- 4
+  ΓΡΑΨΕ ν, '! =', Παρ(ν)
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ
+
+ΣΥΝΑΡΤΗΣΗ Παρ(κ): ΑΚΕΡΑΙΑ
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: κ
+ΑΡΧΗ
+  ΑΝ κ <= 1 ΤΟΤΕ
+    Παρ <- 1
+  ΑΛΛΙΩΣ
+    Παρ <- κ * Παρ(κ - 1)
+  ΤΕΛΟΣ_ΑΝ
+ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ`},
+ en:{name:'Recursion: factorial', src:
+`PROGRAM Factorial
+VARIABLES
+  INTEGERS: n
+BEGIN
+  n <- 4
+  WRITE n, '! =', Fact(n)
+END_PROGRAM
+
+FUNCTION Fact(k): INTEGER
+VARIABLES
+  INTEGERS: k
+BEGIN
+  IF k <= 1 THEN
+    Fact <- 1
+  ELSE
+    Fact <- k * Fact(k - 1)
+  END_IF
+END_FUNCTION`}},
+{el:{name:'Πίνακας σε διαδικασία: διπλασιασμός', src:
+`ΠΡΟΓΡΑΜΜΑ Διπλασιασμός
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: Α[4], ι
+ΑΡΧΗ
+  ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ 4
+    Α[ι] <- ι
+  ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ
+  ΚΑΛΕΣΕ Διπλασίασε(Α)
+  ΓΡΑΨΕ Α[1], Α[2], Α[3], Α[4]
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ
+
+ΔΙΑΔΙΚΑΣΙΑ Διπλασίασε(Π)
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: Π[4], κ
+ΑΡΧΗ
+  ΓΙΑ κ ΑΠΟ 1 ΜΕΧΡΙ 4
+    Π[κ] <- Π[κ] * 2
+  ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ
+ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ`},
+ en:{name:'Array in a procedure: doubling', src:
+`PROGRAM Doubling
+VARIABLES
+  INTEGERS: A[4], i
+BEGIN
+  FOR i FROM 1 TO 4
+    A[i] <- i
+  END_LOOP
+  CALL Double(A)
+  WRITE A[1], A[2], A[3], A[4]
+END_PROGRAM
+
+PROCEDURE Double(T)
+VARIABLES
+  INTEGERS: T[4], k
+BEGIN
+  FOR k FROM 1 TO 4
+    T[k] <- T[k] * 2
+  END_LOOP
+END_PROCEDURE`}},
 {el:{name:'Κενό πρόγραμμα', src:
 `ΠΡΟΓΡΑΜΜΑ Δικό_μου
 ΜΕΤΑΒΛΗΤΕΣ
@@ -837,7 +1041,8 @@ const STOP = { isStop:true };
 
 const KW = new Set(['ΠΡΟΓΡΑΜΜΑ','ΣΤΑΘΕΡΕΣ','ΜΕΤΑΒΛΗΤΕΣ','ΑΚΕΡΑΙΕΣ','ΠΡΑΓΜΑΤΙΚΕΣ','ΧΑΡΑΚΤΗΡΕΣ','ΛΟΓΙΚΕΣ','ΑΡΧΗ','ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ',
  'ΓΡΑΨΕ','ΔΙΑΒΑΣΕ','ΑΝ','ΤΟΤΕ','ΑΛΛΙΩΣ','ΑΛΛΙΩΣ_ΑΝ','ΤΕΛΟΣ_ΑΝ','ΟΣΟ','ΕΠΑΝΑΛΑΒΕ','ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ','ΓΙΑ','ΑΠΟ','ΜΕΧΡΙ','ΜΕ_ΒΗΜΑ',
- 'ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ','ΜΕΧΡΙΣ_ΟΤΟΥ','ΕΠΙΛΕΞΕ','ΠΕΡΙΠΤΩΣΗ','ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ','ΚΑΙ','Η','ΟΧΙ','DIV','MOD','ΑΛΗΘΗΣ','ΨΕΥΔΗΣ']);
+ 'ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ','ΜΕΧΡΙΣ_ΟΤΟΥ','ΕΠΙΛΕΞΕ','ΠΕΡΙΠΤΩΣΗ','ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ','ΚΑΙ','Η','ΟΧΙ','DIV','MOD','ΑΛΗΘΗΣ','ΨΕΥΔΗΣ',
+ 'ΔΙΑΔΙΚΑΣΙΑ','ΣΥΝΑΡΤΗΣΗ','ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ','ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ','ΚΑΛΕΣΕ','ΑΚΕΡΑΙΑ','ΠΡΑΓΜΑΤΙΚΗ','ΧΑΡΑΚΤΗΡΑΣ','ΛΟΓΙΚΗ']);
 const rad = d => d * Math.PI / 180;
 const FUNCS = {
   'Α_Μ': x => Math.trunc(x),
@@ -912,6 +1117,13 @@ function pIndices(ts){
   ts.expectOp(']', L('Λείπει η αγκύλη «]» του πίνακα.', 'The closing "]" of the array is missing.'));
   return ix;
 }
+function pArgs(ts){
+  ts.next(); // '('
+  const args = [];
+  if (!ts.isOp(')')) do { args.push(pExpr(ts)); } while (ts.isOp(',') && ts.next());
+  ts.expectOp(')', L('Λείπει μια παρένθεση «)».', 'A closing bracket ")" is missing.'));
+  return args;
+}
 function pExpr(ts){ return pOr(ts); }
 function pOr(ts){ let l = pAnd(ts); while (ts.isKw('Η')) { ts.next(); l = {t:'bin', op:'Η', l, r:pAnd(ts)}; } return l; }
 function pAnd(ts){ let l = pNot(ts); while (ts.isKw('ΚΑΙ')) { ts.next(); l = {t:'bin', op:'ΚΑΙ', l, r:pNot(ts)}; } return l; }
@@ -938,6 +1150,7 @@ function pPrim(ts){
     if (FUNCS[t.n] && ts.isOp('(')) { ts.next(); const a = pExpr(ts); ts.expectOp(')', paren); return {t:'call', f:t.n, raw:t.v, a}; }
     if (KW.has(t.n)) throw new GErr(L(`Η λέξη ${t.v} δεν ταιριάζει μέσα σε πράξη εδώ.`, `The word ${t.v} does not belong inside an expression here.`), ts.line);
     if (ts.isOp('[')) return {t:'idx', n:t.n, raw:t.v, idx:pIndices(ts)};
+    if (ts.isOp('(')) return {t:'fcall', n:t.n, raw:t.v, args:pArgs(ts)};
     return {t:'var', n:t.n, raw:t.v};
   }
   if (t.k === 'op' && t.v === '<-') throw new GErr(L('Το βέλος <- μπαίνει μόνο μία φορά, αμέσως μετά το όνομα της μεταβλητής.', 'The arrow <- goes only once, right after the variable name.'), ts.line);
@@ -946,6 +1159,8 @@ function pPrim(ts){
 
 /* ======================= Συντακτικός αναλυτής ======================= */
 const TYPES = {'ΑΚΕΡΑΙΕΣ':'ΑΚΕΡΑΙΑ','ΠΡΑΓΜΑΤΙΚΕΣ':'ΠΡΑΓΜΑΤΙΚΗ','ΧΑΡΑΚΤΗΡΕΣ':'ΧΑΡΑΚΤΗΡΑΣ','ΛΟΓΙΚΕΣ':'ΛΟΓΙΚΗ'};
+const RTYPES = {'ΑΚΕΡΑΙΑ':1,'ΠΡΑΓΜΑΤΙΚΗ':1,'ΧΑΡΑΚΤΗΡΑΣ':1,'ΛΟΓΙΚΗ':1};
+const END_KW = {prog:'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ', proc:'ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ', func:'ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ'};
 function stray(k){
   switch (k) {
     case 'ΤΕΛΟΣ_ΑΝ': return L(`Βρήκα ${K(k)} χωρίς να έχει ανοίξει κάποιο ${K('ΑΝ')}.`, `Found ${K(k)} but no ${K('ΑΝ')} was opened.`);
@@ -955,7 +1170,10 @@ function stray(k){
     case 'ΜΕΧΡΙΣ_ΟΤΟΥ': return L(`Βρήκα ${K(k)} χωρίς ${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}.`, `Found ${K(k)} without ${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}.`);
     case 'ΠΕΡΙΠΤΩΣΗ': return L(`Η ${K(k)} μπαίνει μόνο μέσα σε ${K('ΕΠΙΛΕΞΕ')}.`, `${K(k)} goes only inside ${K('ΕΠΙΛΕΞΕ')}.`);
     case 'ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ': return L(`Βρήκα ${K(k)} χωρίς ${K('ΕΠΙΛΕΞΕ')}.`, `Found ${K(k)} without ${K('ΕΠΙΛΕΞΕ')}.`);
-    case 'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ': return L(`Το ${K(k)} ήρθε ενώ κάποια δομή (${K('ΑΝ')}, ${K('ΟΣΟ')}, ${K('ΓΙΑ')}…) δεν έχει κλείσει.`, `${K(k)} came while a structure (${K('ΑΝ')}, ${K('ΟΣΟ')}, ${K('ΓΙΑ')}…) is still open.`);
+    case 'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ': case 'ΤΕΛΟΣ_ΔΙΑΔΙΚΑΣΙΑΣ': case 'ΤΕΛΟΣ_ΣΥΝΑΡΤΗΣΗΣ':
+      return L(`Το ${K(k)} ήρθε σε λάθος σημείο: ή κάποια δομή (${K('ΑΝ')}, ${K('ΟΣΟ')}, ${K('ΓΙΑ')}…) δεν έχει κλείσει, ή το τέλος δεν ταιριάζει με την αρχή.`, `${K(k)} is in the wrong place: either a structure (${K('ΑΝ')}, ${K('ΟΣΟ')}, ${K('ΓΙΑ')}…) is still open, or the ending does not match the beginning.`);
+    case 'ΔΙΑΔΙΚΑΣΙΑ': case 'ΣΥΝΑΡΤΗΣΗ':
+      return L(`Οι διαδικασίες και οι συναρτήσεις γράφονται μετά το ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}, όχι μέσα στο πρόγραμμα.`, `Procedures and functions are written after ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}, not inside the program.`);
     case 'ΑΡΧΗ': return L(`Η ${K(k)} γράφεται μία φορά, πριν από τις εντολές.`, `${K(k)} is written once, before the instructions.`);
     case 'ΜΕΤΑΒΛΗΤΕΣ': return L(`Οι ${K(k)} δηλώνονται πριν από την ${K('ΑΡΧΗ')}.`, `${K(k)} are declared before ${K('ΑΡΧΗ')}.`);
     case 'ΣΤΑΘΕΡΕΣ': return L(`Οι ${K(k)} δηλώνονται πριν από τις ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`, `${K(k)} are declared before ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`);
@@ -972,37 +1190,61 @@ function parseProgram(src){
   const startsKw = (l, k) => !!l && l.toks[0].k === 'word' && l.toks[0].n === k;
   const tsOf = l => new TS(l.toks, l.no);
 
-  let ts = tsOf(L_());
-  if (!ts.isKw('ΠΡΟΓΡΑΜΜΑ')) throw new GErr(L(`Το πρόγραμμα ξεκινά πάντα με: ${K('ΠΡΟΓΡΑΜΜΑ')} Όνομα`, `A program always starts with: ${K('ΠΡΟΓΡΑΜΜΑ')} Name`), L_().no);
-  ts.next(); const name = ts.ident(['για το πρόγραμμα', 'for the program']); ts.expectEnd(); p++;
-
-  const decls = [];
-  if (startsKw(L_(), 'ΣΤΑΘΕΡΕΣ')) {
-    p++;
-    while (L_() && !startsKw(L_(), 'ΜΕΤΑΒΛΗΤΕΣ') && !startsKw(L_(), 'ΑΡΧΗ')) {
-      ts = tsOf(L_()); const id = ts.ident(['σταθεράς', 'for a constant']);
-      ts.expectOp('=', L('Μια σταθερά γράφεται έτσι: όνομα = τιμή', 'A constant is written like this: name = value'));
-      const e = pExpr(ts); ts.expectEnd();
-      decls.push({raw:id.v, n:id.n, isConst:true, expr:e, line:L_().no}); p++;
+  /* Επικεφαλίδα και δηλώσεις μιας μονάδας (πρόγραμμα, διαδικασία ή συνάρτηση) */
+  function parseHead(first){
+    const l = L_(); let ts = tsOf(l);
+    let kind;
+    if (first) {
+      if (!ts.isKw('ΠΡΟΓΡΑΜΜΑ')) throw new GErr(L(`Το πρόγραμμα ξεκινά πάντα με: ${K('ΠΡΟΓΡΑΜΜΑ')} Όνομα`, `A program always starts with: ${K('ΠΡΟΓΡΑΜΜΑ')} Name`), l.no);
+      kind = 'prog';
+    } else if (ts.isKw('ΔΙΑΔΙΚΑΣΙΑ')) kind = 'proc';
+    else if (ts.isKw('ΣΥΝΑΡΤΗΣΗ')) kind = 'func';
+    else throw new GErr(L(`Μετά το ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')} μπορούν να γραφτούν μόνο ${K('ΔΙΑΔΙΚΑΣΙΑ')} ή ${K('ΣΥΝΑΡΤΗΣΗ')}.`, `After ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')} you may only write a ${K('ΔΙΑΔΙΚΑΣΙΑ')} or a ${K('ΣΥΝΑΡΤΗΣΗ')}.`), l.no);
+    ts.next();
+    const id = ts.ident(kind === 'prog' ? ['για το πρόγραμμα', 'for the program'] : ['για το υποπρόγραμμα', 'for the subprogram']);
+    const params = []; let rtype = null;
+    if (kind !== 'prog' && ts.isOp('(')) {
+      ts.next();
+      if (!ts.isOp(')')) do { const pid = ts.ident(['παραμέτρου', 'for a parameter']); params.push({n:pid.n, raw:pid.v}); } while (ts.isOp(',') && ts.next());
+      ts.expectOp(')', L('Λείπει μια παρένθεση «)».', 'A closing bracket ")" is missing.'));
     }
-  }
-  if (startsKw(L_(), 'ΜΕΤΑΒΛΗΤΕΣ')) {
+    if (kind === 'func') {
+      const rt = [K('ΑΚΕΡΑΙΑ'), K('ΠΡΑΓΜΑΤΙΚΗ'), K('ΧΑΡΑΚΤΗΡΑΣ'), K('ΛΟΓΙΚΗ')].join(', ');
+      ts.expectOp(':', L(`Η συνάρτηση γράφει στο τέλος της πρώτης γραμμής τον τύπο του αποτελέσματος, π.χ. «: ${K('ΑΚΕΡΑΙΑ')}».`, `A function ends its first line with the type of its result, e.g. ": ${K('ΑΚΕΡΑΙΑ')}".`));
+      const t = ts.next();
+      if (!t || t.k !== 'word' || !RTYPES[t.n]) throw new GErr(L(`Ο τύπος του αποτελέσματος είναι ένα από: ${rt}.`, `The result type is one of: ${rt}.`), l.no);
+      rtype = t.n;
+    }
+    ts.expectEnd(); p++;
+    const decls = [];
+    if (startsKw(L_(), 'ΣΤΑΘΕΡΕΣ')) {
+      p++;
+      while (L_() && !startsKw(L_(), 'ΜΕΤΑΒΛΗΤΕΣ') && !startsKw(L_(), 'ΑΡΧΗ')) {
+        ts = tsOf(L_()); const cid = ts.ident(['σταθεράς', 'for a constant']);
+        ts.expectOp('=', L('Μια σταθερά γράφεται έτσι: όνομα = τιμή', 'A constant is written like this: name = value'));
+        const e = pExpr(ts); ts.expectEnd();
+        decls.push({raw:cid.v, n:cid.n, isConst:true, expr:e, line:L_().no}); p++;
+      }
+    }
+    if (startsKw(L_(), 'ΜΕΤΑΒΛΗΤΕΣ')) {
+      ts = tsOf(L_()); ts.next(); ts.expectEnd(); p++;
+      while (L_() && !startsKw(L_(), 'ΑΡΧΗ')) {
+        ts = tsOf(L_()); const t = ts.next();
+        const tl = [K('ΑΚΕΡΑΙΕΣ'), K('ΠΡΑΓΜΑΤΙΚΕΣ'), K('ΧΑΡΑΚΤΗΡΕΣ'), K('ΛΟΓΙΚΕΣ')];
+        if (!t || t.k !== 'word' || !TYPES[t.n]) throw new GErr(L(`Εδώ γράφουμε τύπο: ${tl.join(', ')}, και μετά «:» και τα ονόματα.`, `Write a type here: ${tl.join(', ')}, then ":" and the names.`), L_().no);
+        ts.expectOp(':', L('Μετά τον τύπο βάζουμε άνω-κάτω τελεία «:»', 'Put a colon ":" after the type'));
+        do {
+          const vid = ts.ident(['μεταβλητής', 'for a variable']);
+          const dims = ts.isOp('[') ? pIndices(ts) : null;
+          decls.push({raw:vid.v, n:vid.n, type:TYPES[t.n], dims, line:L_().no});
+        } while (ts.isOp(',') && ts.next());
+        ts.expectEnd(); p++;
+      }
+    }
+    if (!startsKw(L_(), 'ΑΡΧΗ')) throw new GErr(L(`Λείπει η λέξη ${K('ΑΡΧΗ')} πριν από τις εντολές.`, `The word ${K('ΑΡΧΗ')} is missing before the instructions.`), L_() ? L_().no : lastNo);
     ts = tsOf(L_()); ts.next(); ts.expectEnd(); p++;
-    while (L_() && !startsKw(L_(), 'ΑΡΧΗ')) {
-      ts = tsOf(L_()); const t = ts.next();
-      const tl = [K('ΑΚΕΡΑΙΕΣ'), K('ΠΡΑΓΜΑΤΙΚΕΣ'), K('ΧΑΡΑΚΤΗΡΕΣ'), K('ΛΟΓΙΚΕΣ')];
-      if (!t || t.k !== 'word' || !TYPES[t.n]) throw new GErr(L(`Εδώ γράφουμε τύπο: ${tl.join(', ')}, και μετά «:» και τα ονόματα.`, `Write a type here: ${tl.join(', ')}, then ":" and the names.`), L_().no);
-      ts.expectOp(':', L('Μετά τον τύπο βάζουμε άνω-κάτω τελεία «:»', 'Put a colon ":" after the type'));
-      do {
-        const id = ts.ident(['μεταβλητής', 'for a variable']);
-        const dims = ts.isOp('[') ? pIndices(ts) : null;
-        decls.push({raw:id.v, n:id.n, type:TYPES[t.n], dims, line:L_().no});
-      } while (ts.isOp(',') && ts.next());
-      ts.expectEnd(); p++;
-    }
+    return {kind, n:id.n, raw:id.v, params, rtype, decls, line:l.no};
   }
-  if (!startsKw(L_(), 'ΑΡΧΗ')) throw new GErr(L(`Λείπει η λέξη ${K('ΑΡΧΗ')} πριν από τις εντολές.`, `The word ${K('ΑΡΧΗ')} is missing before the instructions.`), L_() ? L_().no : lastNo);
-  ts = tsOf(L_()); ts.next(); ts.expectEnd(); p++;
 
   function parseBlock(terms){
     const stmts = [];
@@ -1030,6 +1272,11 @@ function parseProgram(src){
           ts.next(); const ids = [];
           do { ids.push(pTarget(ts, [`μεταβλητής μετά τη ${K('ΔΙΑΒΑΣΕ')}`, `of a variable after ${K('ΔΙΑΒΑΣΕ')}`])); } while (ts.isOp(',') && ts.next());
           ts.expectEnd(); p++; return {t:'read', ids, line};
+        }
+        case 'ΚΑΛΕΣΕ': {
+          ts.next(); const id = ts.ident([`διαδικασίας μετά το ${K('ΚΑΛΕΣΕ')}`, `of a procedure after ${K('ΚΑΛΕΣΕ')}`]);
+          const args = ts.isOp('(') ? pArgs(ts) : [];
+          ts.expectEnd(); p++; return {t:'call', n:id.n, raw:id.v, args, line};
         }
         case 'ΑΝ': {
           const thenMsg = w => L(`Στο ${K(w)}, μετά τη συνθήκη γράφουμε ${K('ΤΟΤΕ')}.`, `In ${K(w)}, write ${K('ΤΟΤΕ')} after the condition.`);
@@ -1100,16 +1347,26 @@ function parseProgram(src){
       const target = pTarget(ts, ['', '']);
       const tname = target.idx ? `${f.v}[…]` : f.v;
       if (ts.isOp('<-')) { ts.next(); if (ts.end()) throw new GErr(L(`Μετά το <- γράψε τι θα μπει στο «${tname}».`, `After <- write what goes into "${tname}".`), line); const e = pExpr(ts); ts.expectEnd(); p++; return {t:'assign', target, e, line}; }
+      if (ts.isOp('(')) throw new GErr(L(`Για να εκτελέσεις τη διαδικασία γράψε: ${K('ΚΑΛΕΣΕ')} ${f.v}(...)`, `To run the procedure write: ${K('ΚΑΛΕΣΕ')} ${f.v}(...)`), line);
       if (ts.isOp('=')) throw new GErr(L(`Για να δώσεις τιμή γράψε βέλος: ${tname} <- ...  (το = είναι μόνο για σύγκριση).`, `To give a value use the arrow: ${tname} <- ...  (= is only for comparing).`), line);
       throw new GErr(L(`Δεν καταλαβαίνω την εντολή «${f.v}». Μήπως ξέχασες το <- ή έγραψες λάθος μια λέξη;`, `I don't understand the instruction "${f.v}". Did you forget <- or misspell a word?`), line);
     }
     throw new GErr(L('Δεν καταλαβαίνω αυτή τη γραμμή.', 'I don\'t understand this line.'), line);
   }
 
-  const body = parseBlock(['ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ']);
-  const endLine = L_().no; p++;
-  if (L_()) throw new GErr(L(`Υπάρχουν εντολές μετά το ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`, `There are instructions after ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`), L_().no);
-  return {name:name.v, decls, body, endLine};
+  const units = [];
+  for (let first = true; L_(); first = false) {
+    const u = parseHead(first);
+    u.body = parseBlock([END_KW[u.kind]]);
+    u.endLine = closeLine(END_KW[u.kind]);
+    units.push(u);
+  }
+  const main = units[0], subs = new Map();
+  for (const u of units.slice(1)) {
+    if (subs.has(u.n)) throw new GErr(L(`Υπάρχουν δύο υποπρογράμματα με το όνομα «${u.raw}».`, `There are two subprograms called "${u.raw}".`), u.line);
+    subs.set(u.n, u);
+  }
+  return {name:main.raw, main, subs, endLine:main.endLine};
 }
 
 /* ======================= Τιμές & πράξεις ======================= */
@@ -1151,8 +1408,10 @@ function compare(a, op, b){
   return {'=':d === 0, '<>':d !== 0, '<':d < 0, '>':d > 0, '<=':d <= 0, '>=':d >= 0}[op];
 }
 
-/* Θέση στη μνήμη: απλή μεταβλητή (flat = -1) ή ντουλάπι πίνακα */
-const slotOfVar = c => ({c, flat:-1, name:c.raw});
+/* Θέση στη μνήμη: απλή μεταβλητή (flat = -1) ή ντουλάπι πίνακα.
+   Μια παράμετρος με αναφορά είναι «ταμπέλα» (isAlias) που δείχνει σε θέση άλλου ορόφου. */
+const deref = c => c && c.arrAlias ? c.target : c;
+const slotOfVar = c => c.isAlias ? {...c.slot, via:c.raw} : {c, flat:-1, name:c.raw};
 function slotOf(c, ix){
   const name = `${c.raw}[${ix.map(fmt).join(', ')}]`;
   ix.forEach(v => {
@@ -1176,15 +1435,20 @@ function ev(e){
     case 'var': {
       const c = RT.cells.get(e.n);
       if (!c) throw new GErr(L(`Δεν υπάρχει αίθουσα με όνομα «${e.raw}».`, `There is no classroom called "${e.raw}".`), RT.line);
-      if (c.value === undefined) throw emptyErr(slotOfVar(c));
-      return c.value;
+      const s = slotOfVar(c), v = getVal(s);
+      if (v === undefined) throw emptyErr(s);
+      return v;
     }
     case 'idx': {
-      const c = RT.cells.get(e.n);
+      const al = RT.cells.get(e.n), c = deref(al);
       const s = slotOf(c, e.idx.map(ev));
       if (s.flat === null) throw outOfRange(s);
       const v = getVal(s); if (v === undefined) throw emptyErr(s);
       return v;
+    }
+    case 'fcall': {
+      if (RT.fmemo && RT.fmemo.has(e)) return RT.fmemo.get(e);
+      throw new GErr(L(`Η συνάρτηση «${e.raw}» δεν μπορεί να χρησιμοποιηθεί σε αυτό το σημείο.`, `Function "${e.raw}" cannot be used here.`), RT.line);
     }
     case 'un': { const v = ev(e.e); if (e.op === '-') { needNum(v, '-'); return -v; } needBool(v, 'ΟΧΙ'); return !v; }
     case 'call': { const v = ev(e.a); needNum(v, e.raw); return clean(FUNCS[e.f](v)); }
@@ -1214,8 +1478,9 @@ function show(e, sub){
     case 'num': return fmtNum(e.v);
     case 'str': return `'${e.v}'`;
     case 'bool': return K(e.v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ');
-    case 'var': { if (sub) { const c = RT.cells.get(e.n); if (c && c.value !== undefined) return lit(c.value); } return e.raw; }
+    case 'var': { if (sub) { try { return lit(ev(e)); } catch (_) {} } return e.raw; }
     case 'idx': { if (sub) { try { return lit(ev(e)); } catch (_) {} } return `${e.raw}[${e.idx.map(x => show(x, false)).join(', ')}]`; }
+    case 'fcall': { if (sub && RT.fmemo && RT.fmemo.has(e)) return lit(RT.fmemo.get(e)); return `${e.raw}(${e.args.map(x => show(x, false)).join(', ')})`; }
     case 'grp': return `(${show(e.e, sub)})`;
     case 'un': return e.op === '-' ? `-${show(e.e, sub)}` : `${K('ΟΧΙ')} ${show(e.e, sub)}`;
     case 'call': return `${e.raw}(${show(e.a, sub)})`;
@@ -1231,27 +1496,41 @@ function walkE(e, f){
     case 'call': walkE(e.a, f); break;
     case 'bin': walkE(e.l, f); walkE(e.r, f); break;
     case 'idx': e.idx.forEach(x => walkE(x, f)); break;
+    case 'fcall': e.args.forEach(x => walkE(x, f)); break;
   }
 }
-function varsOf(e){ const out = []; walkE(e, x => { if (x.t === 'var' || x.t === 'idx') out.push(x); }); return out; }
-/* Οι τιμές που πρέπει να φέρει το ανθρωπάκι από τη μνήμη, με τη σειρά, χωρίς διπλά */
+function varsOf(e){ const out = []; walkE(e, x => { if (x.t === 'var' || x.t === 'idx' || x.t === 'fcall') out.push(x); }); return out; }
+/* Οι τιμές που πρέπει να φέρει το ανθρωπάκι, με τη σειρά, χωρίς διπλά (οι κλήσεις συναρτήσεων γίνονται πάντα) */
 function operandsOf(e, out = [], seen = new Set()){
   if (!e) return out;
   switch (e.t) {
     case 'var': if (!seen.has(e.n)) { seen.add(e.n); out.push(e); } break;
     case 'idx': { const k = e.n + '[' + e.idx.map(x => show(x, false)).join(',') + ']'; if (!seen.has(k)) { seen.add(k); out.push(e); } break; }
+    case 'fcall': out.push(e); break;
     case 'grp': case 'un': operandsOf(e.e, out, seen); break;
     case 'call': operandsOf(e.a, out, seen); break;
     case 'bin': operandsOf(e.l, out, seen); operandsOf(e.r, out, seen); break;
   }
   return out;
 }
-const isSimple = e => e.t === 'num' || e.t === 'str' || e.t === 'bool' || e.t === 'var' || e.t === 'idx';
+const isSimple = e => ['num', 'str', 'bool', 'var', 'idx', 'fcall'].includes(e.t);
+const isLvalue = e => e.t === 'var' || e.t === 'idx';
 /* Πόσα βήματα (δρομολόγια + πράξεις στο γραφείο) χρειάζεται μια έκφραση στον αρχάριο */
+function argSteps(node, byVal){
+  const su = RT.prog && RT.prog.subs.get(node.n); if (!su) return 0;
+  let n = 0;
+  node.args.forEach((a, k) => {
+    const pc = su.tcells.get(su.params[k].n);
+    if (pc && pc.isArr) return;
+    if (!byVal && isLvalue(a)) { if (a.t === 'idx') n += a.idx.reduce((m, x) => m + E(x), 0); return; }
+    n += E(a);
+  });
+  return n;
+}
 function E(e){
   if (!e) return 0;
   let n = 0;
-  for (const o of operandsOf(e)) n += o.t === 'idx' ? o.idx.reduce((m, x) => m + E(x), 0) + 1 : 1;
+  for (const o of operandsOf(e)) n += o.t === 'idx' ? o.idx.reduce((m, x) => m + E(x), 0) + 1 : o.t === 'fcall' ? argSteps(o, true) + 2 : 1;
   return n + (isSimple(e) ? 0 : 1);
 }
 const tSteps = t => t.idx ? t.idx.reduce((n, x) => n + E(x), 0) : 0;
@@ -1260,6 +1539,7 @@ function firstSteps(s){
     case 'assign': return E(s.e) + tSteps(s.target) + 1;
     case 'write': return s.items.reduce((n, e) => n + E(e), 0) + 1;
     case 'read': return s.ids.reduce((n, id) => n + tSteps(id) + 2, 0);
+    case 'call': return argSteps(s, RT.forceValue) + 2;
     case 'if': return E(s.branches[0].c) + 1;
     case 'while': return E(s.c) + 1;
     case 'for': return E(s.from) + E(s.to) + E(s.step) + 1 + 3;
@@ -1270,23 +1550,23 @@ function firstSteps(s){
 }
 
 /* ======================= Έλεγχος πριν την εκτέλεση ======================= */
-function compile(src){
-  const prog = parseProgram(src);
+function declCells(u){
   const cells = new Map();
   const saved = RT.cells; RT.cells = cells;
   let nSimple = 0, nArr = 0;
   try {
-    for (const d of prog.decls) {
+    for (const d of u.decls) {
       if (cells.has(d.n)) throw new GErr(L(`Το όνομα «${d.raw}» δηλώθηκε δύο φορές. Κάθε αίθουσα έχει δικό της όνομα.`, `The name "${d.raw}" was declared twice. Each classroom needs its own name.`), d.line);
+      if (u.kind === 'func' && d.n === u.n) throw new GErr(L(`Το όνομα της συνάρτησης «${u.raw}» δεν δηλώνεται στις ${K('ΜΕΤΑΒΛΗΤΕΣ')}: είναι ήδη η αίθουσα του αποτελέσματος.`, `The function name "${u.raw}" is not declared under ${K('ΜΕΤΑΒΛΗΤΕΣ')}: it already is the result classroom.`), d.line);
       const c = {raw:d.raw, n:d.n, type:d.type, isConst:!!d.isConst, value:undefined, line:d.line};
       RT.line = d.line;
-      const onlyConsts = (ex, msg) => { for (const v of varsOf(ex)) { const o = cells.get(v.n); if (!o || !o.isConst || v.t === 'idx') throw new GErr(msg, d.line); } };
+      const onlyConsts = (ex, msg) => { for (const v of varsOf(ex)) { const o = cells.get(v.n); if (v.t !== 'var' || !o || !o.isConst) throw new GErr(msg, d.line); } };
       if (d.isConst) {
         onlyConsts(d.expr, L(`Η σταθερά «${d.raw}» μπορεί να χρησιμοποιεί μόνο αριθμούς, κείμενο ή σταθερές που δηλώθηκαν πιο πάνω.`, `The constant "${d.raw}" can only use numbers, text or constants declared above it.`));
         c.value = ev(d.expr); c.type = typeOfVal(c.value);
       } else if (d.dims) {
         nArr++;
-        if (nArr > 3) throw new GErr(L('Το κτίριο χωράει μέχρι 3 πίνακες.', 'The building has room for up to 3 arrays.'), d.line);
+        if (nArr > 3) throw new GErr(L('Το κτίριο χωράει μέχρι 3 πίνακες σε κάθε πρόγραμμα ή υποπρόγραμμα.', 'The building has room for up to 3 arrays per program or subprogram.'), d.line);
         if (d.dims.length > 2) throw new GErr(L(`Ο πίνακας «${d.raw}» μπορεί να έχει μία ή δύο διαστάσεις.`, `Array "${d.raw}" can have one or two dimensions.`), d.line);
         const dims = d.dims.map(ex => {
           onlyConsts(ex, L(`Το μέγεθος του πίνακα «${d.raw}» γράφεται με αριθμό ή σταθερά.`, `The size of array "${d.raw}" must be a number or a constant.`));
@@ -1296,23 +1576,72 @@ function compile(src){
         });
         if (dims.length === 1 && dims[0] > 20) throw new GErr(L(`Ο διάδρομος χωράει έως 20 ντουλάπια· ο «${d.raw}» ζητάει ${dims[0]}.`, `A corridor holds up to 20 lockers; "${d.raw}" asks for ${dims[0]}.`), d.line);
         if (dims.length === 2 && (dims[0] > 5 || dims[1] > 8)) throw new GErr(L(`Ο δισδιάστατος πίνακας χωράει έως 5 γραμμές × 8 στήλες· ο «${d.raw}» ζητάει ${dims[0]} × ${dims[1]}.`, `A two-dimensional array fits up to 5 rows × 8 columns; "${d.raw}" asks for ${dims[0]} × ${dims[1]}.`), d.line);
-        c.isArr = true; c.dims = dims; c.vals = new Array(dims.reduce((a, b) => a * b, 1)); c.aidx = nArr - 1; c.base = 1000 * nArr;
+        c.isArr = true; c.dims = dims; c.size = dims.reduce((a, b) => a * b, 1);
       } else nSimple++;
       if (nSimple > 15) throw new GErr(L('Το κτίριο χωράει μέχρι 15 αίθουσες (μεταβλητές και σταθερές μαζί).', 'The building has room for up to 15 classrooms (variables and constants together).'), d.line);
       cells.set(d.n, c);
     }
   } finally { RT.cells = saved; }
+  const seenP = new Set();
+  u.params.forEach((p, k) => {
+    if (seenP.has(p.n)) throw new GErr(L(`Η παράμετρος «${p.raw}» γράφτηκε δύο φορές.`, `Parameter "${p.raw}" is written twice.`), u.line);
+    seenP.add(p.n);
+    const c = cells.get(p.n);
+    if (!c) throw new GErr(L(`Η παράμετρος «${p.raw}» πρέπει να δηλωθεί στις ${K('ΜΕΤΑΒΛΗΤΕΣ')} της «${u.raw}», μαζί με τον τύπο της.`, `Parameter "${p.raw}" must be declared under the ${K('ΜΕΤΑΒΛΗΤΕΣ')} of "${u.raw}", with its type.`), u.line);
+    if (c.isConst) throw new GErr(L(`Η παράμετρος «${p.raw}» δεν μπορεί να είναι σταθερά.`, `Parameter "${p.raw}" cannot be a constant.`), u.line);
+    c.isParam = true; c.pidx = k;
+  });
+  if (u.kind === 'func') cells.set(u.n, {raw:u.raw, n:u.n, type:u.rtype, isResult:true, value:undefined, line:u.line});
+  return cells;
+}
 
-  const noRoom = (raw, line) => new GErr(L(`Δεν υπάρχει αίθουσα «${raw}». Δήλωσέ τη στις ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`, `There is no classroom "${raw}". Declare it under ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`), line);
+function compile(src){
+  const prog = parseProgram(src);
+  const units = [prog.main, ...prog.subs.values()];
+  for (const u of units) u.tcells = declCells(u);
+  for (const u of units) checkUnit(u, prog);
+  prog.cells = prog.main.tcells;
+  return prog;
+}
+
+function checkUnit(u, prog){
+  const cells = u.tcells;
+  const noRoom = (raw, line) => new GErr(L(`Δεν υπάρχει αίθουσα «${raw}». Δήλωσέ τη στις ${K('ΜΕΤΑΒΛΗΤΕΣ')}${u.kind === 'prog' ? '' : ` της «${u.raw}»`}.`, `There is no classroom "${raw}". Declare it under ${K('ΜΕΤΑΒΛΗΤΕΣ')}${u.kind === 'prog' ? '' : ` of "${u.raw}"`}.`), line);
   const needIdx = (c, line) => new GErr(L(`Το «${c.raw}» είναι πίνακας: γράψε ποιο ντουλάπι θέλεις, π.χ. ${c.raw}[${c.dims.map(() => 1).join(', ')}].`, `"${c.raw}" is an array: say which locker you want, e.g. ${c.raw}[${c.dims.map(() => 1).join(', ')}].`), line);
   const notArr = (raw, line) => new GErr(L(`Το «${raw}» δεν είναι πίνακας, δεν έχει ντουλάπια: γράψε σκέτο ${raw}.`, `"${raw}" is not an array and has no lockers: write just ${raw}.`), line);
   const dimErr = (c, line) => new GErr(c.dims.length === 2
     ? L(`Ο πίνακας «${c.raw}» είναι δισδιάστατος: θέλει δύο δείκτες, γραμμή και στήλη, π.χ. ${c.raw}[1, 2].`, `Array "${c.raw}" is two-dimensional: it needs two indexes, row and column, e.g. ${c.raw}[1, 2].`)
     : L(`Ο πίνακας «${c.raw}» θέλει έναν δείκτη, π.χ. ${c.raw}[1].`, `Array "${c.raw}" needs one index, e.g. ${c.raw}[1].`), line);
-  const useE = (e, line) => walkE(e, x => {
-    if (x.t === 'var') { const c = cells.get(x.n); if (!c) throw noRoom(x.raw, line); if (c.isArr) throw needIdx(c, line); }
-    else if (x.t === 'idx') { const c = cells.get(x.n); if (!c) throw noRoom(x.raw, line); if (!c.isArr) throw notArr(x.raw, line); if (x.idx.length !== c.dims.length) throw dimErr(c, line); }
-  });
+  function checkArgs(node, want, line){
+    const su = prog.subs.get(node.n);
+    if (!su) throw new GErr(want === 'proc'
+      ? L(`Δεν υπάρχει διαδικασία «${node.raw}». Γράψ' τη μετά το ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`, `There is no procedure "${node.raw}". Write it after ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`)
+      : L(`Δεν υπάρχει συνάρτηση «${node.raw}». Γράψ' τη μετά το ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`, `There is no function "${node.raw}". Write it after ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`), line);
+    if (su.kind !== want) throw new GErr(want === 'proc'
+      ? L(`Η «${su.raw}» είναι συνάρτηση: τη χρησιμοποιούμε μέσα σε έκφραση, π.χ. μ <- ${su.raw}(...), όχι με ${K('ΚΑΛΕΣΕ')}.`, `"${su.raw}" is a function: use it inside an expression, e.g. m <- ${su.raw}(...), not with ${K('ΚΑΛΕΣΕ')}.`)
+      : L(`Η «${su.raw}» είναι διαδικασία: την εκτελούμε με ${K('ΚΑΛΕΣΕ')} ${su.raw}(...).`, `"${su.raw}" is a procedure: run it with ${K('ΚΑΛΕΣΕ')} ${su.raw}(...).`), line);
+    if (node.args.length !== su.params.length) throw new GErr(L(`Η «${su.raw}» θέλει ${su.params.length} παραμέτρους, αλλά της έδωσες ${node.args.length}.`, `"${su.raw}" needs ${su.params.length} parameters, but you gave it ${node.args.length}.`), line);
+    node.args.forEach((a, k) => {
+      const pc = su.tcells.get(su.params[k].n);
+      if (pc.isArr) {
+        const ac = a.t === 'var' ? cells.get(a.n) : null;
+        if (!ac || !ac.isArr) throw new GErr(L(`Η παράμετρος «${pc.raw}» της «${su.raw}» είναι πίνακας: δώσε όνομα πίνακα, π.χ. Α.`, `Parameter "${pc.raw}" of "${su.raw}" is an array: give the name of an array, e.g. A.`), line);
+        if (ac.dims.join(',') !== pc.dims.join(',')) throw new GErr(L(`Ο πίνακας «${pc.raw}» της «${su.raw}» έχει μέγεθος [${pc.dims.join(', ')}], αλλά του δίνεις τον «${ac.raw}» με μέγεθος [${ac.dims.join(', ')}].`, `Array "${pc.raw}" of "${su.raw}" has size [${pc.dims.join(', ')}], but you give it "${ac.raw}" with size [${ac.dims.join(', ')}].`), line);
+        if (ac.type !== pc.type) throw new GErr(L(`Ο πίνακας «${ac.raw}» είναι ${TI(ac.type).label}, αλλά η παράμετρος «${pc.raw}» θέλει ${TI(pc.type).label}.`, `Array "${ac.raw}" is ${TI(ac.type).label}, but parameter "${pc.raw}" wants ${TI(pc.type).label}.`), line);
+      } else useE(a, line);
+    });
+  }
+  function useE(e, line){
+    if (!e) return;
+    switch (e.t) {
+      case 'var': { const c = cells.get(e.n); if (!c) throw noRoom(e.raw, line); if (c.isArr) throw needIdx(c, line); return; }
+      case 'idx': { const c = cells.get(e.n); if (!c) throw noRoom(e.raw, line); if (!c.isArr) throw notArr(e.raw, line); if (e.idx.length !== c.dims.length) throw dimErr(c, line); e.idx.forEach(x => useE(x, line)); return; }
+      case 'fcall': checkArgs(e, 'func', line); return;
+      case 'grp': case 'un': useE(e.e, line); return;
+      case 'call': useE(e.a, line); return;
+      case 'bin': useE(e.l, line); useE(e.r, line); return;
+    }
+  }
   const target = (t, line, forRead) => {
     const c = cells.get(t.n);
     if (!c) throw noRoom(t.raw, line);
@@ -1327,6 +1656,7 @@ function compile(src){
       case 'assign': target(s.target, s.line); useE(s.e, s.line); break;
       case 'write': s.items.forEach(e => useE(e, s.line)); break;
       case 'read': s.ids.forEach(id => target(id, s.line, true)); break;
+      case 'call': checkArgs(s, 'proc', s.line); break;
       case 'if': s.branches.forEach(b => { useE(b.c, b.line); chk(b.body); }); if (s.els) chk(s.els); break;
       case 'while': useE(s.c, s.line); chk(s.body); break;
       case 'repeat': chk(s.body); useE(s.c, s.untilLine); break;
@@ -1335,12 +1665,34 @@ function compile(src){
         if (c.type !== 'ΑΚΕΡΑΙΑ' && c.type !== 'ΠΡΑΓΜΑΤΙΚΗ') throw new GErr(L(`Ο μετρητής του ${K('ΓΙΑ')} («${s.raw}») πρέπει να είναι αριθμητική μεταβλητή.`, `The counter of ${K('ΓΙΑ')} ("${s.raw}") must be a numeric variable.`), s.line);
         [s.from, s.to, s.step].forEach(e => e && useE(e, s.line)); chk(s.body); break;
       }
-      case 'select': useE(s.e, s.line); s.cases.forEach(cs => { cs.items.forEach(it => { useE(it.a, cs.line); if (it.b) useE(it.b, cs.line); }); chk(cs.body); }); if (s.els) chk(s.els); break;
+      case 'select':
+        useE(s.e, s.line);
+        s.cases.forEach(cs => {
+          cs.items.forEach(it => [it.a, it.b].forEach(x => {
+            if (!x) return;
+            if (varsOf(x).some(v => v.t === 'fcall')) throw new GErr(L(`Στις περιπτώσεις του ${K('ΕΠΙΛΕΞΕ')} δεν μπαίνουν κλήσεις συναρτήσεων.`, `Function calls cannot be used in the cases of ${K('ΕΠΙΛΕΞΕ')}.`), cs.line);
+            useE(x, cs.line);
+          }));
+          chk(cs.body);
+        });
+        if (s.els) chk(s.els);
+        break;
     }
   });
-  chk(prog.body);
-  prog.cells = cells;
-  return prog;
+  chk(u.body);
+}
+
+/* Νέα αντίγραφα των αιθουσών μιας μονάδας (για κάθε εκτέλεση ή κλήση) */
+let UID = 0, ARRSEQ = 0;
+function instantiate(u){
+  const m = new Map();
+  for (const t of u.tcells.values()) {
+    const c = {...t, uid:++UID, unit:u};
+    if (t.isArr) { c.vals = new Array(t.size); c.base = 1000 * (++ARRSEQ); }
+    if (!t.isConst) c.value = undefined;
+    m.set(c.n, c);
+  }
+  return m;
 }
 
 /* ======================= Σκηνή (κτίριο) ======================= */
@@ -1351,7 +1703,7 @@ const levelY = lv => lv < 0 ? G.ROOF - 16 : LAY.tops[lv] + LAY.hts[lv] - 12;
 const OFFICE = () => ({x:G.OFFICE_X, lv:LAY.nF});
 const MAIL = () => ({x:G.MAIL_X - 42, lv:LAY.nF});
 const ROOF = () => ({x:G.SCORE_X - 120, lv:-1});
-const locOf = s => s.flat < 0 ? LAY.rooms.get(s.c.n) : {x:s.c.lk.xs[s.flat], lv:s.c.lk.lv};
+const locOf = s => s.flat < 0 ? LAY.rooms.get(s.c) : {x:s.c.lk.xs[s.flat], lv:s.c.lk.lv};
 
 function stairSvg(w, h){
   const n = 9, sx = (w - 20) / n, sy = (h - 6) / n; let x = 10, y = h, d = `M10 ${h}`;
@@ -1383,14 +1735,19 @@ function arrGeom(c){
   const x0 = Math.round((G.CORR_W - 6 - (lab + C * cw + (C - 1) * gap)) / 2);
   return {twoD, R, C, lab, gap, cw, ch, rowGap, top0, h, x0};
 }
+const unitKindName = u => u.kind === 'proc' ? L('ΔΙΑΔΙΚΑΣΙΑ', 'PROCEDURE') : u.kind === 'func' ? L('ΣΥΝΑΡΤΗΣΗ', 'FUNCTION') : L('ΠΡΟΓΡΑΜΜΑ', 'PROGRAM');
 
-function buildScene(cells){
-  const simple = cells.filter(c => !c.isArr), arrs = cells.filter(c => c.isArr);
-  const nRoomF = simple.length ? Math.ceil(simple.length / G.PER) : (arrs.length ? 0 : 1);
-  const hts = [];
-  for (let i = 0; i < nRoomF; i++) hts.push(G.FH);
-  const geoms = arrs.map(arrGeom);
-  geoms.forEach(g => hts.push(g.h));
+/* frames: [κύριο πρόγραμμα, κλήση 1, κλήση 2, …]· οι κλήσεις χτίζονται πάνω από το κύριο πρόγραμμα */
+function buildScene(frames){
+  const floors = [];
+  [...frames].reverse().forEach(fr => {
+    const all = [...fr.cells.values()];
+    const roomC = all.filter(c => !c.isArr), arrC = all.filter(c => c.isArr);
+    let nR = Math.ceil(roomC.length / G.PER); if (!nR && !arrC.length) nR = 1;
+    for (let i = 0; i < nR; i++) floors.push({kind:'rooms', items:roomC.slice(i * G.PER, i * G.PER + G.PER), fr});
+    arrC.forEach(c => floors.push({kind:'arr', c, g:arrGeom(c), fr}));
+  });
+  const hts = floors.map(f => f.kind === 'rooms' ? G.FH : f.g.h);
   hts.push(G.GH);
   const tops = []; let y = G.ROOF; hts.forEach(h => { tops.push(y); y += h; });
   const nF = hts.length - 1;
@@ -1402,6 +1759,18 @@ function buildScene(cells){
         <div class="pole" style="left:120px;top:196px;height:${G.ROOF - 16 - 196}px"></div><div class="pole" style="right:120px;top:196px;height:${G.ROOF - 16 - 196}px"></div></div>`;
   h += `<div class="tag" style="left:760px;top:44px;width:160px"><b>${SCREEN}</b>${L('έξοδος: εδώ φαίνονται τα αποτελέσματα', 'output: the results appear here')} (${K('ΓΡΑΨΕ')})</div>`;
   h += `<div class="facade" style="left:40px;top:${G.ROOF - 12}px;width:780px;height:${gTop - G.ROOF + G.GH + 12}px"></div>`;
+  // κίτρινοι όροφοι των κλήσεων (πίσω από τις αίθουσες) + ταμπέλες
+  const deep = frames.length > 1;
+  frames.forEach((fr, fi) => {
+    const idx = floors.map((f, i) => f.fr === fr ? i : -1).filter(i => i >= 0);
+    if (!idx.length) return;
+    const top = tops[idx[0]], bot = tops[idx[idx.length - 1]] + hts[idx[idx.length - 1]];
+    if (fi > 0) h += `<div class="frameband" style="top:${top - 2}px;height:${bot - top + 2}px"></div>`;
+    if (fi > 0 || deep) {
+      const what = fi === 0 ? L('ΚΥΡΙΟ', 'MAIN') : unitKindName(fr.unit);
+      h += `<div class="framesign${fi === 0 ? ' main' : ''}" style="top:${top + 6}px"><span>${what}</span><b>${esc(fr.unit.raw)}</b>${fi > 0 ? L(`κλήση ${fi}`, `call ${fi}`) : ''}</div>`;
+    }
+  });
   h += `<div class="roofcap" style="left:32px;top:${G.ROOF - 18}px;width:796px"></div>`;
   h += `<div class="hatch" style="left:${G.STAIRS_X - 28}px;top:${G.ROOF - 36}px"></div>`;
   for (let f = 0; f <= nF; f++) {
@@ -1411,40 +1780,48 @@ function buildScene(cells){
   }
   h += `<div class="memband" style="top:${G.ROOF + 4}px;height:${gTop - G.ROOF - 16}px"><span>${L('ΜΝΗΜΗ', 'MEMORY')} · RAM</span></div>`;
   const emptyTxt = L('άδειος', 'empty');
-  simple.forEach((c, i) => {
-    const f = Math.floor(i / G.PER), col = i % G.PER;
-    const left = G.ROOM_X0 + col * G.ROOM_W + 3, top = tops[f] + 6;
-    LAY.rooms.set(c.n, {x:left + 46 + (G.ROOM_W - 6 - 54) / 2, lv:f});
-    c.idx = i;
-    const ti = c.isConst ? {cls:'t-const', label:L('σταθερά', 'constant')} : TI(c.type);
-    h += `<div class="room ${ti.cls}" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px">
-      <div class="door"></div><div class="plate"><b style="font-size:${plateSize(c.raw)}px">${esc(c.raw)}</b><small>${norm(ti.label)}${c.isConst ? ' &#128274;' : ''}</small></div>
-      <div class="board empty" id="bd-${i}" data-empty="${emptyTxt}"><div class="chalk" id="b-${i}"></div></div><div class="desks"><i></i><i></i></div></div>`;
-  });
-  for (let i = simple.length; i < nRoomF * G.PER; i++) {
-    const f = Math.floor(i / G.PER), col = i % G.PER, left = G.ROOM_X0 + col * G.ROOM_W + 3, top = tops[f] + 6;
-    h += `<div class="room t-none" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px"><div class="door"></div><div class="plate"><b>${L('ελεύθερη αίθουσα', 'free classroom')}</b></div><div class="desks"><i></i><i></i></div></div>`;
-  }
-  // Διάδρομοι με ντουλάπια (πίνακες)
-  arrs.forEach((c, k) => {
-    const g = geoms[k], lv = nRoomF + k, top = tops[lv] + 6;
-    const size = g.twoD ? `${c.dims[0]} × ${c.dims[1]}` : L(`${c.dims[0]} ΘΕΣΕΙΣ`, `${c.dims[0]} CELLS`);
-    let inner = `<div class="plate"><b style="font-size:${plateSize(c.raw)}px">${esc(c.raw)}</b><small>${norm(TI(c.type).label)} · ${size}</small></div>`;
-    const xs = [];
-    for (let flat = 0; flat < c.vals.length; flat++) {
-      const r = g.twoD ? Math.floor(flat / g.C) : Math.floor(flat / 10), col = g.twoD ? flat % g.C : flat % 10;
-      const x = g.x0 + g.lab + col * (g.cw + g.gap), yy = g.top0 + r * (g.ch + g.rowGap);
-      xs.push(G.CORR_X + 3 + x + g.cw / 2);
-      if (!g.twoD) inner += `<div class="lkno" style="left:${x}px;top:${yy - 17}px;width:${g.cw}px">${flat + 1}</div>`;
-      inner += `<div class="lk empty" id="lk-${k}-${flat}" data-empty="–" style="left:${x}px;top:${yy}px;width:${g.cw}px;height:${g.ch}px"><div class="chalk"></div><span class="addr">${c.base + flat}</span></div>`;
+  floors.forEach((fl, lv) => {
+    const top = tops[lv] + 6;
+    if (fl.kind === 'rooms') {
+      for (let col = 0; col < G.PER; col++) {
+        const c = fl.items[col], left = G.ROOM_X0 + col * G.ROOM_W + 3;
+        if (!c) { h += `<div class="room t-none" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px"><div class="door"></div><div class="plate"><b>${L('ελεύθερη αίθουσα', 'free classroom')}</b></div><div class="desks"><i></i><i></i></div></div>`; continue; }
+        LAY.rooms.set(c, {x:left + 46 + (G.ROOM_W - 6 - 54) / 2, lv});
+        let cls, small, board;
+        if (c.isAlias) {
+          const tgt = c.arrAlias ? c.target.raw : c.slot.name;
+          cls = 't-alias'; small = L('ΠΑΡΑΜ. ΜΕ ΑΝΑΦΟΡΑ', 'PARAM. BY REFERENCE');
+          board = `<div class="board alias"><div class="chalk">→ ${esc(tgt)}</div></div>`;
+        } else {
+          const ti = c.isConst ? {cls:'t-const', label:L('σταθερά', 'constant')} : TI(c.type);
+          cls = ti.cls + (c.isResult ? ' result' : '');
+          small = norm(ti.label) + (c.isConst ? ' &#128274;' : '') + (c.isResult ? ' · ' + L('ΑΠΟΤΕΛΕΣΜΑ', 'RESULT') : c.isParam && fl.fr.unit.kind !== 'prog' ? ' · ' + L('ΑΝΤΙΓΡΑΦΟ', 'COPY') : '');
+          board = `<div class="board empty" id="bd-${c.uid}" data-empty="${emptyTxt}"><div class="chalk"></div></div>`;
+        }
+        h += `<div class="room ${cls}" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px">
+          <div class="door"></div><div class="plate"><b style="font-size:${plateSize(c.raw)}px">${esc(c.raw)}</b><small>${small}</small></div>${board}<div class="desks"><i></i><i></i></div></div>`;
+      }
+    } else {
+      const c = fl.c, g = fl.g;
+      const size = g.twoD ? `${c.dims[0]} × ${c.dims[1]}` : L(`${c.dims[0]} ΘΕΣΕΙΣ`, `${c.dims[0]} CELLS`);
+      const extra = c.isParam ? ' · ' + L('ΑΝΤΙΓΡΑΦΟ', 'COPY') : '';
+      let inner = `<div class="plate"><b style="font-size:${plateSize(c.raw)}px">${esc(c.raw)}</b><small>${norm(TI(c.type).label)} · ${size}${extra}</small></div>`;
+      const xs = [];
+      for (let flat = 0; flat < c.size; flat++) {
+        const r = g.twoD ? Math.floor(flat / g.C) : Math.floor(flat / 10), col = g.twoD ? flat % g.C : flat % 10;
+        const x = g.x0 + g.lab + col * (g.cw + g.gap), yy = g.top0 + r * (g.ch + g.rowGap);
+        xs.push(G.CORR_X + 3 + x + g.cw / 2);
+        if (!g.twoD) inner += `<div class="lkno" style="left:${x}px;top:${yy - 17}px;width:${g.cw}px">${flat + 1}</div>`;
+        inner += `<div class="lk empty" id="lk-${c.uid}-${flat}" data-empty="–" style="left:${x}px;top:${yy}px;width:${g.cw}px;height:${g.ch}px"><div class="chalk"></div><span class="addr">${c.base + flat}</span></div>`;
+      }
+      if (g.twoD) {
+        for (let j = 0; j < g.C; j++) inner += `<div class="lkno" style="left:${g.x0 + g.lab + j * (g.cw + g.gap)}px;top:${g.top0 - 18}px;width:${g.cw}px">${j + 1}</div>`;
+        for (let i = 0; i < g.R; i++) inner += `<div class="lkno" style="left:${g.x0}px;top:${g.top0 + i * (g.ch + g.rowGap) + g.ch / 2 - 8}px;width:${g.lab - 4}px">${i + 1}</div>`;
+      }
+      inner += `<div class="endwall" style="right:0;top:0;bottom:0"></div>`;
+      c.lk = {lv, xs, endX:G.CORR_X + G.CORR_W - 22};
+      h += `<div class="corr ${TI(c.type).cls}" style="left:${G.CORR_X}px;top:${top}px;width:${G.CORR_W}px;height:${g.h - 18}px">${inner}</div>`;
     }
-    if (g.twoD) {
-      for (let j = 0; j < g.C; j++) inner += `<div class="lkno" style="left:${g.x0 + g.lab + j * (g.cw + g.gap)}px;top:${g.top0 - 18}px;width:${g.cw}px">${j + 1}</div>`;
-      for (let i = 0; i < g.R; i++) inner += `<div class="lkno" style="left:${g.x0}px;top:${g.top0 + i * (g.ch + g.rowGap) + g.ch / 2 - 8}px;width:${g.lab - 4}px">${i + 1}</div>`;
-    }
-    inner += `<div class="endwall" style="right:0;top:0;bottom:0"></div>`;
-    c.lk = {lv, xs, endX:G.CORR_X + G.CORR_W - 22};
-    h += `<div class="corr ${TI(c.type).cls}" style="left:${G.CORR_X}px;top:${top}px;width:${G.CORR_W}px;height:${g.h - 18}px">${inner}</div>`;
   });
   h += `<div class="office" style="left:${G.ROOM_X0 + 3}px;top:${gTop + 6}px;width:410px;height:${G.GH - 18}px">
       <div class="sign">${L('ΓΡΑΦΕΙΟ', 'OFFICE')}</div>
@@ -1462,10 +1839,16 @@ function buildScene(cells){
   h += `<div id="person"><div class="bubble" id="bubble" hidden></div>${PERSON_SVG}</div>`;
   building.innerHTML = h;
   building.style.height = LAY.H + 'px';
-  cells.forEach(paintCell);
+  frames.forEach(fr => fr.cells.forEach(paintCell));
   setCalcTitle();
   placeAt(OFFICE());
   fit();
+}
+/* Ξαναχτίζει το κτίριο (π.χ. σε κλήση/επιστροφή) κρατώντας την οθόνη, το γραφείο και το πρόχειρο */
+function rebuildScene(){
+  const keep = {score:$('#scoreLines') ? $('#scoreLines').innerHTML : '', instr:$('#instr') ? $('#instr').textContent : '–', calc:$('#calcLines') ? $('#calcLines').innerHTML : ''};
+  buildScene(RT.frames);
+  $('#scoreLines').innerHTML = keep.score; $('#instr').textContent = keep.instr; $('#calcLines').innerHTML = keep.calc;
 }
 function fit(){
   const w = scaler.clientWidth || G.W;
@@ -1477,7 +1860,7 @@ new ResizeObserver(fit).observe(scaler);
 
 const boardSize = t => { const n = [...t].length; return n <= 4 ? 34 : n <= 7 ? 26 : n <= 11 ? 19 : n <= 18 ? 15 : 12; };
 const lockerSize = t => { const n = [...t].length; return n <= 3 ? 19 : n <= 5 ? 15 : n <= 8 ? 11 : 9; };
-const elOf = s => s.flat < 0 ? document.getElementById('bd-' + s.c.idx) : document.getElementById(`lk-${s.c.aidx}-${s.flat}`);
+const elOf = s => s.flat < 0 ? document.getElementById('bd-' + s.c.uid) : document.getElementById(`lk-${s.c.uid}-${s.flat}`);
 function paintSlot(s){
   const el = elOf(s); if (!el) return;
   const ch = el.querySelector('.chalk'), v = getVal(s);
@@ -1487,8 +1870,9 @@ function paintSlot(s){
   if (s.flat >= 0) el.title = `${s.c.raw} → ${t || '–'}`;
 }
 function paintCell(c){
-  if (c.isArr) for (let f = 0; f < c.vals.length; f++) paintSlot({c, flat:f});
-  else paintSlot(slotOfVar(c));
+  if (c.isAlias) return;
+  if (c.isArr) for (let f = 0; f < c.size; f++) paintSlot({c, flat:f});
+  else paintSlot({c, flat:-1, name:c.raw});
 }
 
 /* Διαδρομή (προεπισκόπηση δρομολογίου) */
@@ -1512,7 +1896,7 @@ function drawRoute(target, label){
 function clearRoute(){ const svg = $('#routes'); if (svg) svg.setAttribute('hidden', ''); }
 
 /* ======================= Χρόνος, ακύρωση, κίνηση ======================= */
-const RT = {cells:new Map(), line:0, state:'idle', mode:'run', level:'beg', steps:0, trips:0, loopDepth:0, until:null, dots:{total:0, done:0},
+const RT = {cells:new Map(), frames:[], prog:null, fmemo:new Map(), forceValue:false, line:0, state:'idle', mode:'run', level:'beg', steps:0, trips:0, loopDepth:0, until:null, dots:{total:0, done:0},
             dead:true, running:false, done:Promise.resolve(), release:null, letter:null, src:[]};
 const cancels = new Set();
 const MULTS = [0.55, 1, 1.8, 3.4, 0];
@@ -1657,6 +2041,8 @@ async function decide(text){
   if (BEG()) await pt(L('Απόφαση: ', 'Decision: ') + text, null);
   else { say(text); await wait(750); }
 }
+/* Βήμα που φαίνεται και στους δύο τρόπους: στον αρχάριο είναι «ένα βήμα», στον προχωρημένο απλή αφήγηση */
+async function stepOrSay(text, ms = 700){ if (BEG()) await pt(text, null); else { say(text); await wait(ms); } }
 async function backToOffice(){ await walkTo(OFFICE()); clearRoute(); }
 async function fetchInstr(line){
   if (!BEG() && !turbo()) say(L(`Πάω στο γραφείο να διαβάσω την εντολή της γραμμής ${line}.`, `Going to the office to read the instruction on line ${line}.`));
@@ -1667,14 +2053,17 @@ async function fetchInstr(line){
   await wait(BEG() ? 200 : 380);
 }
 const whereOf = s => s.flat < 0 ? L(`αίθουσα «${s.name}» στη RAM`, `classroom "${s.name}" in RAM`) : L(`ντουλάπι ${s.name} στη RAM`, `locker ${s.name} in RAM`);
+const viaNote = s => s.via ? L(`(Το «${s.via}» είναι ταμπέλα που δείχνει στο «${s.name}».) `, `("${s.via}" is a sign pointing to "${s.name}".) `) : '';
 const addrNote = s => L(`Ο πίνακας «${s.c.raw}» αρχίζει στη διεύθυνση ${s.c.base}· το ${s.name} είναι στη ${s.c.base} + ${s.flat} = ${s.c.base + s.flat}.`, `Array "${s.c.raw}" starts at address ${s.c.base}; ${s.name} is at ${s.c.base} + ${s.flat} = ${s.c.base + s.flat}.`);
-/* Βρίσκει ποιο ντουλάπι (υπολογίζει πρώτα τους δείκτες, με τα δικά τους δρομολόγια) */
+/* Βρίσκει ποια θέση μνήμης (υπολογίζει πρώτα τους δείκτες, με τα δικά τους δρομολόγια) */
 async function resolveSlot(n, raw, idx){
-  const c = RT.cells.get(n);
-  if (!idx) return slotOfVar(c);
+  const al = RT.cells.get(n);
+  if (!idx) return slotOfVar(al);
+  const c = deref(al);
   const ix = [];
   for (const ie of idx) ix.push(await evalAnimated(ie));
   const s = slotOf(c, ix);
+  if (al.arrAlias) s.via = `${al.raw}[${ix.map(fmt).join(', ')}]`;
   if (s.flat === null) {
     say(L(`Ψάχνω το ντουλάπι ${s.name}… αλλά ο διάδρομος τελειώνει!`, `Looking for locker ${s.name}… but the corridor ends!`));
     await walkTo({x:c.lk.endX, lv:c.lk.lv});
@@ -1683,13 +2072,13 @@ async function resolveSlot(n, raw, idx){
   return s;
 }
 async function fetchSlot(s, held){
-  if (BEG()) await pt(L(`Δρομολόγιο: γραφείο → ${whereOf(s)} → γραφείο, για να φέρω την τιμή.`, `Trip: office → ${whereOf(s)} → office, to fetch the value.`), locOf(s), s.name);
-  else say(s.flat < 0 ? L(`Πάω στην αίθουσα «${s.name}» να δω τι γράφει ο πίνακας.`, `Going to classroom "${s.name}" to see what the board says.`) : addrNote(s));
+  if (BEG()) await pt(viaNote(s) + L(`Δρομολόγιο: γραφείο → ${whereOf(s)} → γραφείο, για να φέρω την τιμή.`, `Trip: office → ${whereOf(s)} → office, to fetch the value.`), locOf(s), s.name);
+  else say(viaNote(s) + (s.flat < 0 ? L(`Πάω στην αίθουσα «${s.name}» να δω τι γράφει ο πίνακας.`, `Going to classroom "${s.name}" to see what the board says.`) : addrNote(s)));
   await walkTo(locOf(s));
   flashRead(s);
   const val = getVal(s);
   if (val === undefined) throw emptyErr(s);
-  const note = `${s.name} = ${lit(val)}`;
+  const note = `${s.via || s.name} = ${lit(val)}`;
   const place = s.flat < 0 ? L(`Ο πίνακας της «${s.name}» γράφει`, `The board of "${s.name}" says`) : L(`Το ντουλάπι ${s.name} έχει`, `Locker ${s.name} holds`);
   if (BEG()) {
     carry([note]);
@@ -1709,6 +2098,14 @@ async function evalAnimated(e){
   const held = [];
   let walked = false;
   for (const o of operandsOf(e)) {
+    if (o.t === 'fcall') {
+      const v = await callUnit(RT.prog.subs.get(o.n), o.args, true);
+      RT.fmemo.set(o, v);
+      const note = `${o.raw}(…) = ${lit(v)}`;
+      if (BEG()) calcAdd(note); else { held.push(note); carry(held); }
+      walked = true;
+      continue;
+    }
     const s = await resolveSlot(o.n, o.raw, o.t === 'idx' ? o.idx : null);
     await fetchSlot(s, held); walked = true;
   }
@@ -1726,20 +2123,99 @@ async function evalAnimated(e){
 }
 async function storeSlot(s, v){
   const c = s.c;
-  if (!fits(c.type, v)) throw new GErr(L(`Το «${s.name}» δέχεται μόνο ${TI(c.type).want}, αλλά πήγα να γράψω ${lit(v)} (${kind(v)}).`, `"${s.name}" only accepts ${TI(c.type).want}, but I tried to write ${lit(v)} (${kind(v)}).`), RT.line);
+  if (!fits(c.type, v)) throw new GErr(L(`Το «${s.via || s.name}» δέχεται μόνο ${TI(c.type).want}, αλλά πήγα να γράψω ${lit(v)} (${kind(v)}).`, `"${s.via || s.name}" only accepts ${TI(c.type).want}, but I tried to write ${lit(v)} (${kind(v)}).`), RT.line);
   const old = getVal(s);
-  if (BEG()) await pt(L(`Δρομολόγιο: γραφείο → ${whereOf(s)} → γραφείο, για να γράψω ${lit(v)}.`, `Trip: office → ${whereOf(s)} → office, to write ${lit(v)}.`), locOf(s), s.name);
-  else if (s.flat >= 0) { say(addrNote(s)); await wait(500); }
+  if (BEG()) await pt(viaNote(s) + L(`Δρομολόγιο: γραφείο → ${whereOf(s)} → γραφείο, για να γράψω ${lit(v)}.`, `Trip: office → ${whereOf(s)} → office, to write ${lit(v)}.`), locOf(s), s.name);
+  else if (s.flat >= 0) { say(viaNote(s) + addrNote(s)); await wait(500); }
   carry([`${lit(v)} → ${s.name}`]);
   const there = s.flat < 0 ? L(`στην αίθουσα «${s.name}»`, `to classroom "${s.name}"`) : L(`στο ντουλάπι ${s.name}`, `to locker ${s.name}`);
-  say(old === undefined
+  say(viaNote(s) + (old === undefined
     ? L(`Πάω ${there} να γράψω ${lit(v)}.`, `Going ${there} to write ${lit(v)}.`)
-    : L(`Πάω ${there}: σβήνω το ${lit(old)} και γράφω ${lit(v)}. Η παλιά τιμή χάνεται!`, `Going ${there}: I erase ${lit(old)} and write ${lit(v)}. The old value is lost!`));
+    : L(`Πάω ${there}: σβήνω το ${lit(old)} και γράφω ${lit(v)}. Η παλιά τιμή χάνεται!`, `Going ${there}: I erase ${lit(old)} and write ${lit(v)}. The old value is lost!`)));
   await walkTo(locOf(s));
   await writeSlot(s, v);
   carry(null);
   if (BEG()) { say(L(`Έγραψα ${lit(v)} στο ${s.name}. Γυρίζω στο γραφείο.`, `I wrote ${lit(v)} into ${s.name}. Back to the office.`)); await backToOffice(); }
 }
+
+/* ======================= Κλήση διαδικασίας ή συνάρτησης ======================= */
+async function callUnit(su, args, isFunc){
+  if (RT.frames.length > 6) throw new GErr(L('Πάρα πολλές κλήσεις η μία μέσα στην άλλη: το κτίριο δεν χωράει άλλους ορόφους (έως 6). Μήπως η αναδρομή δεν σταματά ποτέ;', 'Too many calls inside each other: the building has no room for more floors (up to 6). Maybe the recursion never stops?'), RT.line);
+  const byVal = isFunc || RT.forceValue;
+  const callLine = RT.line;
+  // 1. Οι τιμές ή οι «ταμπέλες» για τις παραμέτρους
+  const binds = [];
+  for (let k = 0; k < args.length; k++) {
+    const a = args[k], pc = su.tcells.get(su.params[k].n);
+    if (pc.isArr) { binds.push({k:byVal ? 'arrVal' : 'arrRef', src:deref(RT.cells.get(a.n))}); continue; }
+    if (!byVal && isLvalue(a)) { binds.push({k:'ref', s:await resolveSlot(a.n, a.raw, a.t === 'idx' ? a.idx : null)}); continue; }
+    binds.push({k:'val', v:await evalAnimated(a)});
+  }
+  await walkTo(OFFICE());
+  const kname = isFunc ? L('τη συνάρτηση', 'the function') : L('τη διαδικασία', 'the procedure');
+  await stepOrSay(L(`Κλήση: χτίζω νέο όροφο για ${kname} «${su.raw}» και ετοιμάζω τις παραμέτρους της.`, `Call: I build a new floor for ${kname} "${su.raw}" and prepare its parameters.`), 800);
+  // 2. Νέες αίθουσες για την κλήση
+  const cells = instantiate(su);
+  const copies = [];
+  su.params.forEach((p, k) => {
+    const c = cells.get(p.n), b = binds[k];
+    if (b.k === 'val') {
+      if (!fits(c.type, b.v)) throw new GErr(L(`Η παράμετρος «${c.raw}» της «${su.raw}» δέχεται ${TI(c.type).want}, αλλά πήρε ${lit(b.v)}.`, `Parameter "${c.raw}" of "${su.raw}" accepts ${TI(c.type).want}, but got ${lit(b.v)}.`), callLine);
+      copies.push({c, v:b.v});
+    } else if (b.k === 'ref') {
+      if (b.s.c.type !== c.type) throw new GErr(L(`Η παράμετρος «${c.raw}» είναι ${TI(c.type).label}, αλλά το «${b.s.name}» είναι ${TI(b.s.c.type).label}.`, `Parameter "${c.raw}" is ${TI(c.type).label}, but "${b.s.name}" is ${TI(b.s.c.type).label}.`), callLine);
+      cells.set(p.n, {isAlias:true, raw:c.raw, n:c.n, type:c.type, slot:{c:b.s.c, flat:b.s.flat, name:b.s.name}, uid:++UID, isParam:true});
+    } else if (b.k === 'arrRef') {
+      cells.set(p.n, {isAlias:true, arrAlias:true, raw:c.raw, n:c.n, type:c.type, target:b.src, uid:++UID, isParam:true});
+    } else {
+      c.vals = b.src.vals.slice();
+    }
+  });
+  const saved = {cells:RT.cells, dots:RT.dots, line:callLine, instr:$('#instr') ? $('#instr').textContent : '', calc:$('#calcLines') ? $('#calcLines').innerHTML : ''};
+  RT.frames.push({unit:su, cells});
+  RT.cells = cells;
+  rebuildScene();
+  const refs = binds.filter(b => b.k === 'ref' || b.k === 'arrRef').length;
+  if (refs && !turbo()) { say(L('Οι παράμετροι με αναφορά δεν παίρνουν δικό τους πίνακα: παίρνουν ταμπέλα με βέλος προς τις αίθουσες του προγράμματος που κάλεσε.', 'Parameters by reference get no board of their own: they get a sign with an arrow to the classrooms of the caller.')); await wait(1100); }
+  if (binds.some(b => b.k === 'arrVal') && !turbo()) { say(L('Ο πίνακας περνάει με τιμή: ο νέος όροφος παίρνει φωτοτυπία όλου του διαδρόμου.', 'The array is passed by value: the new floor gets a photocopy of the whole corridor.')); await wait(1100); }
+  for (const {c, v} of copies) {
+    const s = {c, flat:-1, name:c.raw};
+    say(L(`Γράφω αντίγραφο της τιμής ${lit(v)} στην αίθουσα «${c.raw}» του νέου ορόφου.`, `I write a copy of the value ${lit(v)} into classroom "${c.raw}" on the new floor.`));
+    await walkTo(locOf(s));
+    await writeSlot(s, v);
+  }
+  await walkTo(OFFICE());
+  // 3. Το σώμα του υποπρογράμματος
+  await execBlock(su.body);
+  await checkpoint(su.endLine, 0);
+  let ret;
+  if (isFunc) {
+    const rc = cells.get(su.n);
+    if (rc.value === undefined) throw new GErr(L(`Η συνάρτηση «${su.raw}» τελείωσε χωρίς αποτέλεσμα: γράψε κάπου ${su.raw} <- ...`, `Function "${su.raw}" finished without a result: write ${su.raw} <- ... somewhere.`), su.endLine);
+    ret = rc.value;
+    const s = {c:rc, flat:-1, name:rc.raw};
+    say(L(`Παίρνω το αποτέλεσμα από την αίθουσα «${rc.raw}»: ${lit(ret)}.`, `I take the result from classroom "${rc.raw}": ${lit(ret)}.`));
+    await walkTo(locOf(s)); flashRead(s); carry([`${su.raw} = ${lit(ret)}`]); await wait(700);
+  }
+  // 4. Επιστροφή: γκρέμισμα του ορόφου
+  await walkTo(OFFICE());
+  RT.frames.pop();
+  RT.cells = saved.cells;
+  rebuildScene();
+  RT.line = saved.line; RT.dots = saved.dots;
+  highlight(saved.line); $('#curLine').textContent = saved.line;
+  $('#instr').textContent = saved.instr; $('#calcLines').innerHTML = saved.calc;
+  renderTrip();
+  if (isFunc) carry([`${su.raw} = ${lit(ret)}`]);
+  let msg;
+  if (isFunc) msg = L(`Επιστροφή: γκρέμισα τον όροφο της «${su.raw}» και έφερα το αποτέλεσμα ${lit(ret)} στο γραφείο.`, `Return: I knocked down the floor of "${su.raw}" and brought the result ${lit(ret)} to the office.`);
+  else if (RT.forceValue) msg = L(`Επιστροφή: γκρέμισα τον όροφο της «${su.raw}». Με πέρασμα με τιμή οι αλλαγές έγιναν στα αντίγραφα και χάθηκαν μαζί με τον όροφο!`, `Return: I knocked down the floor of "${su.raw}". With pass by value the changes were made to the copies and were lost with the floor!`);
+  else msg = L(`Επιστροφή: γκρέμισα τον όροφο της «${su.raw}». Οι αλλαγές στις παραμέτρους έγιναν κατευθείαν στις αίθουσες του προγράμματος (πέρασμα με αναφορά), άρα μένουν.`, `Return: I knocked down the floor of "${su.raw}". Changes to the parameters were made directly in the caller's classrooms (pass by reference), so they stay.`);
+  await stepOrSay(msg, 1200);
+  if (isFunc) carry(null);
+  return ret;
+}
+
 function needCond(v, w){ if (typeof v !== 'boolean') throw new GErr(L(`Η συνθήκη του ${K(w)} πρέπει να βγάζει ${K('ΑΛΗΘΗΣ')} ή ${K('ΨΕΥΔΗΣ')} (π.χ. α > 5), όχι ${lit(v)}.`, `The condition of ${K(w)} must give ${K('ΑΛΗΘΗΣ')} or ${K('ΨΕΥΔΗΣ')} (e.g. a > 5), not ${lit(v)}.`), RT.line); }
 function parseInput(type, raw){
   const t = raw.trim();
@@ -1800,6 +2276,12 @@ async function exec(s){
       const v = await evalAnimated(s.e);
       const slot = await resolveSlot(s.target.n, s.target.raw, s.target.idx);
       await storeSlot(slot, v);
+      return;
+    }
+    case 'call': {
+      await fetchInstr(s.line);
+      say(L(`Η εντολή ${K('ΚΑΛΕΣΕ')} λέει: πήγαινε να εκτελέσεις τη διαδικασία «${s.raw}» και μετά γύρνα εδώ.`, `The ${K('ΚΑΛΕΣΕ')} instruction says: go and run the procedure "${s.raw}", then come back here.`)); await wait(700);
+      await callUnit(RT.prog.subs.get(s.n), s.args, false);
       return;
     }
     case 'write': {
@@ -1939,7 +2421,7 @@ async function exec(s){
 async function runProgram(prog){
   say(L(`Καλημέρα! Θα εκτελέσω το πρόγραμμα «${prog.name}». Ξεκινάω από το γραφείο μου.`, `Good morning! I will run the program "${prog.name}". I start at my office.`));
   await wait(700);
-  await execBlock(prog.body);
+  await execBlock(prog.main.body);
   await checkpoint(prog.endLine, 0);
   await walkTo(OFFICE());
   const ins = $('#instr'); if (ins) ins.textContent = K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ');
@@ -1952,6 +2434,7 @@ async function runProgram(prog){
 /* ======================= Κουμπιά & καταστάσεις ======================= */
 const srcEl = $('#src');
 const btnRun = $('#btnRun'), btnStep = $('#btnStep'), btnPause = $('#btnPause'), btnStop = $('#btnStop'), btnNext = $('#btnNext'), btnLoop = $('#btnLoop');
+const byValEl = $('#byVal');
 function setChip(t, live, bad){ const c = $('#statusChip'); c.textContent = t; c.classList.toggle('live', !!live); c.classList.toggle('bad', !!bad); }
 function refreshButtons(){
   const running = RT.state === 'running';
@@ -1960,6 +2443,7 @@ function refreshButtons(){
   btnLoop.disabled = !(running && RT.loopDepth > 0);
   document.querySelectorAll('input[name="lvl"]').forEach(r => { r.disabled = running; });
   document.querySelectorAll('.flag').forEach(f => { f.disabled = running; });
+  byValEl.disabled = running;
 }
 function setState(s){
   RT.state = s;
@@ -1994,13 +2478,18 @@ async function start(mode){
   let prog;
   try { prog = compile(src); }
   catch (e) { if (!(e instanceof GErr)) throw e; setState('error'); showError(e.message, e.line); say(L('Δεν μπορώ να ξεκινήσω: κάτι στη λίστα εντολών δεν το καταλαβαίνω. Δες το κόκκινο μήνυμα.', 'I cannot start: there is something in the instruction list I do not understand. See the red message.')); return; }
-  RT.mode = mode; RT.dead = false; RT.running = true; RT.steps = 0; RT.trips = 0; RT.loopDepth = 0; RT.until = null; RT.cells = prog.cells;
+  RT.prog = prog; RT.fmemo = new Map();
+  RT.forceValue = !BEG() && byValEl.checked;
+  RT.frames = [{unit:prog.main, cells:instantiate(prog.main)}];
+  RT.cells = RT.frames[0].cells;
+  RT.mode = mode; RT.dead = false; RT.running = true; RT.steps = 0; RT.trips = 0; RT.loopDepth = 0; RT.until = null;
   RT.dots = {total:0, done:0};
   $('#steps').textContent = '0'; $('#curLine').textContent = '–';
-  buildScene([...RT.cells.values()]);
+  buildScene(RT.frames);
   setState('running'); renderTrip();
+  if (RT.forceValue && prog.subs.size) say(L('Δοκιμή: αυτή τη φορά και οι διαδικασίες θα πάρουν τις παραμέτρους τους με τιμή (αντίγραφα), για να δούμε τη διαφορά.', 'Experiment: this time procedures also get their parameters by value (copies), so we can see the difference.'));
   RT.done = (async () => {
-    try { await runProgram(prog); setState('done'); }
+    try { if (RT.forceValue && prog.subs.size) await wait(1500); await runProgram(prog); setState('done'); }
     catch (e) {
       if (e && e.isStop) return;
       setState('error');
@@ -2039,6 +2528,12 @@ btnStop.addEventListener('click', async () => {
 const updateSpeedName = () => { $('#speedOut').textContent = speedNames()[speedEl.value - 1]; };
 speedEl.addEventListener('input', updateSpeedName);
 $('#legend').addEventListener('change', e => building.classList.toggle('nolegend', !e.target.checked));
+byValEl.addEventListener('change', () => {
+  try { localStorage.setItem('spiti-byval', byValEl.checked ? '1' : '0'); } catch (_) {}
+  say(byValEl.checked
+    ? L('Ο κίτρινος διακόπτης είναι αναμμένος: στην επόμενη εκτέλεση και οι διαδικασίες θα περνούν τις παραμέτρους με τιμή. Δοκίμασε την «Αντιμετάθεση» και σύγκρινε την οθόνη!', 'The yellow switch is on: on the next run procedures will also pass parameters by value. Try "Swap" and compare the screen!')
+    : L('Ο διακόπτης έσβησε: οι διαδικασίες ξαναδουλεύουν όπως στη ΓΛΩΣΣΑ (οι αλλαγές επιστρέφουν).', 'The switch is off: procedures work as in ΓΛΩΣΣΑ again (changes come back).'));
+});
 
 const modeHint = lv => lv === 'beg'
   ? L('Αρχάριος: κάθε «Ένα βήμα» είναι ένα δρομολόγιο του ανθρωπάκου (γραφείο → κάπου → γραφείο) ή μία δουλειά στο γραφείο. Η κόκκινη διακεκομμένη γραμμή δείχνει πού θα πάει.',
@@ -2048,6 +2543,7 @@ const modeHint = lv => lv === 'beg'
 function applyLevel(lv){
   RT.level = lv;
   building.classList.toggle('lv-beg', lv === 'beg');
+  $('#byValWrap').hidden = lv === 'beg';
   $('#modeHint').textContent = modeHint(lv);
   $('#tripsStat').hidden = lv !== 'beg';
   setCalcTitle(); refreshButtons(); renderTrip();
@@ -2074,11 +2570,12 @@ function idleScene(){
   const hint = $('#hint');
   try {
     const prog = compile(srcEl.value);
-    const all = [...prog.cells.values()];
-    buildScene(all);
-    const n = all.filter(c => !c.isArr).length, a = all.length - n;
-    hint.textContent = L(`Το κτίριο έχει ${n} ${n === 1 ? 'αίθουσα' : 'αίθουσες'}${a ? ` και ${a} ${a === 1 ? 'διάδρομο' : 'διαδρόμους'} με ντουλάπια (πίνακες)` : ''}.`,
-                         `The building has ${n} ${n === 1 ? 'classroom' : 'classrooms'}${a ? ` and ${a} ${a === 1 ? 'corridor' : 'corridors'} of lockers (arrays)` : ''}.`);
+    RT.prog = prog;
+    buildScene([{unit:prog.main, cells:instantiate(prog.main)}]);
+    const all = [...prog.main.tcells.values()];
+    const n = all.filter(c => !c.isArr).length, a = all.length - n, k = prog.subs.size;
+    hint.textContent = L(`Το κτίριο έχει ${n} ${n === 1 ? 'αίθουσα' : 'αίθουσες'}${a ? ` και ${a} ${a === 1 ? 'διάδρομο' : 'διαδρόμους'} με ντουλάπια (πίνακες)` : ''}.${k ? ` Υποπρογράμματα: ${k} (κάθε κλήση χτίζει δικό της όροφο).` : ''}`,
+                         `The building has ${n} ${n === 1 ? 'classroom' : 'classrooms'}${a ? ` and ${a} ${a === 1 ? 'corridor' : 'corridors'} of lockers (arrays)` : ''}.${k ? ` Subprograms: ${k} (each call builds its own floor).` : ''}`);
   } catch (e) {
     if (!(e instanceof GErr)) throw e;
     hint.textContent = L(`Προσοχή, γραμμή ${e.line}: `, `Careful, line ${e.line}: `) + e.message;
@@ -2121,9 +2618,10 @@ function applyLang(lang, first){
 }
 document.querySelectorAll('.flag').forEach(f => f.addEventListener('click', () => { if (!RT.running && f.dataset.lang !== LANG) applyLang(f.dataset.lang); }));
 
-let saved = null, savedLv = null, savedLang = null;
-try { saved = localStorage.getItem('spiti-src'); savedLv = localStorage.getItem('spiti-level'); savedLang = localStorage.getItem('spiti-lang'); } catch (_) {}
+let saved = null, savedLv = null, savedLang = null, savedByVal = null;
+try { saved = localStorage.getItem('spiti-src'); savedLv = localStorage.getItem('spiti-level'); savedLang = localStorage.getItem('spiti-lang'); savedByVal = localStorage.getItem('spiti-byval'); } catch (_) {}
 LANG = savedLang === 'en' ? 'en' : 'el';
+byValEl.checked = savedByVal === '1';
 fillExamples();
 srcEl.value = saved && saved.trim() ? saved : EXAMPLES[0][LANG].src;
 const lv0 = savedLv === 'adv' ? 'adv' : 'beg';
