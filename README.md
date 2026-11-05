@@ -27,3 +27,11 @@
 DIV, MOD, ^, ΚΑΙ / Η / ΟΧΙ και οι συναρτήσεις Α_Μ, Α_Τ, Τ_Ρ, ΗΜ, ΣΥΝ, ΕΦ, ΛΟΓ, Ε.
 
 Είναι ένα μόνο αρχείο (`index.html`) χωρίς εξαρτήσεις και ανοίγει και τοπικά στον browser.
+
+## English
+
+**The Computer House** is a bilingual (Greek / English) educational game about the basic ideas of a computer.
+A little person lives inside: classrooms are variables in RAM, the office is the CPU, the mailbox is the keyboard
+and the board on the roof is the screen. Programs can be written with Greek ΓΛΩΣΣΑ keywords or their English
+equivalents (`PROGRAM`, `VARIABLES`, `BEGIN`, `WRITE`, `READ`, `IF … THEN … END_IF`, `WHILE … DO … END_LOOP`,
+`FOR … FROM … TO … STEP`, `REPEAT … UNTIL`, `SELECT … CASE … END_SELECT`, `END_PROGRAM`). Switch language with the flags.

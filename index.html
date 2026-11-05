@@ -32,6 +32,11 @@ header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:spac
 h1{font:700 clamp(24px,3.4vw,38px)/1.1 var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:6px 0 0;max-width:72ch}
 .head-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.flags{display:inline-flex;gap:6px}
+.flag{padding:3px;border-radius:7px;border:2px solid transparent;background:none;line-height:0;cursor:pointer;opacity:.55}
+.flag svg{width:30px;height:20px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
+.flag[aria-pressed="true"]{border-color:var(--accent);opacity:1}
+.flag:not(:disabled):hover{opacity:1}
 .toggle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;cursor:pointer;user-select:none}
 .toggle input{width:18px;height:18px;accent-color:var(--accent)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2);position:relative}
@@ -43,6 +48,7 @@ h1{font:700 clamp(24px,3.4vw,38px)/1.1 var(--f-display);margin:0;text-wrap:balan
 
 .layout{display:grid;grid-template-columns:minmax(0,410px) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:1020px){.layout{grid-template-columns:minmax(0,1fr)}}
+.leftcol{display:flex;flex-direction:column;gap:12px;min-width:0}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .panel h2{font:700 16px/1.2 var(--f-display);margin:0}
@@ -78,10 +84,9 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .err-box{background:var(--err-bg);color:var(--err);border-radius:10px;padding:10px 12px;font-weight:600;line-height:1.4}
 .hint{font-size:13px;color:var(--muted);margin:0;min-height:1.2em}
 
-.stage{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:10px}
-.leftcol{display:flex;flex-direction:column;gap:12px;min-width:0}
 .narr{display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;padding:12px 16px;min-height:6.2em;font-size:16px;line-height:1.45}
 .narr .who{font:700 12px/1.4 var(--f-display);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:10px}
 .trip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
 .trip:empty{display:none}
 .dots{display:inline-flex;gap:5px}
@@ -129,7 +134,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .board{position:absolute;left:46px;right:8px;top:48px;height:70px;background:#2e5d4b;border:5px solid #8a5a32;border-radius:3px;display:grid;place-items:center;overflow:hidden}
 .board > *{grid-area:1/1}
 .chalk{font:700 30px/1.05 var(--f-display);color:#f6f8f1;text-shadow:0 0 1px #fff,0 0 7px rgba(255,255,255,.28);padding:0 6px;text-align:center;word-break:break-word;transition:opacity .22s,filter .22s}
-.board.empty::after{content:"άδειος";font:600 13px var(--f-body);color:rgba(255,255,255,.35);font-style:italic}
+.board.empty::after{content:attr(data-empty);font:600 13px var(--f-body);color:rgba(255,255,255,.35);font-style:italic}
 .board.read{animation:readGlow 1s ease-out}
 @keyframes readGlow{0%{box-shadow:0 0 0 0 #ffd23f}30%{box-shadow:0 0 0 7px #ffd23f}100%{box-shadow:0 0 0 0 transparent}}
 .board.erase .chalk{opacity:0;filter:blur(4px)}
@@ -229,72 +234,85 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>Το Σπίτι του Υπολογιστή</h1>
-      <p class="sub">Μέσα στον υπολογιστή ζει ένα ανθρωπάκι. Διαβάζει τις εντολές σου στη ΓΛΩΣΣΑ μία-μία, τρέχει στις αίθουσες (μεταβλητές), κάνει πράξεις στο γραφείο του, περιμένει γράμματα στην εξώπορτα και γράφει τα αποτελέσματα στον μεγάλο πίνακα της ταράτσας.</p>
+      <h1 data-el="Το Σπίτι του Υπολογιστή" data-en="The Computer House">Το Σπίτι του Υπολογιστή</h1>
+      <p class="sub" data-el="Μέσα στον υπολογιστή ζει ένα ανθρωπάκι. Διαβάζει τις εντολές σου στη ΓΛΩΣΣΑ μία-μία, τρέχει στις αίθουσες (μεταβλητές), κάνει πράξεις στο γραφείο του, περιμένει γράμματα στην εξώπορτα και γράφει τα αποτελέσματα στον μεγάλο πίνακα της ταράτσας." data-en="A little person lives inside the computer. They read your instructions one by one, run to the classrooms (variables), do the maths at their desk, wait for letters at the front door and write the results on the big board on the roof."></p>
     </div>
     <div class="head-tools">
-      <div class="seg" role="radiogroup" aria-label="Επίπεδο">
-        <input type="radio" name="lvl" id="lvlBeg" value="beg" checked><label for="lvlBeg">Αρχάριος</label>
-        <input type="radio" name="lvl" id="lvlAdv" value="adv"><label for="lvlAdv">Προχωρημένος</label>
+      <div class="flags" role="group" aria-label="Γλώσσα / Language">
+        <button type="button" class="flag" id="flagEl" data-lang="el" aria-pressed="true" aria-label="Ελληνικά" title="Ελληνικά">
+          <svg viewBox="0 0 27 18" aria-hidden="true"><rect width="27" height="18" fill="#0d5eaf"/><g fill="#fff"><rect y="2" width="27" height="2"/><rect y="6" width="27" height="2"/><rect y="10" width="27" height="2"/><rect y="14" width="27" height="2"/></g><rect width="10" height="10" fill="#0d5eaf"/><g fill="#fff"><rect x="4" width="2" height="10"/><rect y="4" width="10" height="2"/></g></svg>
+        </button>
+        <button type="button" class="flag" id="flagEn" data-lang="en" aria-pressed="false" aria-label="English" title="English">
+          <svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="ukc"><rect width="60" height="30"/></clipPath><g clip-path="url(#ukc)"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/><path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/></g></svg>
+        </button>
       </div>
-      <label class="toggle" for="legend"><input type="checkbox" id="legend" checked> Δείξε τι είναι στ' αλήθεια</label>
+      <div class="seg" role="radiogroup" aria-label="Επίπεδο">
+        <input type="radio" name="lvl" id="lvlBeg" value="beg" checked><label for="lvlBeg" data-el="Αρχάριος" data-en="Beginner">Αρχάριος</label>
+        <input type="radio" name="lvl" id="lvlAdv" value="adv"><label for="lvlAdv" data-el="Προχωρημένος" data-en="Advanced">Προχωρημένος</label>
+      </div>
+      <label class="toggle" for="legend"><input type="checkbox" id="legend" checked> <span data-el="Δείξε τι είναι στ' αλήθεια" data-en="Show what things really are"></span></label>
     </div>
   </header>
 
   <div class="layout">
    <div class="leftcol">
-    <section class="panel" aria-label="Πρόγραμμα">
+    <section class="panel">
       <div class="panel-head">
-        <h2>Λίστα εντολών<small>το πρόγραμμα που ακολουθεί το ανθρωπάκι</small></h2>
-        <span class="chip" id="statusChip">Επεξεργασία</span>
+        <h2><span data-el="Λίστα εντολών" data-en="Instruction list"></span><small data-el="το πρόγραμμα που ακολουθεί το ανθρωπάκι" data-en="the program the little person follows"></small></h2>
+        <span class="chip" id="statusChip"></span>
       </div>
       <div class="row">
-        <label for="examples" class="hint" style="min-height:0">Παράδειγμα:</label>
+        <label for="examples" class="hint" style="min-height:0" data-el="Παράδειγμα:" data-en="Example:"></label>
         <select id="examples"></select>
       </div>
       <div class="editor" id="editor">
         <pre class="gutter" id="gutter" aria-hidden="true">1</pre>
-        <textarea id="src" spellcheck="false" wrap="off" aria-label="Κώδικας σε ΓΛΩΣΣΑ"></textarea>
-        <div id="listing" aria-label="Εκτέλεση προγράμματος"></div>
+        <textarea id="src" spellcheck="false" wrap="off" aria-label="Code"></textarea>
+        <div id="listing"></div>
       </div>
       <p class="hint" id="hint"></p>
       <div class="err-box" id="errBox" hidden></div>
       <div class="row">
-        <button class="primary" id="btnRun" type="button">▶ Τρέξε</button>
-        <button id="btnStep" type="button">Ένα βήμα</button>
-        <button id="btnPause" type="button" disabled>Παύση</button>
-        <button id="btnStop" type="button" disabled>■ Σταμάτα</button>
+        <button class="primary" id="btnRun" type="button"></button>
+        <button id="btnStep" type="button" data-el="Ένα βήμα" data-en="One step"></button>
+        <button id="btnPause" type="button" disabled data-el="Παύση" data-en="Pause"></button>
+        <button id="btnStop" type="button" disabled></button>
       </div>
       <div class="row small">
-        <button id="btnNext" type="button" disabled>Ως την επόμενη εντολή</button>
-        <button id="btnLoop" type="button" disabled>Ως το τέλος της επανάληψης</button>
+        <button id="btnNext" type="button" disabled data-el="Ως την επόμενη εντολή" data-en="To the next instruction"></button>
+        <button id="btnLoop" type="button" disabled data-el="Ως το τέλος της επανάληψης" data-en="To the end of the loop"></button>
       </div>
       <div class="speed">
-        <label for="speed">Ταχύτητα</label>
+        <label for="speed" data-el="Ταχύτητα" data-en="Speed"></label>
         <input type="range" id="speed" min="1" max="5" step="1" value="3">
-        <output id="speedOut" for="speed">κανονικά</output>
+        <output id="speedOut" for="speed"></output>
       </div>
       <p class="hint" id="modeHint"></p>
     </section>
-    <div class="narr" aria-live="polite"><span class="who">Τι σκέφτεται το ανθρωπάκι</span><span id="narr">Γεια! Ζω μέσα στον υπολογιστή. Πάτα «Τρέξε» για να εκτελέσω το πρόγραμμα.</span></div>
+    <div class="narr" aria-live="polite"><span class="who" data-el="Τι σκέφτεται το ανθρωπάκι" data-en="What the little person is thinking"></span><span id="narr"></span></div>
    </div>
 
-    <section class="stage" aria-label="Το κτίριο">
+    <section class="stage">
       <div class="scaler" id="scaler"><div id="building"></div></div>
       <form class="letter" id="letter" hidden>
-        <div class="letter-head">Γράμμα για το ανθρωπάκι (πληκτρολόγιο)</div>
-        <label for="letterInput" id="letterLabel">Γράψε μια τιμή</label>
+        <div class="letter-head" data-el="Γράμμα για το ανθρωπάκι (πληκτρολόγιο)" data-en="A letter for the little person (keyboard)"></div>
+        <label for="letterInput" id="letterLabel"></label>
         <div class="letter-row">
           <input id="letterInput" autocomplete="off" enterkeyhint="send">
-          <button type="submit">Ρίξ' το στο γραμματοκιβώτιο</button>
+          <button type="submit" data-el="Ρίξ' το στο γραμματοκιβώτιο" data-en="Drop it in the mailbox"></button>
         </div>
         <div class="letter-err" id="letterErr"></div>
       </form>
-      <div class="stats"><span>Εντολές που εκτελέστηκαν: <b id="steps">0</b></span><span id="tripsStat">Δρομολόγια: <b id="trips">0</b></span><span>Τρέχουσα γραμμή: <b id="curLine">–</b></span><span class="trip" id="trip"></span></div>
+      <div class="stats">
+        <span><span data-el="Εντολές που εκτελέστηκαν:" data-en="Instructions run:"></span> <b id="steps">0</b></span>
+        <span id="tripsStat"><span data-el="Δρομολόγια:" data-en="Trips:"></span> <b id="trips">0</b></span>
+        <span><span data-el="Τρέχουσα γραμμή:" data-en="Current line:"></span> <b id="curLine">–</b></span>
+        <span class="trip" id="trip"></span>
+      </div>
     </section>
   </div>
 
-  <div class="help">
+  <div class="help" lang="el">
     <section class="panel">
       <h2>Τι είναι τι</h2>
       <dl class="map">
@@ -334,7 +352,52 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ</code><span>Πολλαπλή επιλογή.</span></li>
         <li><code>+ - * / ^ DIV MOD
 = &lt;&gt; &lt; &gt; &lt;= &gt;=
-ΚΑΙ  Η  ΟΧΙ</code><span>Πράξεις και συγκρίσεις. Συναρτήσεις: Α_Μ, Α_Τ, Τ_Ρ, ΗΜ, ΣΥΝ, ΕΦ, ΛΟΓ, Ε. Σχόλια με <code>!</code></span></li>
+ΚΑΙ  Η  ΟΧΙ</code><span>Πράξεις και συγκρίσεις. Συναρτήσεις: Α_Μ, Α_Τ, Τ_Ρ, ΗΜ, ΣΥΝ, ΕΦ, ΛΟΓ, Ε. Σχόλια με <code>!</code>. Δουλεύουν και οι αγγλικές λέξεις (WRITE, IF…).</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="help" lang="en" hidden>
+    <section class="panel">
+      <h2>What is what</h2>
+      <dl class="map">
+        <dt>Classroom with a board</dt><dd>A <b>variable</b> in RAM. The sign is its name, the board holds its value. Each classroom accepts one kind of value (integer, real, string, boolean). When a new value is written, the old one is erased.</dd>
+        <dt>Locked classroom</dt><dd>A <b>constant</b>: it gets its value once and never changes.</dd>
+        <dt>Office</dt><dd>The <b>CPU</b>: calculations and comparisons happen here, and this is where the next instruction is read.</dd>
+        <dt>Scratchpad</dt><dd>The CPU's <b>registers</b>: a few slots holding the values for the calculation happening right now.</dd>
+        <dt>Little person</dt><dd>The <b>processor</b> that runs the instructions in order, one at a time.</dd>
+        <dt>Trip</dt><dd>Every <b>access</b> to memory or a device: leave the office, do one job, come back. Trips cost time.</dd>
+        <dt>Mailbox</dt><dd>The <b>keyboard</b> (input): with READ the little person waits for a letter with a number or a phrase.</dd>
+        <dt>Roof board</dt><dd>The <b>screen</b> (output): with WRITE the results are written there, like a stadium scoreboard.</dd>
+      </dl>
+    </section>
+    <section class="panel">
+      <h2>The instructions</h2>
+      <ul class="cmds">
+        <li><code>VARIABLES
+  INTEGERS: a, b</code><span>Builds classrooms. Types: INTEGERS, REALS, STRINGS, BOOLEANS.</span></li>
+        <li><code>CONSTANTS
+  pi = 3.14</code><span>A locked classroom with a fixed value.</span></li>
+        <li><code>a &lt;- b * 2</code><span>Assignment: fetch values from classrooms, calculate at the office, write the result in classroom a.</span></li>
+        <li><code>READ a</code><span>Goes to the mailbox and waits for a letter.</span></li>
+        <li><code>WRITE 'Hello', a</code><span>Climbs to the roof and writes on the screen.</span></li>
+        <li><code>IF … THEN
+ELSE_IF … THEN
+ELSE
+END_IF</code><span>Decision: checks the condition at the office and picks which instructions to run.</span></li>
+        <li><code>WHILE … DO
+END_LOOP</code><span>Repeat while the condition holds (checks first).</span></li>
+        <li><code>FOR i FROM 1 TO 10 STEP 1
+END_LOOP</code><span>Loop with a counter.</span></li>
+        <li><code>REPEAT
+UNTIL …</code><span>Loop that checks at the end (runs at least once).</span></li>
+        <li><code>SELECT d
+  CASE 1..5
+  CASE ELSE
+END_SELECT</code><span>Multiple choice.</span></li>
+        <li><code>+ - * / ^ DIV MOD
+= &lt;&gt; &lt; &gt; &lt;= &gt;=
+AND  OR  NOT</code><span>Operations and comparisons. Functions: INT, ABS, SQRT, SIN, COS, TAN, LN, EXP. Comments start with <code>!</code>. The Greek keywords (ΓΡΑΨΕ, ΑΝ…) work too.</span></li>
       </ul>
     </section>
   </div>
@@ -347,9 +410,23 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
 
+/* ======================= Γλώσσα / Language ======================= */
+let LANG = 'el';
+const L = (el, en) => LANG === 'en' ? en : el;
+const EN_KW = {
+  'ΠΡΟΓΡΑΜΜΑ':'PROGRAM','ΣΤΑΘΕΡΕΣ':'CONSTANTS','ΜΕΤΑΒΛΗΤΕΣ':'VARIABLES','ΑΚΕΡΑΙΕΣ':'INTEGERS','ΠΡΑΓΜΑΤΙΚΕΣ':'REALS','ΧΑΡΑΚΤΗΡΕΣ':'STRINGS','ΛΟΓΙΚΕΣ':'BOOLEANS',
+  'ΑΡΧΗ':'BEGIN','ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ':'END_PROGRAM','ΓΡΑΨΕ':'WRITE','ΔΙΑΒΑΣΕ':'READ','ΑΝ':'IF','ΤΟΤΕ':'THEN','ΑΛΛΙΩΣ':'ELSE','ΑΛΛΙΩΣ_ΑΝ':'ELSE_IF','ΤΕΛΟΣ_ΑΝ':'END_IF',
+  'ΟΣΟ':'WHILE','ΕΠΑΝΑΛΑΒΕ':'DO','ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ':'END_LOOP','ΓΙΑ':'FOR','ΑΠΟ':'FROM','ΜΕΧΡΙ':'TO','ΜΕ_ΒΗΜΑ':'STEP','ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ':'REPEAT','ΜΕΧΡΙΣ_ΟΤΟΥ':'UNTIL',
+  'ΕΠΙΛΕΞΕ':'SELECT','ΠΕΡΙΠΤΩΣΗ':'CASE','ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ':'END_SELECT','ΚΑΙ':'AND','Η':'OR','ΟΧΙ':'NOT','ΑΛΗΘΗΣ':'TRUE','ΨΕΥΔΗΣ':'FALSE',
+  'Α_Μ':'INT','Α_Τ':'ABS','Τ_Ρ':'SQRT','ΗΜ':'SIN','ΣΥΝ':'COS','ΕΦ':'TAN','ΛΟΓ':'LN','Ε':'EXP'
+};
+const ALIAS = {CHARACTERS:'ΧΑΡΑΚΤΗΡΕΣ'};
+for (const [g, e] of Object.entries(EN_KW)) ALIAS[e] = g;
+const K = g => LANG === 'en' ? (EN_KW[g] || g) : g;
+
 /* ======================= Παραδείγματα ======================= */
 const EXAMPLES = [
-{name:'Γνωριμία (ΔΙΑΒΑΣΕ / ΓΡΑΨΕ)', src:
+{el:{name:'Γνωριμία (ΔΙΑΒΑΣΕ / ΓΡΑΨΕ)', src:
 `ΠΡΟΓΡΑΜΜΑ Γνωριμία
 ΜΕΤΑΒΛΗΤΕΣ
   ΧΑΡΑΚΤΗΡΕΣ: όνομα
@@ -363,7 +440,21 @@ const EXAMPLES = [
   ΓΡΑΨΕ 'Γεια σου', όνομα
   ΓΡΑΨΕ 'Σε 10 χρόνια θα είσαι', σε_δέκα
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Αντιμετάθεση (εκχώρηση)', src:
+ en:{name:'Introduction (READ / WRITE)', src:
+`PROGRAM Introduction
+VARIABLES
+  STRINGS: name
+  INTEGERS: age, in_ten
+BEGIN
+  WRITE 'What is your name?'
+  READ name
+  WRITE 'How old are you?'
+  READ age
+  in_ten <- age + 10
+  WRITE 'Hello', name
+  WRITE 'In 10 years you will be', in_ten
+END_PROGRAM`}},
+{el:{name:'Αντιμετάθεση (εκχώρηση)', src:
 `ΠΡΟΓΡΑΜΜΑ Αντιμετάθεση
 ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: α, β, προσωρινή
@@ -377,7 +468,21 @@ const EXAMPLES = [
   β <- προσωρινή
   ΓΡΑΨΕ 'α =', α, ' β =', β
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Μεγαλύτερος αριθμός (ΑΝ)', src:
+ en:{name:'Swap (assignment)', src:
+`PROGRAM Swap
+VARIABLES
+  INTEGERS: a, b, temp
+BEGIN
+  a <- 5
+  b <- 8
+  ! To swap the two values
+  ! we need a third classroom
+  temp <- a
+  a <- b
+  b <- temp
+  WRITE 'a =', a, ' b =', b
+END_PROGRAM`}},
+{el:{name:'Μεγαλύτερος αριθμός (ΑΝ)', src:
 `ΠΡΟΓΡΑΜΜΑ Μεγαλύτερος
 ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: α, β
@@ -395,7 +500,25 @@ const EXAMPLES = [
     ΓΡΑΨΕ 'Ο', α, 'είναι ζυγός'
   ΤΕΛΟΣ_ΑΝ
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Άθροισμα 1 έως ν (ΓΙΑ)', src:
+ en:{name:'Larger number (IF)', src:
+`PROGRAM Larger
+VARIABLES
+  INTEGERS: a, b
+BEGIN
+  WRITE 'Give me two numbers'
+  READ a, b
+  IF a > b THEN
+    WRITE 'The larger is', a
+  ELSE_IF a < b THEN
+    WRITE 'The larger is', b
+  ELSE
+    WRITE 'They are equal!'
+  END_IF
+  IF a MOD 2 = 0 THEN
+    WRITE a, 'is even'
+  END_IF
+END_PROGRAM`}},
+{el:{name:'Άθροισμα 1 έως ν (ΓΙΑ)', src:
 `ΠΡΟΓΡΑΜΜΑ Άθροισμα
 ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: ν, ι, Σ
@@ -408,7 +531,20 @@ const EXAMPLES = [
   ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ
   ΓΡΑΨΕ 'Άθροισμα:', Σ
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Μάντεψε τον αριθμό (ΟΣΟ, ΣΤΑΘΕΡΕΣ)', src:
+ en:{name:'Sum 1 to n (FOR)', src:
+`PROGRAM Sum
+VARIABLES
+  INTEGERS: n, i, total
+BEGIN
+  WRITE 'Add up to which number?'
+  READ n
+  total <- 0
+  FOR i FROM 1 TO n
+    total <- total + i
+  END_LOOP
+  WRITE 'Sum:', total
+END_PROGRAM`}},
+{el:{name:'Μάντεψε τον αριθμό (ΟΣΟ, ΣΤΑΘΕΡΕΣ)', src:
 `ΠΡΟΓΡΑΜΜΑ Μάντεψε
 ΣΤΑΘΕΡΕΣ
   μυστικός = 7
@@ -429,7 +565,28 @@ const EXAMPLES = [
   ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ
   ΓΡΑΨΕ 'Μπράβο! Το βρήκες σε', προσπάθειες, 'προσπάθειες'
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Μέσος όρος βαθμών (ΜΕΧΡΙΣ_ΟΤΟΥ)', src:
+ en:{name:'Guess the number (WHILE, CONSTANTS)', src:
+`PROGRAM Guess
+CONSTANTS
+  secret = 7
+VARIABLES
+  INTEGERS: guess, tries
+BEGIN
+  tries <- 1
+  WRITE 'Guess a number from 1 to 10'
+  READ guess
+  WHILE guess <> secret DO
+    IF guess < secret THEN
+      WRITE 'Higher!'
+    ELSE
+      WRITE 'Lower!'
+    END_IF
+    tries <- tries + 1
+    READ guess
+  END_LOOP
+  WRITE 'Well done! You found it in', tries, 'tries'
+END_PROGRAM`}},
+{el:{name:'Μέσος όρος βαθμών (ΜΕΧΡΙΣ_ΟΤΟΥ)', src:
 `ΠΡΟΓΡΑΜΜΑ Μέσος_Όρος
 ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: πλήθος
@@ -450,7 +607,28 @@ const EXAMPLES = [
     ΓΡΑΨΕ 'Μέσος όρος:', μο
   ΤΕΛΟΣ_ΑΝ
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Μέρα της εβδομάδας (ΕΠΙΛΕΞΕ)', src:
+ en:{name:'Average grade (REPEAT … UNTIL)', src:
+`PROGRAM Average
+VARIABLES
+  INTEGERS: count
+  REALS: grade, total, avg
+BEGIN
+  count <- 0
+  total <- 0
+  WRITE 'Enter grades (0 to finish)'
+  REPEAT
+    READ grade
+    IF grade > 0 THEN
+      total <- total + grade
+      count <- count + 1
+    END_IF
+  UNTIL grade = 0
+  IF count > 0 THEN
+    avg <- total / count
+    WRITE 'Average:', avg
+  END_IF
+END_PROGRAM`}},
+{el:{name:'Μέρα της εβδομάδας (ΕΠΙΛΕΞΕ)', src:
 `ΠΡΟΓΡΑΜΜΑ Μέρα
 ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: μ
@@ -466,13 +644,36 @@ const EXAMPLES = [
       ΓΡΑΨΕ 'Δεν υπάρχει τέτοια μέρα'
   ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ
 ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
-{name:'Κενό πρόγραμμα', src:
+ en:{name:'Day of the week (SELECT)', src:
+`PROGRAM Day
+VARIABLES
+  INTEGERS: d
+BEGIN
+  WRITE 'Enter a day number (1-7)'
+  READ d
+  SELECT d
+    CASE 1..5
+      WRITE 'Weekday: school!'
+    CASE 6, 7
+      WRITE 'Weekend!'
+    CASE ELSE
+      WRITE 'There is no such day'
+  END_SELECT
+END_PROGRAM`}},
+{el:{name:'Κενό πρόγραμμα', src:
 `ΠΡΟΓΡΑΜΜΑ Δικό_μου
 ΜΕΤΑΒΛΗΤΕΣ
   ΑΚΕΡΑΙΕΣ: α
 ΑΡΧΗ
 
-ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`}
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+ en:{name:'Empty program', src:
+`PROGRAM My_program
+VARIABLES
+  INTEGERS: a
+BEGIN
+
+END_PROGRAM`}}
 ];
 
 /* ======================= Λεκτικός αναλυτής ======================= */
@@ -486,9 +687,9 @@ const rad = d => d * Math.PI / 180;
 const FUNCS = {
   'Α_Μ': x => Math.trunc(x),
   'Α_Τ': x => Math.abs(x),
-  'Τ_Ρ': x => { if (x < 0) throw new GErr('Η Τ_Ρ (τετραγωνική ρίζα) δεν δέχεται αρνητικό αριθμό.', RT.line); return Math.sqrt(x); },
+  'Τ_Ρ': x => { if (x < 0) throw new GErr(L(`Η ${K('Τ_Ρ')} (τετραγωνική ρίζα) δεν δέχεται αρνητικό αριθμό.`, `${K('Τ_Ρ')} (square root) does not accept a negative number.`), RT.line); return Math.sqrt(x); },
   'ΗΜ': x => Math.sin(rad(x)), 'ΣΥΝ': x => Math.cos(rad(x)), 'ΕΦ': x => Math.tan(rad(x)),
-  'ΛΟΓ': x => { if (x <= 0) throw new GErr('Ο ΛΟΓ θέλει θετικό αριθμό.', RT.line); return Math.log(x); },
+  'ΛΟΓ': x => { if (x <= 0) throw new GErr(L(`Ο ${K('ΛΟΓ')} θέλει θετικό αριθμό.`, `${K('ΛΟΓ')} needs a positive number.`), RT.line); return Math.log(x); },
   'Ε': x => Math.exp(x)
 };
 const QUOTES = {"'":"'", '"':'"', '‘':'’', '’':'’', '“':'”', '”':'”', '«':'»'};
@@ -506,24 +707,24 @@ function tokenize(src){
       if (QUOTES[c]) {
         const close = QUOTES[c]; let j = text.indexOf(close, i + 1);
         if (j < 0 && close !== c) j = text.indexOf(c, i + 1);
-        if (j < 0) throw new GErr('Άνοιξες εισαγωγικά αλλά δεν τα έκλεισες.', no);
+        if (j < 0) throw new GErr(L('Άνοιξες εισαγωγικά αλλά δεν τα έκλεισες.', 'You opened quotes but did not close them.'), no);
         toks.push({k:'str', v:text.slice(i + 1, j)}); i = j + 1; continue;
       }
       if (/[0-9]/.test(c)) {
         let j = i; while (j < text.length && /[0-9]/.test(text[j])) j++;
         if (text[j] === '.' && /[0-9]/.test(text[j + 1] || '')) { j++; while (j < text.length && /[0-9]/.test(text[j])) j++; }
-        if (j < text.length && /[\p{L}_]/u.test(text[j])) throw new GErr(`Ένα όνομα δεν μπορεί να ξεκινά με αριθμό («${text.slice(i).split(/[\s,]/)[0]}»).`, no);
+        if (j < text.length && /[\p{L}_]/u.test(text[j])) { const w = text.slice(i).split(/[\s,]/)[0]; throw new GErr(L(`Ένα όνομα δεν μπορεί να ξεκινά με αριθμό («${w}»).`, `A name cannot start with a digit ("${w}").`), no); }
         toks.push({k:'num', v:Number(text.slice(i, j))}); i = j; continue;
       }
       if (/[\p{L}_]/u.test(c)) {
         let j = i + 1; while (j < text.length && /[\p{L}\p{M}\p{N}_]/u.test(text[j])) j++;
-        const v = text.slice(i, j); toks.push({k:'word', v, n:norm(v)}); i = j; continue;
+        const v = text.slice(i, j), n0 = norm(v); toks.push({k:'word', v, n:ALIAS[n0] || n0}); i = j; continue;
       }
       const two = text.substr(i, 2);
       if (OPS2.includes(two)) { toks.push({k:'op', v:two}); i += 2; continue; }
       if (OPMAP[c]) { toks.push({k:'op', v:OPMAP[c]}); i++; continue; }
       if ('+-*/^(),:=<>[]'.includes(c)) { toks.push({k:'op', v:c}); i++; continue; }
-      throw new GErr(`Δεν ξέρω τι είναι το σύμβολο «${c}».`, no);
+      throw new GErr(L(`Δεν ξέρω τι είναι το σύμβολο «${c}».`, `I don't know the symbol "${c}".`), no);
     }
     return {no, toks};
   });
@@ -537,13 +738,13 @@ class TS {
   end(){ return this.i >= this.t.length; }
   isKw(k, o = 0){ const t = this.peek(o); return !!t && t.k === 'word' && t.n === k; }
   isOp(v, o = 0){ const t = this.peek(o); return !!t && t.k === 'op' && t.v === v; }
-  expectKw(k, msg){ if (!this.isKw(k)) throw new GErr(msg || `Εδώ περίμενα τη λέξη ${k}.`, this.line); this.next(); }
-  expectOp(v, msg){ if (!this.isOp(v)) throw new GErr(msg || `Εδώ περίμενα «${v}».`, this.line); this.next(); }
-  expectEnd(){ if (!this.end()) throw new GErr(`Κάτι περισσεύει στο τέλος της γραμμής: «${tokText(this.peek())}».`, this.line); }
+  expectKw(k, msg){ if (!this.isKw(k)) throw new GErr(msg || L(`Εδώ περίμενα τη λέξη ${K(k)}.`, `I expected the word ${K(k)} here.`), this.line); this.next(); }
+  expectOp(v, msg){ if (!this.isOp(v)) throw new GErr(msg || L(`Εδώ περίμενα «${v}».`, `I expected "${v}" here.`), this.line); this.next(); }
+  expectEnd(){ if (!this.end()) { const x = tokText(this.peek()); throw new GErr(L(`Κάτι περισσεύει στο τέλος της γραμμής: «${x}».`, `Something extra at the end of the line: "${x}".`), this.line); } }
   ident(what){
     const t = this.next();
-    if (!t || t.k !== 'word') throw new GErr(`Εδώ περίμενα όνομα ${what}.`, this.line);
-    if (KW.has(t.n)) throw new GErr(`Η λέξη ${t.v} είναι δεσμευμένη από τη ΓΛΩΣΣΑ και δεν μπορεί να γίνει όνομα.`, this.line);
+    if (!t || t.k !== 'word') throw new GErr(L(`Εδώ περίμενα όνομα ${what[0]}.`, `I expected a name ${what[1]} here.`), this.line);
+    if (KW.has(t.n)) throw new GErr(L(`Η λέξη ${t.v} είναι δεσμευμένη από τη γλώσσα και δεν μπορεί να γίνει όνομα.`, `The word ${t.v} is reserved by the language and cannot be used as a name.`), this.line);
     return t;
   }
 }
@@ -564,87 +765,92 @@ function pUn(ts){ if (ts.isOp('-')) { ts.next(); return {t:'un', op:'-', e:pUn(t
 function pPow(ts){ const b = pPrim(ts); if (ts.isOp('^')) { ts.next(); return {t:'bin', op:'^', l:b, r:pUn(ts)}; } return b; }
 function pPrim(ts){
   const t = ts.next();
-  if (!t) throw new GErr('Η έκφραση σταματά απότομα: κάτι λείπει στο τέλος της γραμμής.', ts.line);
+  const paren = L('Λείπει μια παρένθεση «)».', 'A closing bracket ")" is missing.');
+  if (!t) throw new GErr(L('Η έκφραση σταματά απότομα: κάτι λείπει στο τέλος της γραμμής.', 'The expression stops suddenly: something is missing at the end of the line.'), ts.line);
   if (t.k === 'num') return {t:'num', v:t.v};
   if (t.k === 'str') return {t:'str', v:t.v};
-  if (t.k === 'op' && t.v === '(') { const e = pExpr(ts); ts.expectOp(')', 'Λείπει μια παρένθεση «)».'); return {t:'grp', e}; }
+  if (t.k === 'op' && t.v === '(') { const e = pExpr(ts); ts.expectOp(')', paren); return {t:'grp', e}; }
   if (t.k === 'word') {
     if (t.n === 'ΑΛΗΘΗΣ') return {t:'bool', v:true};
     if (t.n === 'ΨΕΥΔΗΣ') return {t:'bool', v:false};
-    if (FUNCS[t.n] && ts.isOp('(')) { ts.next(); const a = pExpr(ts); ts.expectOp(')', 'Λείπει μια παρένθεση «)».'); return {t:'call', f:t.n, raw:t.v, a}; }
-    if (KW.has(t.n)) throw new GErr(`Η λέξη ${t.v} δεν ταιριάζει μέσα σε πράξη εδώ.`, ts.line);
+    if (FUNCS[t.n] && ts.isOp('(')) { ts.next(); const a = pExpr(ts); ts.expectOp(')', paren); return {t:'call', f:t.n, raw:t.v, a}; }
+    if (KW.has(t.n)) throw new GErr(L(`Η λέξη ${t.v} δεν ταιριάζει μέσα σε πράξη εδώ.`, `The word ${t.v} does not belong inside an expression here.`), ts.line);
     return {t:'var', n:t.n, raw:t.v};
   }
-  if (t.k === 'op' && (t.v === '<-')) throw new GErr('Το βέλος <- μπαίνει μόνο μία φορά, αμέσως μετά το όνομα της μεταβλητής.', ts.line);
-  throw new GErr(`Δεν περίμενα «${t.v}» σε αυτό το σημείο.`, ts.line);
+  if (t.k === 'op' && t.v === '<-') throw new GErr(L('Το βέλος <- μπαίνει μόνο μία φορά, αμέσως μετά το όνομα της μεταβλητής.', 'The arrow <- goes only once, right after the variable name.'), ts.line);
+  throw new GErr(L(`Δεν περίμενα «${t.v}» σε αυτό το σημείο.`, `I did not expect "${t.v}" here.`), ts.line);
 }
 
 /* ======================= Συντακτικός αναλυτής ======================= */
 const TYPES = {'ΑΚΕΡΑΙΕΣ':'ΑΚΕΡΑΙΑ','ΠΡΑΓΜΑΤΙΚΕΣ':'ΠΡΑΓΜΑΤΙΚΗ','ΧΑΡΑΚΤΗΡΕΣ':'ΧΑΡΑΚΤΗΡΑΣ','ΛΟΓΙΚΕΣ':'ΛΟΓΙΚΗ'};
-const STRAY = {
-  'ΤΕΛΟΣ_ΑΝ':'Βρήκα ΤΕΛΟΣ_ΑΝ χωρίς να έχει ανοίξει κάποιο ΑΝ.',
-  'ΑΛΛΙΩΣ':'Βρήκα ΑΛΛΙΩΣ χωρίς ΑΝ (ή μετά από ήδη ένα ΑΛΛΙΩΣ).',
-  'ΑΛΛΙΩΣ_ΑΝ':'Βρήκα ΑΛΛΙΩΣ_ΑΝ χωρίς ΑΝ (ή μετά από ΑΛΛΙΩΣ).',
-  'ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ':'Βρήκα ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ χωρίς να έχει ανοίξει ΟΣΟ ή ΓΙΑ.',
-  'ΜΕΧΡΙΣ_ΟΤΟΥ':'Βρήκα ΜΕΧΡΙΣ_ΟΤΟΥ χωρίς ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ.',
-  'ΠΕΡΙΠΤΩΣΗ':'Η ΠΕΡΙΠΤΩΣΗ μπαίνει μόνο μέσα σε ΕΠΙΛΕΞΕ.',
-  'ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ':'Βρήκα ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ χωρίς ΕΠΙΛΕΞΕ.',
-  'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ':'Το ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ ήρθε ενώ κάποια δομή (ΑΝ, ΟΣΟ, ΓΙΑ…) δεν έχει κλείσει.',
-  'ΑΡΧΗ':'Η ΑΡΧΗ γράφεται μία φορά, πριν από τις εντολές.',
-  'ΜΕΤΑΒΛΗΤΕΣ':'Οι ΜΕΤΑΒΛΗΤΕΣ δηλώνονται πριν από την ΑΡΧΗ.',
-  'ΣΤΑΘΕΡΕΣ':'Οι ΣΤΑΘΕΡΕΣ δηλώνονται πριν από τις ΜΕΤΑΒΛΗΤΕΣ.'
-};
+function stray(k){
+  switch (k) {
+    case 'ΤΕΛΟΣ_ΑΝ': return L(`Βρήκα ${K(k)} χωρίς να έχει ανοίξει κάποιο ${K('ΑΝ')}.`, `Found ${K(k)} but no ${K('ΑΝ')} was opened.`);
+    case 'ΑΛΛΙΩΣ': return L(`Βρήκα ${K(k)} χωρίς ${K('ΑΝ')} (ή μετά από ήδη ένα ${K(k)}).`, `Found ${K(k)} without an ${K('ΑΝ')} (or after another ${K(k)}).`);
+    case 'ΑΛΛΙΩΣ_ΑΝ': return L(`Βρήκα ${K(k)} χωρίς ${K('ΑΝ')} (ή μετά από ${K('ΑΛΛΙΩΣ')}).`, `Found ${K(k)} without an ${K('ΑΝ')} (or after ${K('ΑΛΛΙΩΣ')}).`);
+    case 'ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ': return L(`Βρήκα ${K(k)} χωρίς να έχει ανοίξει ${K('ΟΣΟ')} ή ${K('ΓΙΑ')}.`, `Found ${K(k)} but no ${K('ΟΣΟ')} or ${K('ΓΙΑ')} was opened.`);
+    case 'ΜΕΧΡΙΣ_ΟΤΟΥ': return L(`Βρήκα ${K(k)} χωρίς ${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}.`, `Found ${K(k)} without ${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}.`);
+    case 'ΠΕΡΙΠΤΩΣΗ': return L(`Η ${K(k)} μπαίνει μόνο μέσα σε ${K('ΕΠΙΛΕΞΕ')}.`, `${K(k)} goes only inside ${K('ΕΠΙΛΕΞΕ')}.`);
+    case 'ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ': return L(`Βρήκα ${K(k)} χωρίς ${K('ΕΠΙΛΕΞΕ')}.`, `Found ${K(k)} without ${K('ΕΠΙΛΕΞΕ')}.`);
+    case 'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ': return L(`Το ${K(k)} ήρθε ενώ κάποια δομή (${K('ΑΝ')}, ${K('ΟΣΟ')}, ${K('ΓΙΑ')}…) δεν έχει κλείσει.`, `${K(k)} came while a structure (${K('ΑΝ')}, ${K('ΟΣΟ')}, ${K('ΓΙΑ')}…) is still open.`);
+    case 'ΑΡΧΗ': return L(`Η ${K(k)} γράφεται μία φορά, πριν από τις εντολές.`, `${K(k)} is written once, before the instructions.`);
+    case 'ΜΕΤΑΒΛΗΤΕΣ': return L(`Οι ${K(k)} δηλώνονται πριν από την ${K('ΑΡΧΗ')}.`, `${K(k)} are declared before ${K('ΑΡΧΗ')}.`);
+    case 'ΣΤΑΘΕΡΕΣ': return L(`Οι ${K(k)} δηλώνονται πριν από τις ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`, `${K(k)} are declared before ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`);
+  }
+  return null;
+}
 
 function parseProgram(src){
   const lines = tokenize(src).filter(l => l.toks.length);
-  if (!lines.length) throw new GErr('Το πρόγραμμα είναι άδειο.', 1);
+  if (!lines.length) throw new GErr(L('Το πρόγραμμα είναι άδειο.', 'The program is empty.'), 1);
   const lastNo = src.split(/\r?\n/).length;
   let p = 0;
-  const L = () => lines[p];
+  const L_ = () => lines[p];
   const startsKw = (l, k) => !!l && l.toks[0].k === 'word' && l.toks[0].n === k;
   const tsOf = l => new TS(l.toks, l.no);
 
-  let ts = tsOf(L());
-  if (!ts.isKw('ΠΡΟΓΡΑΜΜΑ')) throw new GErr('Το πρόγραμμα ξεκινά πάντα με: ΠΡΟΓΡΑΜΜΑ Όνομα', L().no);
-  ts.next(); const name = ts.ident('για το πρόγραμμα'); ts.expectEnd(); p++;
+  let ts = tsOf(L_());
+  if (!ts.isKw('ΠΡΟΓΡΑΜΜΑ')) throw new GErr(L(`Το πρόγραμμα ξεκινά πάντα με: ${K('ΠΡΟΓΡΑΜΜΑ')} Όνομα`, `A program always starts with: ${K('ΠΡΟΓΡΑΜΜΑ')} Name`), L_().no);
+  ts.next(); const name = ts.ident(['για το πρόγραμμα', 'for the program']); ts.expectEnd(); p++;
 
   const decls = [];
-  if (startsKw(L(), 'ΣΤΑΘΕΡΕΣ')) {
+  if (startsKw(L_(), 'ΣΤΑΘΕΡΕΣ')) {
     p++;
-    while (L() && !startsKw(L(), 'ΜΕΤΑΒΛΗΤΕΣ') && !startsKw(L(), 'ΑΡΧΗ')) {
-      ts = tsOf(L()); const id = ts.ident('σταθεράς');
-      ts.expectOp('=', 'Μια σταθερά γράφεται έτσι: όνομα = τιμή');
+    while (L_() && !startsKw(L_(), 'ΜΕΤΑΒΛΗΤΕΣ') && !startsKw(L_(), 'ΑΡΧΗ')) {
+      ts = tsOf(L_()); const id = ts.ident(['σταθεράς', 'for a constant']);
+      ts.expectOp('=', L('Μια σταθερά γράφεται έτσι: όνομα = τιμή', 'A constant is written like this: name = value'));
       const e = pExpr(ts); ts.expectEnd();
-      decls.push({raw:id.v, n:id.n, isConst:true, expr:e, line:L().no}); p++;
+      decls.push({raw:id.v, n:id.n, isConst:true, expr:e, line:L_().no}); p++;
     }
   }
-  if (startsKw(L(), 'ΜΕΤΑΒΛΗΤΕΣ')) {
-    ts = tsOf(L()); ts.next(); ts.expectEnd(); p++;
-    while (L() && !startsKw(L(), 'ΑΡΧΗ')) {
-      ts = tsOf(L()); const t = ts.next();
-      if (!t || t.k !== 'word' || !TYPES[t.n]) throw new GErr('Εδώ γράφουμε τύπο: ΑΚΕΡΑΙΕΣ, ΠΡΑΓΜΑΤΙΚΕΣ, ΧΑΡΑΚΤΗΡΕΣ ή ΛΟΓΙΚΕΣ, και μετά «:» και τα ονόματα.', L().no);
-      ts.expectOp(':', 'Μετά τον τύπο βάζουμε άνω-κάτω τελεία «:»');
-      do { const id = ts.ident('μεταβλητής'); decls.push({raw:id.v, n:id.n, type:TYPES[t.n], line:L().no}); } while (ts.isOp(',') && ts.next());
+  if (startsKw(L_(), 'ΜΕΤΑΒΛΗΤΕΣ')) {
+    ts = tsOf(L_()); ts.next(); ts.expectEnd(); p++;
+    while (L_() && !startsKw(L_(), 'ΑΡΧΗ')) {
+      ts = tsOf(L_()); const t = ts.next();
+      const tl = [K('ΑΚΕΡΑΙΕΣ'), K('ΠΡΑΓΜΑΤΙΚΕΣ'), K('ΧΑΡΑΚΤΗΡΕΣ'), K('ΛΟΓΙΚΕΣ')];
+      if (!t || t.k !== 'word' || !TYPES[t.n]) throw new GErr(L(`Εδώ γράφουμε τύπο: ${tl.join(', ')}, και μετά «:» και τα ονόματα.`, `Write a type here: ${tl.join(', ')}, then ":" and the names.`), L_().no);
+      ts.expectOp(':', L('Μετά τον τύπο βάζουμε άνω-κάτω τελεία «:»', 'Put a colon ":" after the type'));
+      do { const id = ts.ident(['μεταβλητής', 'for a variable']); decls.push({raw:id.v, n:id.n, type:TYPES[t.n], line:L_().no}); } while (ts.isOp(',') && ts.next());
       ts.expectEnd(); p++;
     }
   }
-  if (!startsKw(L(), 'ΑΡΧΗ')) throw new GErr('Λείπει η λέξη ΑΡΧΗ πριν από τις εντολές.', L() ? L().no : lastNo);
-  ts = tsOf(L()); ts.next(); ts.expectEnd(); p++;
+  if (!startsKw(L_(), 'ΑΡΧΗ')) throw new GErr(L(`Λείπει η λέξη ${K('ΑΡΧΗ')} πριν από τις εντολές.`, `The word ${K('ΑΡΧΗ')} is missing before the instructions.`), L_() ? L_().no : lastNo);
+  ts = tsOf(L_()); ts.next(); ts.expectEnd(); p++;
 
   function parseBlock(terms){
     const stmts = [];
     for (;;) {
-      const l = L();
-      if (!l) throw new GErr(`Το πρόγραμμα τελείωσε, αλλά λείπει το ${terms.join(' ή ')}.`, lastNo);
+      const l = L_();
+      if (!l) throw new GErr(L(`Το πρόγραμμα τελείωσε, αλλά λείπει το ${terms.map(K).join(' ή ')}.`, `The program ended, but ${terms.map(K).join(' or ')} is missing.`), lastNo);
       const f = l.toks[0];
       if (f.k === 'word' && terms.includes(f.n)) return stmts;
       stmts.push(parseStmt());
     }
   }
-  function closeLine(kw){ const t = tsOf(L()); t.expectKw(kw); t.expectEnd(); const no = L().no; p++; return no; }
+  function closeLine(kw){ const t = tsOf(L_()); t.expectKw(kw); t.expectEnd(); const no = L_().no; p++; return no; }
 
   function parseStmt(){
-    const l = L(), line = l.no, ts = tsOf(l), f = ts.peek();
+    const l = L_(), line = l.no, ts = tsOf(l), f = ts.peek();
     if (f.k === 'word') {
       switch (f.n) {
         case 'ΓΡΑΨΕ': {
@@ -654,34 +860,36 @@ function parseProgram(src){
         }
         case 'ΔΙΑΒΑΣΕ': {
           ts.next(); const ids = [];
-          do { const id = ts.ident('μεταβλητής μετά τη ΔΙΑΒΑΣΕ'); ids.push({n:id.n, raw:id.v}); } while (ts.isOp(',') && ts.next());
+          do { const id = ts.ident([`μεταβλητής μετά τη ${K('ΔΙΑΒΑΣΕ')}`, `of a variable after ${K('ΔΙΑΒΑΣΕ')}`]); ids.push({n:id.n, raw:id.v}); } while (ts.isOp(',') && ts.next());
           ts.expectEnd(); p++; return {t:'read', ids, line};
         }
         case 'ΑΝ': {
-          ts.next(); const c = pExpr(ts); ts.expectKw('ΤΟΤΕ', 'Στο ΑΝ, μετά τη συνθήκη γράφουμε ΤΟΤΕ.'); ts.expectEnd(); p++;
+          const thenMsg = w => L(`Στο ${K(w)}, μετά τη συνθήκη γράφουμε ${K('ΤΟΤΕ')}.`, `In ${K(w)}, write ${K('ΤΟΤΕ')} after the condition.`);
+          ts.next(); const c = pExpr(ts); ts.expectKw('ΤΟΤΕ', thenMsg('ΑΝ')); ts.expectEnd(); p++;
           const branches = [{c, body:parseBlock(['ΑΛΛΙΩΣ_ΑΝ','ΑΛΛΙΩΣ','ΤΕΛΟΣ_ΑΝ']), line}];
           let els = null, elseLine = null;
           for (;;) {
-            const l2 = L(), t2 = tsOf(l2), k = t2.next().n;
+            const l2 = L_(), t2 = tsOf(l2), k = t2.next().n;
             if (k === 'ΑΛΛΙΩΣ_ΑΝ') {
-              const c2 = pExpr(t2); t2.expectKw('ΤΟΤΕ', 'Στο ΑΛΛΙΩΣ_ΑΝ, μετά τη συνθήκη γράφουμε ΤΟΤΕ.'); t2.expectEnd(); p++;
+              const c2 = pExpr(t2); t2.expectKw('ΤΟΤΕ', thenMsg('ΑΛΛΙΩΣ_ΑΝ')); t2.expectEnd(); p++;
               branches.push({c:c2, body:parseBlock(['ΑΛΛΙΩΣ_ΑΝ','ΑΛΛΙΩΣ','ΤΕΛΟΣ_ΑΝ']), line:l2.no});
             } else if (k === 'ΑΛΛΙΩΣ') {
-              if (t2.isKw('ΑΝ')) throw new GErr('Μήπως εννοείς ΑΛΛΙΩΣ_ΑΝ; Γράφεται μαζί, με κάτω παύλα.', l2.no);
+              if (t2.isKw('ΑΝ')) throw new GErr(L(`Μήπως εννοείς ${K('ΑΛΛΙΩΣ_ΑΝ')}; Γράφεται μαζί, με κάτω παύλα.`, `Did you mean ${K('ΑΛΛΙΩΣ_ΑΝ')}? It is written as one word with an underscore.`), l2.no);
               t2.expectEnd(); p++; elseLine = l2.no; els = parseBlock(['ΤΕΛΟΣ_ΑΝ']);
             } else { t2.expectEnd(); p++; break; }
           }
           return {t:'if', branches, els, elseLine, line};
         }
         case 'ΟΣΟ': {
-          ts.next(); const c = pExpr(ts); ts.expectKw('ΕΠΑΝΑΛΑΒΕ', 'Στο ΟΣΟ, μετά τη συνθήκη γράφουμε ΕΠΑΝΑΛΑΒΕ.'); ts.expectEnd(); p++;
+          ts.next(); const c = pExpr(ts); ts.expectKw('ΕΠΑΝΑΛΑΒΕ', L(`Στο ${K('ΟΣΟ')}, μετά τη συνθήκη γράφουμε ${K('ΕΠΑΝΑΛΑΒΕ')}.`, `In ${K('ΟΣΟ')}, write ${K('ΕΠΑΝΑΛΑΒΕ')} after the condition.`)); ts.expectEnd(); p++;
           const body = parseBlock(['ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ']); const endLine = closeLine('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ');
           return {t:'while', c, body, line, endLine};
         }
         case 'ΓΙΑ': {
-          ts.next(); const id = ts.ident('μετρητή μετά το ΓΙΑ');
-          ts.expectKw('ΑΠΟ', 'Το ΓΙΑ γράφεται: ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ 10'); const from = pExpr(ts);
-          ts.expectKw('ΜΕΧΡΙ', 'Το ΓΙΑ γράφεται: ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ 10'); const to = pExpr(ts);
+          const forMsg = L(`Το ${K('ΓΙΑ')} γράφεται: ${K('ΓΙΑ')} ι ${K('ΑΠΟ')} 1 ${K('ΜΕΧΡΙ')} 10`, `${K('ΓΙΑ')} is written: ${K('ΓΙΑ')} i ${K('ΑΠΟ')} 1 ${K('ΜΕΧΡΙ')} 10`);
+          ts.next(); const id = ts.ident([`μετρητή μετά το ${K('ΓΙΑ')}`, `for the counter after ${K('ΓΙΑ')}`]);
+          ts.expectKw('ΑΠΟ', forMsg); const from = pExpr(ts);
+          ts.expectKw('ΜΕΧΡΙ', forMsg); const to = pExpr(ts);
           let step = null; if (ts.isKw('ΜΕ_ΒΗΜΑ')) { ts.next(); step = pExpr(ts); }
           ts.expectEnd(); p++;
           const body = parseBlock(['ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ']); const endLine = closeLine('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ');
@@ -690,18 +898,18 @@ function parseProgram(src){
         case 'ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ': {
           ts.next(); ts.expectEnd(); p++;
           const body = parseBlock(['ΜΕΧΡΙΣ_ΟΤΟΥ']);
-          const l2 = L(), t2 = tsOf(l2); t2.next(); const c = pExpr(t2); t2.expectEnd(); p++;
+          const l2 = L_(), t2 = tsOf(l2); t2.next(); const c = pExpr(t2); t2.expectEnd(); p++;
           return {t:'repeat', body, c, line, untilLine:l2.no};
         }
         case 'ΕΠΙΛΕΞΕ': {
           ts.next(); const e = pExpr(ts); ts.expectEnd(); p++;
           const cases = []; let els = null, elseLine = null;
           for (;;) {
-            const l2 = L(); if (!l2) throw new GErr('Λείπει το ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ.', lastNo);
+            const l2 = L_(); if (!l2) throw new GErr(L(`Λείπει το ${K('ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ')}.`, `${K('ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ')} is missing.`), lastNo);
             const t2 = tsOf(l2), k = t2.peek().n;
             if (k === 'ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ') { t2.next(); t2.expectEnd(); p++; break; }
-            if (k !== 'ΠΕΡΙΠΤΩΣΗ') throw new GErr('Μέσα στο ΕΠΙΛΕΞΕ, κάθε ομάδα εντολών ξεκινά με ΠΕΡΙΠΤΩΣΗ.', l2.no);
-            if (els) throw new GErr('Η ΠΕΡΙΠΤΩΣΗ ΑΛΛΙΩΣ πρέπει να είναι η τελευταία.', l2.no);
+            if (k !== 'ΠΕΡΙΠΤΩΣΗ') throw new GErr(L(`Μέσα στο ${K('ΕΠΙΛΕΞΕ')}, κάθε ομάδα εντολών ξεκινά με ${K('ΠΕΡΙΠΤΩΣΗ')}.`, `Inside ${K('ΕΠΙΛΕΞΕ')}, every group of instructions starts with ${K('ΠΕΡΙΠΤΩΣΗ')}.`), l2.no);
+            if (els) throw new GErr(L(`Η ${K('ΠΕΡΙΠΤΩΣΗ')} ${K('ΑΛΛΙΩΣ')} πρέπει να είναι η τελευταία.`, `${K('ΠΕΡΙΠΤΩΣΗ')} ${K('ΑΛΛΙΩΣ')} must be the last one.`), l2.no);
             t2.next();
             if (t2.isKw('ΑΛΛΙΩΣ')) { t2.next(); t2.expectEnd(); p++; elseLine = l2.no; els = parseBlock(['ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ','ΠΕΡΙΠΤΩΣΗ']); continue; }
             const items = [];
@@ -715,35 +923,36 @@ function parseProgram(src){
           }
           return {t:'select', e, cases, els, elseLine, line};
         }
-        case 'ΤΕΛΟΣ': throw new GErr('Μήπως εννοείς ΤΕΛΟΣ_ΑΝ, ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ ή ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ; Γράφεται μαζί, με κάτω παύλα.', line);
+        case 'ΤΕΛΟΣ': case 'END':
+          throw new GErr(L(`Μήπως εννοείς ${K('ΤΕΛΟΣ_ΑΝ')}, ${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')} ή ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}; Γράφεται μαζί, με κάτω παύλα.`, `Did you mean ${K('ΤΕΛΟΣ_ΑΝ')}, ${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')} or ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}? It is one word with an underscore.`), line);
       }
-      if (STRAY[f.n]) throw new GErr(STRAY[f.n], line);
-      if (KW.has(f.n)) throw new GErr(`Η λέξη ${f.v} δεν μπορεί να ξεκινά εντολή.`, line);
+      const sm = stray(f.n); if (sm) throw new GErr(sm, line);
+      if (KW.has(f.n)) throw new GErr(L(`Η λέξη ${f.v} δεν μπορεί να ξεκινά εντολή.`, `The word ${f.v} cannot start an instruction.`), line);
       ts.next();
-      if (ts.isOp('<-')) { ts.next(); if (ts.end()) throw new GErr(`Μετά το <- γράψε τι θα μπει στην αίθουσα «${f.v}».`, line); const e = pExpr(ts); ts.expectEnd(); p++; return {t:'assign', n:f.n, raw:f.v, e, line}; }
-      if (ts.isOp('=')) throw new GErr(`Για να δώσεις τιμή γράψε βέλος: ${f.v} <- ...  (το = είναι μόνο για σύγκριση).`, line);
-      throw new GErr(`Δεν καταλαβαίνω την εντολή «${f.v}». Μήπως ξέχασες το <- ή έγραψες λάθος μια λέξη;`, line);
+      if (ts.isOp('<-')) { ts.next(); if (ts.end()) throw new GErr(L(`Μετά το <- γράψε τι θα μπει στην αίθουσα «${f.v}».`, `After <- write what goes into classroom "${f.v}".`), line); const e = pExpr(ts); ts.expectEnd(); p++; return {t:'assign', n:f.n, raw:f.v, e, line}; }
+      if (ts.isOp('=')) throw new GErr(L(`Για να δώσεις τιμή γράψε βέλος: ${f.v} <- ...  (το = είναι μόνο για σύγκριση).`, `To give a value use the arrow: ${f.v} <- ...  (= is only for comparing).`), line);
+      throw new GErr(L(`Δεν καταλαβαίνω την εντολή «${f.v}». Μήπως ξέχασες το <- ή έγραψες λάθος μια λέξη;`, `I don't understand the instruction "${f.v}". Did you forget <- or misspell a word?`), line);
     }
-    throw new GErr('Δεν καταλαβαίνω αυτή τη γραμμή.', line);
+    throw new GErr(L('Δεν καταλαβαίνω αυτή τη γραμμή.', 'I don\'t understand this line.'), line);
   }
 
   const body = parseBlock(['ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ']);
-  const endLine = L().no; p++;
-  if (L()) throw new GErr('Υπάρχουν εντολές μετά το ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ.', L().no);
+  const endLine = L_().no; p++;
+  if (L_()) throw new GErr(L(`Υπάρχουν εντολές μετά το ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`, `There are instructions after ${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}.`), L_().no);
   return {name:name.v, decls, body, endLine};
 }
 
 /* ======================= Τιμές & πράξεις ======================= */
-const TYPEINFO = {
-  'ΑΚΕΡΑΙΑ':   {cls:'t-int',  label:'ακέραια',    want:'ακέραιο αριθμό (π.χ. 7)'},
-  'ΠΡΑΓΜΑΤΙΚΗ':{cls:'t-real', label:'πραγματική', want:'αριθμό (π.χ. 7 ή 3.5)'},
-  'ΧΑΡΑΚΤΗΡΑΣ':{cls:'t-str',  label:'χαρακτήρες', want:'κείμενο (π.χ. Μαρία)'},
-  'ΛΟΓΙΚΗ':    {cls:'t-bool', label:'λογική',     want:'ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ'}
-};
+const TI = type => ({
+  'ΑΚΕΡΑΙΑ':   {cls:'t-int',  label:L('ακέραια','integer'),    want:L('ακέραιο αριθμό (π.χ. 7)','a whole number (e.g. 7)')},
+  'ΠΡΑΓΜΑΤΙΚΗ':{cls:'t-real', label:L('πραγματική','real'),    want:L('αριθμό (π.χ. 7 ή 3.5)','a number (e.g. 7 or 3.5)')},
+  'ΧΑΡΑΚΤΗΡΑΣ':{cls:'t-str',  label:L('χαρακτήρες','string'),  want:L('κείμενο (π.χ. Μαρία)','text (e.g. Maria)')},
+  'ΛΟΓΙΚΗ':    {cls:'t-bool', label:L('λογική','boolean'),     want:L('ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ','TRUE or FALSE')}
+})[type];
 const fmtNum = x => Number.isInteger(x) ? String(x) : String(+x.toPrecision(10));
-const fmt = v => typeof v === 'boolean' ? (v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ') : typeof v === 'number' ? fmtNum(v) : String(v);
+const fmt = v => typeof v === 'boolean' ? K(v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ') : typeof v === 'number' ? fmtNum(v) : String(v);
 const lit = v => typeof v === 'string' ? `'${v}'` : fmt(v);
-const kind = v => typeof v === 'number' ? (Number.isInteger(v) ? 'ακέραιο αριθμό' : 'πραγματικό αριθμό') : typeof v === 'string' ? 'κείμενο' : 'λογική τιμή';
+const kind = v => typeof v === 'number' ? (Number.isInteger(v) ? L('ακέραιο αριθμό','a whole number') : L('πραγματικό αριθμό','a real number')) : typeof v === 'string' ? L('κείμενο','text') : L('λογική τιμή','a boolean value');
 const typeOfVal = v => typeof v === 'number' ? (Number.isInteger(v) ? 'ΑΚΕΡΑΙΑ' : 'ΠΡΑΓΜΑΤΙΚΗ') : typeof v === 'string' ? 'ΧΑΡΑΚΤΗΡΑΣ' : 'ΛΟΓΙΚΗ';
 function fits(type, v){
   switch (type) {
@@ -755,15 +964,17 @@ function fits(type, v){
   return false;
 }
 function clean(x){
-  if (!isFinite(x)) throw new GErr('Ο αριθμός βγήκε τόσο μεγάλος που δεν χωράει πουθενά!', RT.line);
+  if (!isFinite(x)) throw new GErr(L('Ο αριθμός βγήκε τόσο μεγάλος που δεν χωράει πουθενά!', 'The number got so big it does not fit anywhere!'), RT.line);
   const r = Math.round(x); return Math.abs(x - r) < 1e-9 ? r : +x.toPrecision(15);
 }
-function needNum(v, op){ if (typeof v !== 'number') throw new GErr(`Η πράξη «${op}» θέλει αριθμούς, αλλά βρήκε ${kind(v)} (${lit(v)}).`, RT.line); }
-function needBool(v, op){ if (typeof v !== 'boolean') throw new GErr(`Το «${op}» θέλει ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ, αλλά βρήκε ${lit(v)}.`, RT.line); }
-const zeroDiv = () => new GErr('Διαίρεση με το μηδέν! Αυτό δεν μπορεί να το κάνει κανείς, ούτε το ανθρωπάκι.', RT.line);
+const opName = op => op === 'ΚΑΙ' || op === 'Η' || op === 'ΟΧΙ' ? K(op) : op;
+function needNum(v, op){ if (typeof v !== 'number') throw new GErr(L(`Η πράξη «${opName(op)}» θέλει αριθμούς, αλλά βρήκε ${kind(v)} (${lit(v)}).`, `The operation "${opName(op)}" needs numbers, but found ${kind(v)} (${lit(v)}).`), RT.line); }
+function needBool(v, op){ if (typeof v !== 'boolean') throw new GErr(L(`Το «${opName(op)}» θέλει ${K('ΑΛΗΘΗΣ')} ή ${K('ΨΕΥΔΗΣ')}, αλλά βρήκε ${lit(v)}.`, `"${opName(op)}" needs ${K('ΑΛΗΘΗΣ')} or ${K('ΨΕΥΔΗΣ')}, but found ${lit(v)}.`), RT.line); }
+const zeroDiv = () => new GErr(L('Διαίρεση με το μηδέν! Αυτό δεν μπορεί να το κάνει κανείς, ούτε το ανθρωπάκι.', 'Division by zero! Nobody can do that, not even the little person.'), RT.line);
+const emptyBoard = c => new GErr(L(`Ο πίνακας της αίθουσας «${c.raw}» είναι άδειος! Δώσε της πρώτα τιμή (με <- ή ${K('ΔΙΑΒΑΣΕ')}).`, `The board of classroom "${c.raw}" is empty! Give it a value first (with <- or ${K('ΔΙΑΒΑΣΕ')}).`), RT.line);
 function compare(a, op, b){
-  if (typeof a !== typeof b) throw new GErr(`Δεν γίνεται σύγκριση ανάμεσα σε ${kind(a)} (${lit(a)}) και ${kind(b)} (${lit(b)}).`, RT.line);
-  if (typeof a === 'boolean' && op !== '=' && op !== '<>') throw new GErr('Οι λογικές τιμές συγκρίνονται μόνο με = και <>.', RT.line);
+  if (typeof a !== typeof b) throw new GErr(L(`Δεν γίνεται σύγκριση ανάμεσα σε ${kind(a)} (${lit(a)}) και ${kind(b)} (${lit(b)}).`, `You cannot compare ${kind(a)} (${lit(a)}) with ${kind(b)} (${lit(b)}).`), RT.line);
+  if (typeof a === 'boolean' && op !== '=' && op !== '<>') throw new GErr(L('Οι λογικές τιμές συγκρίνονται μόνο με = και <>.', 'Boolean values can only be compared with = and <>.'), RT.line);
   const d = typeof a === 'string' ? a.localeCompare(b, 'el') : (a < b ? -1 : a > b ? 1 : 0);
   return {'=':d === 0, '<>':d !== 0, '<':d < 0, '>':d > 0, '<=':d <= 0, '>=':d >= 0}[op];
 }
@@ -773,8 +984,8 @@ function ev(e){
     case 'grp': return ev(e.e);
     case 'var': {
       const c = RT.cells.get(e.n);
-      if (!c) throw new GErr(`Δεν υπάρχει αίθουσα με όνομα «${e.raw}».`, RT.line);
-      if (c.value === undefined) throw new GErr(`Ο πίνακας της αίθουσας «${c.raw}» είναι άδειος! Δώσε της πρώτα τιμή (με <- ή ΔΙΑΒΑΣΕ).`, RT.line);
+      if (!c) throw new GErr(L(`Δεν υπάρχει αίθουσα με όνομα «${e.raw}».`, `There is no classroom called "${e.raw}".`), RT.line);
+      if (c.value === undefined) throw emptyBoard(c);
       return c.value;
     }
     case 'un': { const v = ev(e.e); if (e.op === '-') { needNum(v, '-'); return -v; } needBool(v, 'ΟΧΙ'); return !v; }
@@ -790,26 +1001,26 @@ function ev(e){
         case '*': return clean(a * b);
         case '/': if (b === 0) throw zeroDiv(); return clean(a / b);
         case 'DIV': case 'MOD':
-          if (!Number.isInteger(a) || !Number.isInteger(b)) throw new GErr(`Το ${op} δουλεύει μόνο με ακέραιους αριθμούς.`, RT.line);
+          if (!Number.isInteger(a) || !Number.isInteger(b)) throw new GErr(L(`Το ${op} δουλεύει μόνο με ακέραιους αριθμούς.`, `${op} works only with whole numbers.`), RT.line);
           if (b === 0) throw zeroDiv();
           return op === 'DIV' ? Math.trunc(a / b) : a % b;
         case '^': return clean(Math.pow(a, b));
       }
     }
   }
-  throw new GErr('Άγνωστη πράξη.', RT.line);
+  throw new GErr(L('Άγνωστη πράξη.', 'Unknown operation.'), RT.line);
 }
 const OPSHOW = {'<=':'≤', '>=':'≥', '<>':'≠'};
 function show(e, sub){
   switch (e.t) {
     case 'num': return fmtNum(e.v);
     case 'str': return `'${e.v}'`;
-    case 'bool': return e.v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ';
+    case 'bool': return K(e.v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ');
     case 'var': { if (sub) { const c = RT.cells.get(e.n); if (c && c.value !== undefined) return lit(c.value); } return e.raw; }
     case 'grp': return `(${show(e.e, sub)})`;
-    case 'un': return e.op === '-' ? `-${show(e.e, sub)}` : `ΟΧΙ ${show(e.e, sub)}`;
+    case 'un': return e.op === '-' ? `-${show(e.e, sub)}` : `${K('ΟΧΙ')} ${show(e.e, sub)}`;
     case 'call': return `${e.raw}(${show(e.a, sub)})`;
-    case 'bin': return `${show(e.l, sub)} ${sub ? (OPSHOW[e.op] || e.op) : e.op} ${show(e.r, sub)}`;
+    case 'bin': return `${show(e.l, sub)} ${sub && OPSHOW[e.op] ? OPSHOW[e.op] : opName(e.op)} ${show(e.r, sub)}`;
   }
   return '';
 }
@@ -844,17 +1055,17 @@ function firstSteps(s){
 function compile(src){
   const prog = parseProgram(src);
   const cells = new Map();
-  if (prog.decls.length > 15) throw new GErr('Το κτίριο χωράει μέχρι 15 αίθουσες (μεταβλητές και σταθερές μαζί).', prog.decls[15].line);
+  if (prog.decls.length > 15) throw new GErr(L('Το κτίριο χωράει μέχρι 15 αίθουσες (μεταβλητές και σταθερές μαζί).', 'The building has room for up to 15 classrooms (variables and constants together).'), prog.decls[15].line);
   const saved = RT.cells; RT.cells = cells;
   try {
     for (const d of prog.decls) {
-      if (cells.has(d.n)) throw new GErr(`Το όνομα «${d.raw}» δηλώθηκε δύο φορές. Κάθε αίθουσα έχει δικό της όνομα.`, d.line);
+      if (cells.has(d.n)) throw new GErr(L(`Το όνομα «${d.raw}» δηλώθηκε δύο φορές. Κάθε αίθουσα έχει δικό της όνομα.`, `The name "${d.raw}" was declared twice. Each classroom needs its own name.`), d.line);
       const c = {raw:d.raw, n:d.n, type:d.type, isConst:!!d.isConst, value:undefined, line:d.line};
       if (d.isConst) {
         RT.line = d.line;
         for (const v of varsOf(d.expr)) {
           const o = cells.get(v.n);
-          if (!o || !o.isConst) throw new GErr(`Η σταθερά «${d.raw}» μπορεί να χρησιμοποιεί μόνο αριθμούς, κείμενο ή σταθερές που δηλώθηκαν πιο πάνω.`, d.line);
+          if (!o || !o.isConst) throw new GErr(L(`Η σταθερά «${d.raw}» μπορεί να χρησιμοποιεί μόνο αριθμούς, κείμενο ή σταθερές που δηλώθηκαν πιο πάνω.`, `The constant "${d.raw}" can only use numbers, text or constants declared above it.`), d.line);
         }
         c.value = ev(d.expr); c.type = typeOfVal(c.value);
       }
@@ -862,12 +1073,13 @@ function compile(src){
     }
   } finally { RT.cells = saved; }
 
-  const useE = (e, line) => { for (const v of varsOf(e)) if (!cells.has(v.n)) throw new GErr(`Δεν υπάρχει αίθουσα «${v.raw}». Δήλωσέ τη στις ΜΕΤΑΒΛΗΤΕΣ.`, line); };
+  const noRoom = (raw, line) => new GErr(L(`Δεν υπάρχει αίθουσα «${raw}». Δήλωσέ τη στις ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`, `There is no classroom "${raw}". Declare it under ${K('ΜΕΤΑΒΛΗΤΕΣ')}.`), line);
+  const useE = (e, line) => { for (const v of varsOf(e)) if (!cells.has(v.n)) throw noRoom(v.raw, line); };
   const target = (n, raw, line, forRead) => {
     const c = cells.get(n);
-    if (!c) throw new GErr(`Δεν υπάρχει αίθουσα «${raw}». Δήλωσέ τη στις ΜΕΤΑΒΛΗΤΕΣ.`, line);
-    if (c.isConst) throw new GErr(`Η «${raw}» είναι σταθερά: η αίθουσά της είναι κλειδωμένη και η τιμή της δεν αλλάζει.`, line);
-    if (forRead && c.type === 'ΛΟΓΙΚΗ') throw new GErr('Η ΔΙΑΒΑΣΕ δεν μπορεί να διαβάσει λογική μεταβλητή.', line);
+    if (!c) throw noRoom(raw, line);
+    if (c.isConst) throw new GErr(L(`Η «${raw}» είναι σταθερά: η αίθουσά της είναι κλειδωμένη και η τιμή της δεν αλλάζει.`, `"${raw}" is a constant: its classroom is locked and its value never changes.`), line);
+    if (forRead && c.type === 'ΛΟΓΙΚΗ') throw new GErr(L(`Η ${K('ΔΙΑΒΑΣΕ')} δεν μπορεί να διαβάσει λογική μεταβλητή.`, `${K('ΔΙΑΒΑΣΕ')} cannot read a boolean variable.`), line);
     return c;
   };
   const chk = stmts => stmts.forEach(s => {
@@ -880,7 +1092,7 @@ function compile(src){
       case 'repeat': chk(s.body); useE(s.c, s.untilLine); break;
       case 'for': {
         const c = target(s.n, s.raw, s.line);
-        if (c.type !== 'ΑΚΕΡΑΙΑ' && c.type !== 'ΠΡΑΓΜΑΤΙΚΗ') throw new GErr(`Ο μετρητής του ΓΙΑ («${s.raw}») πρέπει να είναι αριθμητική μεταβλητή.`, s.line);
+        if (c.type !== 'ΑΚΕΡΑΙΑ' && c.type !== 'ΠΡΑΓΜΑΤΙΚΗ') throw new GErr(L(`Ο μετρητής του ${K('ΓΙΑ')} («${s.raw}») πρέπει να είναι αριθμητική μεταβλητή.`, `The counter of ${K('ΓΙΑ')} ("${s.raw}") must be a numeric variable.`), s.line);
         [s.from, s.to, s.step].forEach(e => e && useE(e, s.line)); chk(s.body); break;
       }
       case 'select': useE(s.e, s.line); s.cases.forEach(cs => { cs.items.forEach(it => { useE(it.a, cs.line); if (it.b) useE(it.b, cs.line); }); chk(cs.body); }); if (s.els) chk(s.els); break;
@@ -917,15 +1129,17 @@ const PERSON_SVG = `<svg width="40" height="64" viewBox="0 0 40 64" aria-hidden=
 <circle cx="17" cy="12" r="1.3" fill="#1b1b1b"/><circle cx="24" cy="12" r="1.3" fill="#1b1b1b"/>
 <path d="M17 16 Q20.5 18.6 24 16" stroke="#7a3b2a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
 </g></svg>`;
+const plateSize = t => { const n = [...t].length; return n <= 8 ? 17 : n <= 11 ? 14 : n <= 14 ? 12 : 10; };
 
 function buildScene(cells){
   const nF = Math.max(1, Math.ceil(cells.length / G.PER));
   LAY = {nF, H:G.ROOF + nF * G.FH + G.GH + G.STREET, rooms:new Map()};
   const gTop = G.ROOF + nF * G.FH, gFeet = gTop + G.GH - 12;
+  const SCREEN = L('ΟΘΟΝΗ', 'SCREEN');
   let h = `<div class="sky"></div><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>`;
-  h += `<div class="score" style="left:${G.SCORE_X - 270}px;top:14px"><div class="score-top">ΟΘΟΝΗ</div><div class="score-screen"><div id="scoreLines"></div></div>
+  h += `<div class="score" style="left:${G.SCORE_X - 270}px;top:14px"><div class="score-top">${SCREEN}</div><div class="score-screen"><div id="scoreLines"></div></div>
         <div class="pole" style="left:120px;top:196px;height:${G.ROOF - 16 - 196}px"></div><div class="pole" style="right:120px;top:196px;height:${G.ROOF - 16 - 196}px"></div></div>`;
-  h += `<div class="tag" style="left:760px;top:44px;width:160px"><b>ΟΘΟΝΗ</b>έξοδος: εδώ φαίνονται τα αποτελέσματα (ΓΡΑΨΕ)</div>`;
+  h += `<div class="tag" style="left:760px;top:44px;width:160px"><b>${SCREEN}</b>${L('έξοδος: εδώ φαίνονται τα αποτελέσματα', 'output: the results appear here')} (${K('ΓΡΑΨΕ')})</div>`;
   h += `<div class="facade" style="left:40px;top:${G.ROOF - 12}px;width:780px;height:${nF * G.FH + G.GH + 12}px"></div>`;
   h += `<div class="roofcap" style="left:32px;top:${G.ROOF - 18}px;width:796px"></div>`;
   h += `<div class="hatch" style="left:${G.STAIRS_X - 28}px;top:${G.ROOF - 36}px"></div>`;
@@ -934,32 +1148,33 @@ function buildScene(cells){
     h += `<div class="stairs" style="left:50px;top:${top}px;width:116px;height:${hh}px">${stairSvg(110, hh)}</div>`;
     h += `<div class="slab" style="left:40px;top:${top + hh}px;width:780px"></div>`;
   }
-  h += `<div class="memband" style="top:${G.ROOF + 4}px;height:${nF * G.FH - 16}px"><span>ΜΝΗΜΗ · RAM</span></div>`;
+  h += `<div class="memband" style="top:${G.ROOF + 4}px;height:${nF * G.FH - 16}px"><span>${L('ΜΝΗΜΗ', 'MEMORY')} · RAM</span></div>`;
+  const emptyTxt = L('άδειος', 'empty');
   cells.forEach((c, i) => {
     const f = Math.floor(i / G.PER), col = i % G.PER;
     const left = G.ROOM_X0 + col * G.ROOM_W + 3, top = G.ROOF + f * G.FH + 6;
     LAY.rooms.set(c.n, {x:left + 46 + (G.ROOM_W - 6 - 54) / 2, lv:f});
     c.idx = i;
-    const ti = c.isConst ? {cls:'t-const', label:'σταθερά'} : TYPEINFO[c.type];
+    const ti = c.isConst ? {cls:'t-const', label:L('σταθερά', 'constant')} : TI(c.type);
     h += `<div class="room ${ti.cls}" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px">
       <div class="door"></div><div class="plate"><b style="font-size:${plateSize(c.raw)}px">${esc(c.raw)}</b><small>${norm(ti.label)}${c.isConst ? ' &#128274;' : ''}</small></div>
-      <div class="board empty" id="bd-${i}"><div class="chalk" id="b-${i}"></div></div><div class="desks"><i></i><i></i></div></div>`;
+      <div class="board empty" id="bd-${i}" data-empty="${emptyTxt}"><div class="chalk" id="b-${i}"></div></div><div class="desks"><i></i><i></i></div></div>`;
   });
   for (let i = cells.length; i < nF * G.PER; i++) {
     const f = Math.floor(i / G.PER), col = i % G.PER, left = G.ROOM_X0 + col * G.ROOM_W + 3, top = G.ROOF + f * G.FH + 6;
-    h += `<div class="room t-none" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px"><div class="door"></div><div class="plate"><b>ελεύθερη αίθουσα</b></div><div class="desks"><i></i><i></i></div></div>`;
+    h += `<div class="room t-none" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px"><div class="door"></div><div class="plate"><b>${L('ελεύθερη αίθουσα', 'free classroom')}</b></div><div class="desks"><i></i><i></i></div></div>`;
   }
   h += `<div class="office" style="left:${G.ROOM_X0 + 3}px;top:${gTop + 6}px;width:410px;height:${G.GH - 18}px">
-      <div class="sign">ΓΡΑΦΕΙΟ</div>
-      <div class="pin" id="pin"><small>Εντολή που εκτελώ</small><div id="instr">–</div></div>
-      <div class="calc"><small id="calcTitle">Πρόχειρο</small><div id="calcLines"></div></div>
+      <div class="sign">${L('ΓΡΑΦΕΙΟ', 'OFFICE')}</div>
+      <div class="pin" id="pin"><small>${L('Εντολή που εκτελώ', 'Running now')}</small><div id="instr">–</div></div>
+      <div class="calc"><small id="calcTitle"></small><div id="calcLines"></div></div>
       <div class="desk"></div></div>`;
-  h += `<div class="tag" style="left:${G.ROOM_X0 + 112}px;top:${gTop - 20}px"><b>ΚΜΕ · CPU</b>πράξεις και αποφάσεις</div>`;
-  h += `<div class="lobby" style="left:586px;top:${gTop + 6}px;width:214px;height:${G.GH - 18}px"><div class="lsign">ΕΙΣΟΔΟΣ</div><div class="plant"></div></div>`;
+  h += `<div class="tag" style="left:${G.ROOM_X0 + 112}px;top:${gTop - 20}px"><b>${L('ΚΜΕ · CPU', 'CPU')}</b>${L('πράξεις και αποφάσεις', 'calculations and decisions')}</div>`;
+  h += `<div class="lobby" style="left:586px;top:${gTop + 6}px;width:214px;height:${G.GH - 18}px"><div class="lsign">${L('ΕΙΣΟΔΟΣ', 'ENTRANCE')}</div><div class="plant"></div></div>`;
   h += `<div class="frontdoor" style="left:800px;top:${gFeet - 104}px"></div><div class="doorleaf" style="left:820px;top:${gFeet - 104}px"></div>`;
   h += `<div class="street" style="top:${gFeet}px;height:${G.STREET + 12}px"></div>`;
   h += `<div class="mailbox" id="mailbox" style="left:${G.MAIL_X}px;top:${gFeet + 2}px"><div class="mb-box"><span class="mb-flag"></span></div><div class="mb-post"></div></div>`;
-  h += `<div class="tag" style="left:842px;top:${gFeet - 196}px;width:94px"><b>ΠΛΗΚΤΡΟ&shy;ΛΟΓΙΟ</b>είσοδος (ΔΙΑΒΑΣΕ)</div>`;
+  h += `<div class="tag" style="left:842px;top:${gFeet - 196}px;width:94px"><b>${L('ΠΛΗΚΤΡΟ&shy;ΛΟΓΙΟ', 'KEY&shy;BOARD')}</b>${L('είσοδος', 'input')} (${K('ΔΙΑΒΑΣΕ')})</div>`;
   h += `<svg class="routes" id="routes" width="${G.W}" height="${LAY.H}" viewBox="0 0 ${G.W} ${LAY.H}" aria-hidden="true" hidden>
         <path id="routePath" d=""/><circle id="routeA" r="7" cx="0" cy="0"/><circle id="routeB" r="11" cx="0" cy="0"/><text id="routeT" x="0" y="0" text-anchor="middle"></text></svg>`;
   h += `<div id="person"><div class="bubble" id="bubble" hidden></div>${PERSON_SVG}</div>`;
@@ -978,7 +1193,6 @@ function fit(){
 }
 new ResizeObserver(fit).observe(scaler);
 
-const plateSize = t => { const n = [...t].length; return n <= 8 ? 17 : n <= 11 ? 14 : n <= 14 ? 12 : 10; };
 const boardSize = t => { const n = [...t].length; return n <= 4 ? 34 : n <= 7 ? 26 : n <= 11 ? 19 : n <= 18 ? 15 : 12; };
 function paintBoard(c){
   const el = document.getElementById('b-' + c.idx); if (!el) return;
@@ -1012,7 +1226,7 @@ const RT = {cells:new Map(), line:0, state:'idle', mode:'run', level:'beg', step
             dead:true, running:false, done:Promise.resolve(), release:null, letter:null, src:[]};
 const cancels = new Set();
 const MULTS = [0.55, 1, 1.8, 3.4, 0];
-const SPEED_NAMES = ['πολύ αργά', 'αργά', 'κανονικά', 'γρήγορα', 'αστραπή'];
+const speedNames = () => L(['πολύ αργά', 'αργά', 'κανονικά', 'γρήγορα', 'αστραπή'], ['very slow', 'slow', 'normal', 'fast', 'lightning']);
 const speedEl = $('#speed');
 const mult = () => MULTS[speedEl.value - 1];
 const turbo = () => speedEl.value === '5';
@@ -1074,7 +1288,7 @@ function carry(items){
   if (!items || !items.length) { b.hidden = true; b.innerHTML = ''; return; }
   b.innerHTML = items.map(t => `<span>${esc(t)}</span>`).join(''); b.hidden = false;
 }
-function setCalcTitle(){ const t = $('#calcTitle'); if (t) t.textContent = BEG() ? 'Πρόχειρο' : 'Πρόχειρο · καταχωρητές'; }
+function setCalcTitle(){ const t = $('#calcTitle'); if (t) t.textContent = BEG() ? L('Πρόχειρο', 'Scratchpad') : L('Πρόχειρο · καταχωρητές', 'Scratchpad · registers'); }
 function calcClear(){ const b = $('#calcLines'); if (b) b.innerHTML = ''; }
 function calcAdd(text, res){
   const b = $('#calcLines'); if (!b) return;
@@ -1117,12 +1331,13 @@ function renderTrip(){
   const {total, done} = RT.dots, n = Math.max(total, done);
   let dots = '';
   for (let i = 1; i <= n; i++) dots += `<i class="${i < done ? 'on' : i === done ? 'now' : ''}"></i>`;
-  box.innerHTML = `<span>Βήμα: <b>${Math.max(done, 0)}</b> από <b>${n}</b></span><span class="dots" aria-hidden="true">${dots}</span>`;
+  box.innerHTML = `<span>${L('Βήμα:', 'Step:')} <b>${Math.max(done, 0)}</b> ${L('από', 'of')} <b>${n}</b></span><span class="dots" aria-hidden="true">${dots}</span>`;
 }
 
 /* ======================= Εκτέλεση ======================= */
+const PRESS = () => L('Πάτα «Ένα βήμα»', 'Press "One step"');
 async function pauseHere(){
-  setChip('Πάτα «Ένα βήμα»', true);
+  setChip(PRESS(), true);
   await waitFor(r => { RT.release = r; });
   setState('running');
 }
@@ -1132,7 +1347,7 @@ async function checkpoint(line, total = 0){
   $('#curLine').textContent = line;
   RT.steps++; $('#steps').textContent = RT.steps;
   RT.dots = {total, done:0}; renderTrip(); clearRoute();
-  if (RT.steps > 4000) throw new GErr('Το ανθρωπάκι κουράστηκε! Πάνω από 4000 εντολές — μήπως η επανάληψη δεν σταματά ποτέ;', line);
+  if (RT.steps > 4000) throw new GErr(L('Το ανθρωπάκι κουράστηκε! Πάνω από 4000 εντολές — μήπως η επανάληψη δεν σταματά ποτέ;', 'The little person is tired! More than 4000 instructions — maybe the loop never stops?'), line);
   if (RT.until && RT.until.kind === 'line') { RT.until = null; RT.mode = 'step'; setState('running'); }
   if (RT.mode === 'step' && (!BEG() || total === 0)) await pauseHere();
   else if (turbo()) { if (RT.steps % 20 === 0) await sleep(0); else tick(); }
@@ -1149,48 +1364,50 @@ async function pt(desc, target, label){
   else await wait(target ? 650 : 250);
 }
 async function decide(text){
-  if (BEG()) await pt('Απόφαση: ' + text, null);
+  if (BEG()) await pt(L('Απόφαση: ', 'Decision: ') + text, null);
   else { say(text); await wait(750); }
 }
 async function backToOffice(){ await walkTo(OFFICE()); clearRoute(); }
 async function fetchInstr(line){
-  if (!BEG() && !turbo()) say(`Πάω στο γραφείο να διαβάσω την εντολή της γραμμής ${line}.`);
+  if (!BEG() && !turbo()) say(L(`Πάω στο γραφείο να διαβάσω την εντολή της γραμμής ${line}.`, `Going to the office to read the instruction on line ${line}.`));
   await walkTo(OFFICE());
   const ins = $('#instr'); if (ins) ins.textContent = (RT.src[line - 1] || '').trim();
   const pin = $('#pin'); if (pin && !turbo()) { pin.classList.remove('flash'); void pin.offsetWidth; pin.classList.add('flash'); }
   calcClear();
   await wait(BEG() ? 200 : 380);
 }
+const tripRoom = (raw, purpose) => L(`Δρομολόγιο: γραφείο → αίθουσα «${raw}» στη RAM → γραφείο, ${purpose[0]}`, `Trip: office → classroom "${raw}" in RAM → office, ${purpose[1]}`);
 async function evalAnimated(e){
   const vs = varsOf(e), held = [];
   for (const v of vs) {
     const c = RT.cells.get(v.n);
-    if (BEG()) await pt(`Δρομολόγιο: γραφείο → αίθουσα «${c.raw}» στη RAM → γραφείο, για να φέρω την τιμή της.`, roomLoc(v.n), c.raw);
-    else say(`Πάω στην αίθουσα «${c.raw}» να δω τι γράφει ο πίνακας.`);
+    if (BEG()) await pt(tripRoom(c.raw, ['για να φέρω την τιμή της.', 'to fetch its value.']), roomLoc(v.n), c.raw);
+    else say(L(`Πάω στην αίθουσα «${c.raw}» να δω τι γράφει ο πίνακας.`, `Going to classroom "${c.raw}" to see what the board says.`));
     await walkTo(roomLoc(v.n));
     flashRead(c);
-    if (c.value === undefined) throw new GErr(`Ο πίνακας της αίθουσας «${c.raw}» είναι άδειος! Δώσε της πρώτα τιμή (με <- ή ΔΙΑΒΑΣΕ).`, RT.line);
+    if (c.value === undefined) throw emptyBoard(c);
+    const note = `${c.raw} = ${lit(c.value)}`;
     if (BEG()) {
-      carry([`${c.raw} = ${lit(c.value)}`]);
-      say(`Ο πίνακας της «${c.raw}» γράφει ${lit(c.value)}. Το κρατάω (η τιμή μένει και στον πίνακα) και γυρίζω στο γραφείο.`);
+      carry([note]);
+      say(L(`Ο πίνακας της «${c.raw}» γράφει ${lit(c.value)}. Το κρατάω (η τιμή μένει και στον πίνακα) και γυρίζω στο γραφείο.`, `The board of "${c.raw}" says ${lit(c.value)}. I take a copy (the value stays on the board too) and go back to the office.`));
       await wait(700);
       await backToOffice();
-      calcAdd(`${c.raw} = ${lit(c.value)}`); carry(null);
-      say(`Έγραψα «${c.raw} = ${lit(c.value)}» στο πρόχειρο.`);
+      calcAdd(note); carry(null);
+      say(L(`Έγραψα «${note}» στο πρόχειρο.`, `I wrote "${note}" on the scratchpad.`));
       await wait(450);
     } else {
-      held.push(`${c.raw} = ${lit(c.value)}`); carry(held);
-      say(`Ο πίνακας της «${c.raw}» γράφει ${lit(c.value)}. Το σημειώνω στο μπλοκάκι μου (η τιμή μένει και στον πίνακα).`);
+      held.push(note); carry(held);
+      say(L(`Ο πίνακας της «${c.raw}» γράφει ${lit(c.value)}. Το σημειώνω στο μπλοκάκι μου (η τιμή μένει και στον πίνακα).`, `The board of "${c.raw}" says ${lit(c.value)}. I note it down (the value stays on the board too).`));
       await wait(700);
     }
   }
   const v = ev(e);
   if (!isSimple(e)) {
     const sh = show(e, true);
-    if (BEG()) await pt(`Στο γραφείο: κάνω την πράξη με τις τιμές του πρόχειρου.`, null);
-    else if (vs.length) { say('Γυρίζω στο γραφείο για να κάνω την πράξη.'); await walkTo(OFFICE()); }
+    if (BEG()) await pt(L('Στο γραφείο: κάνω την πράξη με τις τιμές του πρόχειρου.', 'At the office: I calculate with the values on the scratchpad.'), null);
+    else if (vs.length) { say(L('Γυρίζω στο γραφείο για να κάνω την πράξη.', 'Going back to the office to calculate.')); await walkTo(OFFICE()); }
     calcAdd(`${sh} ${typeof v === 'boolean' ? '→' : '='} ${lit(v)}`, true);
-    say(typeof v === 'boolean' ? `Στο γραφείο ελέγχω: ${sh} → ${fmt(v)}.` : `Στο γραφείο υπολογίζω: ${sh} = ${lit(v)}.`);
+    say(typeof v === 'boolean' ? L(`Στο γραφείο ελέγχω: ${sh} → ${fmt(v)}.`, `At the office I check: ${sh} → ${fmt(v)}.`) : L(`Στο γραφείο υπολογίζω: ${sh} = ${lit(v)}.`, `At the office I calculate: ${sh} = ${lit(v)}.`));
     if (!BEG()) carry([`= ${lit(v)}`]);
     await wait(900);
   }
@@ -1198,27 +1415,29 @@ async function evalAnimated(e){
 }
 async function store(n, v){
   const c = RT.cells.get(n);
-  if (!fits(c.type, v)) throw new GErr(`Η αίθουσα «${c.raw}» δέχεται μόνο ${TYPEINFO[c.type].want}, αλλά πήγα να γράψω ${lit(v)} (${kind(v)}).`, RT.line);
+  if (!fits(c.type, v)) throw new GErr(L(`Η αίθουσα «${c.raw}» δέχεται μόνο ${TI(c.type).want}, αλλά πήγα να γράψω ${lit(v)} (${kind(v)}).`, `Classroom "${c.raw}" only accepts ${TI(c.type).want}, but I tried to write ${lit(v)} (${kind(v)}).`), RT.line);
   const old = c.value;
-  if (BEG()) await pt(`Δρομολόγιο: γραφείο → αίθουσα «${c.raw}» στη RAM → γραφείο, για να γράψω ${lit(v)} στον πίνακά της.`, roomLoc(n), c.raw);
+  if (BEG()) await pt(tripRoom(c.raw, [`για να γράψω ${lit(v)} στον πίνακά της.`, `to write ${lit(v)} on its board.`]), roomLoc(n), c.raw);
   carry([`${lit(v)} → ${c.raw}`]);
-  say(old === undefined ? `Πάω στην αίθουσα «${c.raw}» να γράψω ${lit(v)} στον πίνακα.` : `Πάω στην αίθουσα «${c.raw}»: σβήνω το ${lit(old)} και γράφω ${lit(v)}. Η παλιά τιμή χάνεται!`);
+  say(old === undefined
+    ? L(`Πάω στην αίθουσα «${c.raw}» να γράψω ${lit(v)} στον πίνακα.`, `Going to classroom "${c.raw}" to write ${lit(v)} on the board.`)
+    : L(`Πάω στην αίθουσα «${c.raw}»: σβήνω το ${lit(old)} και γράφω ${lit(v)}. Η παλιά τιμή χάνεται!`, `Going to classroom "${c.raw}": I erase ${lit(old)} and write ${lit(v)}. The old value is lost!`));
   await walkTo(roomLoc(n));
   await writeBoard(c, v);
   carry(null);
-  if (BEG()) { say(`Έγραψα ${lit(v)} στην αίθουσα «${c.raw}». Γυρίζω στο γραφείο.`); await backToOffice(); }
+  if (BEG()) { say(L(`Έγραψα ${lit(v)} στην αίθουσα «${c.raw}». Γυρίζω στο γραφείο.`, `I wrote ${lit(v)} in classroom "${c.raw}". Back to the office.`)); await backToOffice(); }
 }
-function needCond(v, w){ if (typeof v !== 'boolean') throw new GErr(`Η συνθήκη του ${w} πρέπει να βγάζει ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ (π.χ. α > 5), όχι ${lit(v)}.`, RT.line); }
+function needCond(v, w){ if (typeof v !== 'boolean') throw new GErr(L(`Η συνθήκη του ${K(w)} πρέπει να βγάζει ${K('ΑΛΗΘΗΣ')} ή ${K('ΨΕΥΔΗΣ')} (π.χ. α > 5), όχι ${lit(v)}.`, `The condition of ${K(w)} must give ${K('ΑΛΗΘΗΣ')} or ${K('ΨΕΥΔΗΣ')} (e.g. a > 5), not ${lit(v)}.`), RT.line); }
 function parseInput(type, raw){
   const t = raw.trim();
-  if (type === 'ΑΚΕΡΑΙΑ') return /^[+-]?\d+$/.test(t) ? {ok:true, v:Number(t)} : {ok:false, msg:`Αυτή η αίθουσα θέλει ακέραιο αριθμό (π.χ. 7), όχι «${t}».`};
-  if (type === 'ΠΡΑΓΜΑΤΙΚΗ') { const u = t.replace(',', '.'); return /^[+-]?\d+(\.\d+)?$/.test(u) ? {ok:true, v:Number(u)} : {ok:false, msg:`Αυτή η αίθουσα θέλει αριθμό (π.χ. 7 ή 3.5), όχι «${t}».`}; }
+  if (type === 'ΑΚΕΡΑΙΑ') return /^[+-]?\d+$/.test(t) ? {ok:true, v:Number(t)} : {ok:false, msg:L(`Αυτή η αίθουσα θέλει ακέραιο αριθμό (π.χ. 7), όχι «${t}».`, `This classroom wants a whole number (e.g. 7), not "${t}".`)};
+  if (type === 'ΠΡΑΓΜΑΤΙΚΗ') { const u = t.replace(',', '.'); return /^[+-]?\d+(\.\d+)?$/.test(u) ? {ok:true, v:Number(u)} : {ok:false, msg:L(`Αυτή η αίθουσα θέλει αριθμό (π.χ. 7 ή 3.5), όχι «${t}».`, `This classroom wants a number (e.g. 7 or 3.5), not "${t}".`)}; }
   return {ok:true, v:raw};
 }
 const letterEl = $('#letter');
 function openLetter(c, resolve){
   RT.letter = {c, resolve};
-  $('#letterLabel').textContent = `Το ανθρωπάκι περιμένει για την αίθουσα «${c.raw}». Γράψε ${TYPEINFO[c.type].want}:`;
+  $('#letterLabel').textContent = L(`Το ανθρωπάκι περιμένει για την αίθουσα «${c.raw}». Γράψε ${TI(c.type).want}:`, `The little person is waiting for classroom "${c.raw}". Write ${TI(c.type).want}:`);
   $('#letterErr').textContent = '';
   const inp = $('#letterInput'); inp.value = '';
   inp.inputMode = c.type === 'ΧΑΡΑΚΤΗΡΑΣ' ? 'text' : 'decimal';
@@ -1230,7 +1449,7 @@ letterEl.addEventListener('submit', ev2 => {
   ev2.preventDefault();
   if (!RT.letter) return;
   const r = parseInput(RT.letter.c.type, $('#letterInput').value);
-  if (!r.ok) { $('#letterErr').textContent = r.msg; say(`Άνοιξα το γράμμα αλλά δεν ταιριάζει: ${r.msg} Στείλε άλλο.`); return; }
+  if (!r.ok) { $('#letterErr').textContent = r.msg; say(L(`Άνοιξα το γράμμα αλλά δεν ταιριάζει: ${r.msg} Στείλε άλλο.`, `I opened the letter but it does not fit: ${r.msg} Send another one.`)); return; }
   const fn = RT.letter.resolve; hideLetter(); fn(r.v);
 });
 async function letterArrives(){
@@ -1252,7 +1471,7 @@ function leaveLoop(){
   RT.loopDepth--;
   if (!RT.dead && RT.until && RT.until.kind === 'loop' && RT.loopDepth < RT.until.depth) {
     RT.until = null; RT.mode = 'step'; setState('running');
-    say('Η επανάληψη τελείωσε. Συνεχίζουμε βήμα-βήμα.');
+    say(L('Η επανάληψη τελείωσε. Συνεχίζουμε βήμα-βήμα.', 'The loop has finished. We continue step by step.'));
   } else refreshButtons();
 }
 
@@ -1262,49 +1481,49 @@ async function exec(s){
   switch (s.t) {
     case 'assign': {
       await fetchInstr(s.line);
-      say(`Η εντολή λέει: υπολόγισε «${show(s.e)}» και γράψ' το στον πίνακα της αίθουσας «${s.raw}».`); await wait(650);
+      say(L(`Η εντολή λέει: υπολόγισε «${show(s.e)}» και γράψ' το στον πίνακα της αίθουσας «${s.raw}».`, `The instruction says: work out "${show(s.e)}" and write it on the board of classroom "${s.raw}".`)); await wait(650);
       const v = await evalAnimated(s.e);
       await store(s.n, v);
       return;
     }
     case 'write': {
       await fetchInstr(s.line);
-      say('Η εντολή ΓΡΑΨΕ λέει: δείξε κάτι στην οθόνη, στον μεγάλο πίνακα της ταράτσας.'); await wait(600);
+      say(L(`Η εντολή ${K('ΓΡΑΨΕ')} λέει: δείξε κάτι στην οθόνη, στον μεγάλο πίνακα της ταράτσας.`, `The ${K('ΓΡΑΨΕ')} instruction says: show something on the screen, the big board on the roof.`)); await wait(600);
       const parts = [];
       for (const it of s.items) parts.push(fmt(await evalAnimated(it)));
       const text = parts.join(' ');
-      const short = text.length > 26 ? text.slice(0, 25) + '…' : (text || '(κενή γραμμή)');
-      if (BEG()) await pt(`Δρομολόγιο: γραφείο → ταράτσα (οθόνη) → γραφείο, για να γράψω «${short}».`, ROOF(), 'οθόνη');
+      const short = text.length > 26 ? text.slice(0, 25) + '…' : (text || L('(κενή γραμμή)', '(empty line)'));
+      if (BEG()) await pt(L(`Δρομολόγιο: γραφείο → ταράτσα (οθόνη) → γραφείο, για να γράψω «${short}».`, `Trip: office → roof (screen) → office, to write "${short}".`), ROOF(), L('οθόνη', 'screen'));
       carry([short]);
-      say('Ανεβαίνω στην ταράτσα να το γράψω στην οθόνη.');
+      say(L('Ανεβαίνω στην ταράτσα να το γράψω στην οθόνη.', 'Climbing to the roof to write it on the screen.'));
       await walkTo(ROOF());
       carry(null);
-      say('Γράφω στην οθόνη: ' + (text || '(κενή γραμμή)'));
+      say(L('Γράφω στην οθόνη: ', 'Writing on the screen: ') + (text || L('(κενή γραμμή)', '(empty line)')));
       await scoreWrite(text);
       await wait(350);
-      if (BEG()) { say('Το έγραψα στην οθόνη. Γυρίζω στο γραφείο.'); await backToOffice(); }
+      if (BEG()) { say(L('Το έγραψα στην οθόνη. Γυρίζω στο γραφείο.', 'Done writing on the screen. Back to the office.')); await backToOffice(); }
       return;
     }
     case 'read': {
       await fetchInstr(s.line);
       for (const id of s.ids) {
         const c = RT.cells.get(id.n);
-        if (BEG()) await pt(`Δρομολόγιο: γραφείο → γραμματοκιβώτιο (πληκτρολόγιο) → γραφείο, για να φέρω γράμμα για την αίθουσα «${c.raw}».`, MAIL(), 'γραμματοκιβώτιο');
-        say(`Η εντολή ΔΙΑΒΑΣΕ λέει: φέρε τιμή από το πληκτρολόγιο για την αίθουσα «${c.raw}». Κατεβαίνω στο γραμματοκιβώτιο της εξώπορτας.`);
+        if (BEG()) await pt(L(`Δρομολόγιο: γραφείο → γραμματοκιβώτιο (πληκτρολόγιο) → γραφείο, για να φέρω γράμμα για την αίθουσα «${c.raw}».`, `Trip: office → mailbox (keyboard) → office, to fetch a letter for classroom "${c.raw}".`), MAIL(), L('γραμματοκιβώτιο', 'mailbox'));
+        say(L(`Η εντολή ${K('ΔΙΑΒΑΣΕ')} λέει: φέρε τιμή από το πληκτρολόγιο για την αίθουσα «${c.raw}». Κατεβαίνω στο γραμματοκιβώτιο της εξώπορτας.`, `The ${K('ΔΙΑΒΑΣΕ')} instruction says: bring a value from the keyboard for classroom "${c.raw}". Going down to the mailbox at the front door.`));
         await walkTo(MAIL());
         const mb = $('#mailbox'); mb.classList.add('waiting');
-        carry(['περιμένω γράμμα…']);
-        say(`Περιμένω στο γραμματοκιβώτιο… Γράψε ${TYPEINFO[c.type].want} στο γράμμα και στείλ' το!`);
+        carry([L('περιμένω γράμμα…', 'waiting for a letter…')]);
+        say(L(`Περιμένω στο γραμματοκιβώτιο… Γράψε ${TI(c.type).want} στο γράμμα και στείλ' το!`, `Waiting at the mailbox… Write ${TI(c.type).want} in the letter and send it!`));
         const v = await waitFor(r => openLetter(c, r));
         mb.classList.remove('waiting');
         await letterArrives();
-        carry([`γράμμα: ${lit(v)}`]);
+        carry([L('γράμμα: ', 'letter: ') + lit(v)]);
         if (BEG()) {
-          say(`Ήρθε γράμμα! Γράφει ${lit(v)}. Το παίρνω και γυρίζω στο γραφείο.`); await wait(600);
+          say(L(`Ήρθε γράμμα! Γράφει ${lit(v)}. Το παίρνω και γυρίζω στο γραφείο.`, `A letter arrived! It says ${lit(v)}. I take it back to the office.`)); await wait(600);
           await backToOffice();
-          calcAdd(`γράμμα: ${lit(v)}`); carry(null);
-          say(`Έγραψα το γράμμα (${lit(v)}) στο πρόχειρο. Τώρα πρέπει να το πάω στην αίθουσα «${c.raw}».`); await wait(450);
-        } else { say(`Ήρθε γράμμα! Γράφει ${lit(v)}. Το πάω στην αίθουσα «${c.raw}».`); await wait(650); }
+          calcAdd(L('γράμμα: ', 'letter: ') + lit(v)); carry(null);
+          say(L(`Έγραψα το γράμμα (${lit(v)}) στο πρόχειρο. Τώρα πρέπει να το πάω στην αίθουσα «${c.raw}».`, `I wrote the letter (${lit(v)}) on the scratchpad. Now I must take it to classroom "${c.raw}".`)); await wait(450);
+        } else { say(L(`Ήρθε γράμμα! Γράφει ${lit(v)}. Το πάω στην αίθουσα «${c.raw}».`, `A letter arrived! It says ${lit(v)}. Taking it to classroom "${c.raw}".`)); await wait(650); }
         await store(id.n, v);
       }
       return;
@@ -1314,12 +1533,12 @@ async function exec(s){
         const b = s.branches[k], w = k ? 'ΑΛΛΙΩΣ_ΑΝ' : 'ΑΝ';
         if (k) await checkpoint(b.line, E(b.c) + 1);
         await fetchInstr(b.line);
-        say(`Η εντολή ${w} λέει: έλεγξε αν ισχύει «${show(b.c)}».`); await wait(650);
+        say(L(`Η εντολή ${K(w)} λέει: έλεγξε αν ισχύει «${show(b.c)}».`, `The ${K(w)} instruction says: check whether "${show(b.c)}" is true.`)); await wait(650);
         const v = await evalAnimated(b.c); needCond(v, w);
-        if (v) { await decide('Η συνθήκη είναι ΑΛΗΘΗΣ → εκτελώ τις εντολές μετά το ΤΟΤΕ.'); await execBlock(b.body); return; }
-        await decide(`Η συνθήκη είναι ΨΕΥΔΗΣ → προσπερνάω τις εντολές αυτού του ${w}.`);
+        if (v) { await decide(L(`η συνθήκη είναι ${K('ΑΛΗΘΗΣ')} → εκτελώ τις εντολές μετά το ${K('ΤΟΤΕ')}.`, `the condition is ${K('ΑΛΗΘΗΣ')} → I run the instructions after ${K('ΤΟΤΕ')}.`)); await execBlock(b.body); return; }
+        await decide(L(`η συνθήκη είναι ${K('ΨΕΥΔΗΣ')} → προσπερνάω τις εντολές αυτού του ${K(w)}.`, `the condition is ${K('ΨΕΥΔΗΣ')} → I skip the instructions of this ${K(w)}.`));
       }
-      if (s.els) { await checkpoint(s.elseLine, 1); await fetchInstr(s.elseLine); await decide('Καμία συνθήκη δεν ίσχυε → εκτελώ τις εντολές του ΑΛΛΙΩΣ.'); await execBlock(s.els); }
+      if (s.els) { await checkpoint(s.elseLine, 1); await fetchInstr(s.elseLine); await decide(L(`καμία συνθήκη δεν ίσχυε → εκτελώ τις εντολές του ${K('ΑΛΛΙΩΣ')}.`, `no condition was true → I run the instructions of ${K('ΑΛΛΙΩΣ')}.`)); await execBlock(s.els); }
       return;
     }
     case 'while': {
@@ -1328,22 +1547,22 @@ async function exec(s){
         for (let first = true; ; first = false) {
           if (!first) await checkpoint(s.line, E(s.c) + 1);
           await fetchInstr(s.line);
-          say(`Η εντολή ΟΣΟ λέει: όσο ισχύει «${show(s.c)}», κάνε ξανά τις εντολές.`); await wait(550);
+          say(L(`Η εντολή ${K('ΟΣΟ')} λέει: όσο ισχύει «${show(s.c)}», κάνε ξανά τις εντολές.`, `The ${K('ΟΣΟ')} instruction says: while "${show(s.c)}" is true, repeat the instructions.`)); await wait(550);
           const v = await evalAnimated(s.c); needCond(v, 'ΟΣΟ');
-          if (!v) { await decide('Η συνθήκη είναι ΨΕΥΔΗΣ → η επανάληψη τελειώνει, πάω μετά το ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ.'); return; }
-          await decide('Η συνθήκη είναι ΑΛΗΘΗΣ → εκτελώ τις εντολές της επανάληψης.');
+          if (!v) { await decide(L(`η συνθήκη είναι ${K('ΨΕΥΔΗΣ')} → η επανάληψη τελειώνει, πάω μετά το ${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')}.`, `the condition is ${K('ΨΕΥΔΗΣ')} → the loop ends, I go past ${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')}.`)); return; }
+          await decide(L(`η συνθήκη είναι ${K('ΑΛΗΘΗΣ')} → εκτελώ τις εντολές της επανάληψης.`, `the condition is ${K('ΑΛΗΘΗΣ')} → I run the instructions of the loop.`));
           await execBlock(s.body);
           await checkpoint(s.endLine, 1); await fetchInstr(s.endLine);
-          await decide('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ → γυρίζω πάνω στο ΟΣΟ να ξαναελέγξω τη συνθήκη.');
+          await decide(L(`${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')} → γυρίζω πάνω στο ${K('ΟΣΟ')} να ξαναελέγξω τη συνθήκη.`, `${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')} → I go back up to ${K('ΟΣΟ')} to check the condition again.`));
         }
       } finally { leaveLoop(); }
     }
     case 'for': {
       await fetchInstr(s.line);
-      say(`Η εντολή ΓΙΑ λέει: μέτρα με την αίθουσα «${s.raw}» από ${show(s.from)} μέχρι ${show(s.to)}${s.step ? ' με βήμα ' + show(s.step) : ''}.`); await wait(800);
+      say(L(`Η εντολή ${K('ΓΙΑ')} λέει: μέτρα με την αίθουσα «${s.raw}» από ${show(s.from)} μέχρι ${show(s.to)}${s.step ? ' με βήμα ' + show(s.step) : ''}.`, `The ${K('ΓΙΑ')} instruction says: count with classroom "${s.raw}" from ${show(s.from)} to ${show(s.to)}${s.step ? ' in steps of ' + show(s.step) : ''}.`)); await wait(800);
       const a = await evalAnimated(s.from), b = await evalAnimated(s.to), st = s.step ? await evalAnimated(s.step) : 1;
-      needNum(a, 'ΓΙΑ'); needNum(b, 'ΓΙΑ'); needNum(st, 'ΜΕ_ΒΗΜΑ');
-      if (st === 0) throw new GErr('Το ΜΕ_ΒΗΜΑ δεν μπορεί να είναι 0: η επανάληψη δεν θα τελείωνε ποτέ.', s.line);
+      needNum(a, K('ΓΙΑ')); needNum(b, K('ΓΙΑ')); needNum(st, K('ΜΕ_ΒΗΜΑ'));
+      if (st === 0) throw new GErr(L(`Το ${K('ΜΕ_ΒΗΜΑ')} δεν μπορεί να είναι 0: η επανάληψη δεν θα τελείωνε ποτέ.`, `${K('ΜΕ_ΒΗΜΑ')} cannot be 0: the loop would never end.`), s.line);
       await store(s.n, a);
       const V = {t:'var', n:s.n, raw:s.raw};
       const cond = {t:'bin', op:st > 0 ? '<=' : '>=', l:V, r:{t:'num', v:b}};
@@ -1352,61 +1571,64 @@ async function exec(s){
       try {
         for (let first = true; ; first = false) {
           if (!first) { await checkpoint(s.line, 3); await fetchInstr(s.line); }
-          say(`Ελέγχω αν ο μετρητής «${s.raw}» έφτασε στο τέλος.`); await wait(400);
+          say(L(`Ελέγχω αν ο μετρητής «${s.raw}» έφτασε στο τέλος.`, `Checking whether the counter "${s.raw}" has reached the end.`)); await wait(400);
           const ok = await evalAnimated(cond);
-          if (!ok) { await decide(`Ο μετρητής πέρασε το ${fmt(b)} → η επανάληψη τελειώνει.`); return; }
-          await decide('Δεν πέρασε ακόμα το τέλος → εκτελώ τις εντολές μέσα στο ΓΙΑ.');
+          if (!ok) { await decide(L(`ο μετρητής πέρασε το ${fmt(b)} → η επανάληψη τελειώνει.`, `the counter went past ${fmt(b)} → the loop ends.`)); return; }
+          await decide(L(`δεν πέρασε ακόμα το τέλος → εκτελώ τις εντολές μέσα στο ${K('ΓΙΑ')}.`, `not past the end yet → I run the instructions inside ${K('ΓΙΑ')}.`));
           await execBlock(s.body);
           await checkpoint(s.endLine, 3); await fetchInstr(s.endLine);
-          say(`ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ: ${st > 0 ? 'αυξάνω' : 'μειώνω'} τον μετρητή «${s.raw}» κατά ${fmt(Math.abs(st))} και γυρίζω στο ΓΙΑ.`); await wait(600);
+          say(L(`${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')}: ${st > 0 ? 'αυξάνω' : 'μειώνω'} τον μετρητή «${s.raw}» κατά ${fmt(Math.abs(st))} και γυρίζω στο ${K('ΓΙΑ')}.`, `${K('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ')}: I ${st > 0 ? 'increase' : 'decrease'} the counter "${s.raw}" by ${fmt(Math.abs(st))} and go back to ${K('ΓΙΑ')}.`)); await wait(600);
           await store(s.n, await evalAnimated(inc));
         }
       } finally { leaveLoop(); }
     }
     case 'repeat': {
       await fetchInstr(s.line);
-      say('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ: πρώτα κάνω τις εντολές και ελέγχω στο τέλος.'); await wait(650);
+      say(L(`${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}: πρώτα κάνω τις εντολές και ελέγχω στο τέλος.`, `${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}: first I run the instructions, then I check at the end.`)); await wait(650);
       enterLoop();
       try {
         for (let first = true; ; first = false) {
           if (!first) { await checkpoint(s.line, 0); await fetchInstr(s.line); }
           await execBlock(s.body);
           await checkpoint(s.untilLine, E(s.c) + 1); await fetchInstr(s.untilLine);
-          say(`Η εντολή ΜΕΧΡΙΣ_ΟΤΟΥ λέει: σταμάτα όταν ισχύσει «${show(s.c)}».`); await wait(550);
+          say(L(`Η εντολή ${K('ΜΕΧΡΙΣ_ΟΤΟΥ')} λέει: σταμάτα όταν ισχύσει «${show(s.c)}».`, `The ${K('ΜΕΧΡΙΣ_ΟΤΟΥ')} instruction says: stop when "${show(s.c)}" becomes true.`)); await wait(550);
           const v = await evalAnimated(s.c); needCond(v, 'ΜΕΧΡΙΣ_ΟΤΟΥ');
-          if (v) { await decide('Η συνθήκη ισχύει → η επανάληψη τελειώνει.'); return; }
-          await decide('Δεν ισχύει ακόμα → γυρίζω στην ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ.');
+          if (v) { await decide(L('η συνθήκη ισχύει → η επανάληψη τελειώνει.', 'the condition is true → the loop ends.')); return; }
+          await decide(L(`δεν ισχύει ακόμα → γυρίζω στην ${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}.`, `not true yet → back to ${K('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ')}.`));
         }
       } finally { leaveLoop(); }
     }
     case 'select': {
       await fetchInstr(s.line);
-      say(`Η εντολή ΕΠΙΛΕΞΕ λέει: δες πόσο κάνει «${show(s.e)}» και διάλεξε την περίπτωση που ταιριάζει.`); await wait(650);
+      say(L(`Η εντολή ${K('ΕΠΙΛΕΞΕ')} λέει: δες πόσο κάνει «${show(s.e)}» και διάλεξε την περίπτωση που ταιριάζει.`, `The ${K('ΕΠΙΛΕΞΕ')} instruction says: find the value of "${show(s.e)}" and pick the matching case.`)); await wait(650);
       const v = await evalAnimated(s.e);
       await walkTo(OFFICE());
       for (const cs of s.cases) {
         await checkpoint(cs.line, 1);
         const hit = cs.items.some(it => matchCase(v, it));
         calcAdd(`${lit(v)} ; ${(RT.src[cs.line - 1] || '').trim()}`, hit);
-        await decide(hit ? `Το ${lit(v)} ταιριάζει σε αυτή την ΠΕΡΙΠΤΩΣΗ → εκτελώ τις εντολές της.` : `Το ${lit(v)} δεν ταιριάζει εδώ → πάω στην επόμενη ΠΕΡΙΠΤΩΣΗ.`);
+        await decide(hit
+          ? L(`το ${lit(v)} ταιριάζει σε αυτή την ${K('ΠΕΡΙΠΤΩΣΗ')} → εκτελώ τις εντολές της.`, `${lit(v)} matches this ${K('ΠΕΡΙΠΤΩΣΗ')} → I run its instructions.`)
+          : L(`το ${lit(v)} δεν ταιριάζει εδώ → πάω στην επόμενη ${K('ΠΕΡΙΠΤΩΣΗ')}.`, `${lit(v)} does not match here → on to the next ${K('ΠΕΡΙΠΤΩΣΗ')}.`));
         if (hit) { await execBlock(cs.body); return; }
       }
-      if (s.els) { await checkpoint(s.elseLine, 1); await decide('Δεν ταίριαξε καμία → ΠΕΡΙΠΤΩΣΗ ΑΛΛΙΩΣ.'); await execBlock(s.els); }
+      if (s.els) { await checkpoint(s.elseLine, 1); await decide(L(`δεν ταίριαξε καμία → ${K('ΠΕΡΙΠΤΩΣΗ')} ${K('ΑΛΛΙΩΣ')}.`, `nothing matched → ${K('ΠΕΡΙΠΤΩΣΗ')} ${K('ΑΛΛΙΩΣ')}.`)); await execBlock(s.els); }
       return;
     }
   }
 }
 
 async function runProgram(prog){
-  say(`Καλημέρα! Θα εκτελέσω το πρόγραμμα «${prog.name}». Ξεκινάω από το γραφείο μου.`);
+  say(L(`Καλημέρα! Θα εκτελέσω το πρόγραμμα «${prog.name}». Ξεκινάω από το γραφείο μου.`, `Good morning! I will run the program "${prog.name}". I start at my office.`));
   await wait(700);
   await execBlock(prog.body);
   await checkpoint(prog.endLine, 0);
   await walkTo(OFFICE());
-  const ins = $('#instr'); if (ins) ins.textContent = 'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ';
+  const ins = $('#instr'); if (ins) ins.textContent = K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ');
   calcClear();
-  carry(['τέλος!']);
-  say(`ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ: εκτέλεσα όλες τις εντολές της λίστας${BEG() ? ` με ${RT.trips} δρομολόγια` : ''}. Τώρα ξεκουράζομαι!`);
+  carry([L('τέλος!', 'done!')]);
+  say(L(`${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}: εκτέλεσα όλες τις εντολές της λίστας${BEG() ? ` με ${RT.trips} δρομολόγια` : ''}. Τώρα ξεκουράζομαι!`,
+        `${K('ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ')}: I ran every instruction on the list${BEG() ? ` in ${RT.trips} trips` : ''}. Time for a rest!`));
 }
 
 /* ======================= Κουμπιά & καταστάσεις ======================= */
@@ -1419,27 +1641,28 @@ function refreshButtons(){
   btnNext.disabled = !running;
   btnLoop.disabled = !(running && RT.loopDepth > 0);
   document.querySelectorAll('input[name="lvl"]').forEach(r => { r.disabled = running; });
+  document.querySelectorAll('.flag').forEach(f => { f.disabled = running; });
 }
 function setState(s){
   RT.state = s;
   const running = s === 'running';
-  btnRun.textContent = running ? (RT.mode === 'step' ? '▶ Συνέχεια' : '▶ Τρέξε') : (s === 'idle' ? '▶ Τρέξε' : '▶ Ξανά');
+  btnRun.textContent = running ? (RT.mode === 'step' ? L('▶ Συνέχεια', '▶ Continue') : L('▶ Τρέξε', '▶ Run')) : (s === 'idle' ? L('▶ Τρέξε', '▶ Run') : L('▶ Ξανά', '▶ Again'));
   btnRun.disabled = running && RT.mode === 'run';
   btnPause.disabled = !(running && RT.mode === 'run');
-  btnStop.textContent = running ? '■ Σταμάτα' : '✎ Διόρθωσε';
+  btnStop.textContent = running ? L('■ Σταμάτα', '■ Stop') : L('✎ Διόρθωσε', '✎ Edit');
   btnStop.disabled = s === 'idle';
   $('#editor').classList.toggle('locked', s !== 'idle');
-  if (s === 'idle') setChip('Επεξεργασία');
-  else if (s === 'running') setChip(RT.mode === 'step' ? 'Βήμα-βήμα' : 'Εκτελείται', true);
-  else if (s === 'done') setChip('Τέλος');
-  else setChip('Σφάλμα', false, true);
+  if (s === 'idle') setChip(L('Επεξεργασία', 'Editing'));
+  else if (s === 'running') setChip(RT.mode === 'step' ? L('Βήμα-βήμα', 'Step by step') : L('Εκτελείται', 'Running'), true);
+  else if (s === 'done') setChip(L('Τέλος', 'Finished'));
+  else setChip(L('Σφάλμα', 'Error'), false, true);
   refreshButtons();
   if (!running) renderTrip();
 }
 function release(){ if (RT.release) { const r = RT.release; RT.release = null; r(); } }
 function stopRun(){ RT.dead = true; for (const c of [...cancels]) c(); cancels.clear(); RT.release = null; hideLetter(); clearRoute(); }
 function showError(msg, line){
-  const b = $('#errBox'); b.hidden = false; b.textContent = (line ? `Γραμμή ${line}: ` : '') + msg;
+  const b = $('#errBox'); b.hidden = false; b.textContent = (line ? L(`Γραμμή ${line}: `, `Line ${line}: `) : '') + msg;
   if (line) highlight(line, 'err');
 }
 function clearError(){ $('#errBox').hidden = true; }
@@ -1452,7 +1675,7 @@ async function start(mode){
   renderListing(src);
   let prog;
   try { prog = compile(src); }
-  catch (e) { if (!(e instanceof GErr)) throw e; setState('error'); showError(e.message, e.line); say('Δεν μπορώ να ξεκινήσω: κάτι στη λίστα εντολών δεν το καταλαβαίνω. Δες το κόκκινο μήνυμα.'); return; }
+  catch (e) { if (!(e instanceof GErr)) throw e; setState('error'); showError(e.message, e.line); say(L('Δεν μπορώ να ξεκινήσω: κάτι στη λίστα εντολών δεν το καταλαβαίνω. Δες το κόκκινο μήνυμα.', 'I cannot start: there is something in the instruction list I do not understand. See the red message.')); return; }
   RT.mode = mode; RT.dead = false; RT.running = true; RT.steps = 0; RT.trips = 0; RT.loopDepth = 0; RT.until = null; RT.cells = prog.cells;
   RT.dots = {total:0, done:0};
   $('#steps').textContent = '0'; $('#curLine').textContent = '–';
@@ -1463,8 +1686,8 @@ async function start(mode){
     catch (e) {
       if (e && e.isStop) return;
       setState('error');
-      if (e instanceof GErr) { showError(e.message, e.line || RT.line); carry(['ωχ!']); say('Σταμάτησα! ' + e.message); }
-      else { console.error(e); showError('Απρόσμενο σφάλμα: ' + (e && e.message)); }
+      if (e instanceof GErr) { showError(e.message, e.line || RT.line); carry([L('ωχ!', 'oops!')]); say(L('Σταμάτησα! ', 'I stopped! ') + e.message); }
+      else { console.error(e); showError(L('Απρόσμενο σφάλμα: ', 'Unexpected error: ') + (e && e.message)); }
     } finally {
       RT.running = false; RT.dead = true; RT.until = null; hideLetter(); clearRoute(); refreshButtons(); renderTrip();
       const mb = $('#mailbox'); if (mb) mb.classList.remove('waiting');
@@ -1487,24 +1710,26 @@ btnNext.addEventListener('click', () => {
 btnLoop.addEventListener('click', () => {
   if (RT.state !== 'running' || RT.loopDepth < 1) return;
   RT.until = {kind:'loop', depth:RT.loopDepth}; RT.mode = 'run'; setState('running'); release();
-  say('Τρέχω μέχρι να τελειώσει η επανάληψη…');
+  say(L('Τρέχω μέχρι να τελειώσει η επανάληψη…', 'Running until the loop is finished…'));
 });
-btnPause.addEventListener('click', () => { if (RT.state === 'running') { RT.mode = 'step'; RT.until = null; setState('running'); say('Παύση: θα σταματήσω στο επόμενο βήμα. Πάτα «Ένα βήμα» ή «Συνέχεια».'); } });
+btnPause.addEventListener('click', () => { if (RT.state === 'running') { RT.mode = 'step'; RT.until = null; setState('running'); say(L('Παύση: θα σταματήσω στο επόμενο βήμα. Πάτα «Ένα βήμα» ή «Συνέχεια».', 'Paused: I will stop at the next step. Press "One step" or "Continue".')); } });
 btnStop.addEventListener('click', async () => {
-  if (RT.running) { stopRun(); await RT.done; say('Σταμάτησες την εκτέλεση. Μπορείς να αλλάξεις το πρόγραμμα.'); }
-  else say('Άλλαξε το πρόγραμμα και πάτα ξανά «Τρέξε».');
+  if (RT.running) { stopRun(); await RT.done; say(L('Σταμάτησες την εκτέλεση. Μπορείς να αλλάξεις το πρόγραμμα.', 'You stopped the run. You can change the program now.')); }
+  else say(L('Άλλαξε το πρόγραμμα και πάτα ξανά «Τρέξε».', 'Change the program and press "Run" again.'));
   carry(null); clearError(); setState('idle'); setTimeout(() => srcEl.focus(), 0);
 });
-speedEl.addEventListener('input', () => { $('#speedOut').textContent = SPEED_NAMES[speedEl.value - 1]; });
+const updateSpeedName = () => { $('#speedOut').textContent = speedNames()[speedEl.value - 1]; };
+speedEl.addEventListener('input', updateSpeedName);
 $('#legend').addEventListener('change', e => building.classList.toggle('nolegend', !e.target.checked));
 
-const MODE_HINTS = {
-  beg:'Αρχάριος: κάθε «Ένα βήμα» είναι ένα δρομολόγιο του ανθρωπάκου (γραφείο → κάπου → γραφείο) ή μία δουλειά στο γραφείο. Η κόκκινη διακεκομμένη γραμμή δείχνει πού θα πάει.',
-  adv:'Προχωρημένος: κάθε «Ένα βήμα» εκτελεί μια ολόκληρη γραμμή. Το ανθρωπάκι μαζεύει πολλές τιμές σε μία διαδρομή, όπως ένας γρήγορος επεξεργαστής με καταχωρητές.'
-};
+const modeHint = lv => lv === 'beg'
+  ? L('Αρχάριος: κάθε «Ένα βήμα» είναι ένα δρομολόγιο του ανθρωπάκου (γραφείο → κάπου → γραφείο) ή μία δουλειά στο γραφείο. Η κόκκινη διακεκομμένη γραμμή δείχνει πού θα πάει.',
+      'Beginner: each "One step" is one trip of the little person (office → somewhere → office) or one job at the office. The red dashed line shows where they will go.')
+  : L('Προχωρημένος: κάθε «Ένα βήμα» εκτελεί μια ολόκληρη γραμμή. Το ανθρωπάκι μαζεύει πολλές τιμές σε μία διαδρομή, όπως ένας γρήγορος επεξεργαστής με καταχωρητές.',
+      'Advanced: each "One step" runs a whole line. The little person collects several values in one walk, like a fast processor with registers.');
 function applyLevel(lv){
   RT.level = lv;
-  $('#modeHint').textContent = MODE_HINTS[lv];
+  $('#modeHint').textContent = modeHint(lv);
   $('#tripsStat').hidden = lv !== 'beg';
   setCalcTitle(); refreshButtons(); renderTrip();
   try { localStorage.setItem('spiti-level', lv); } catch (_) {}
@@ -1532,27 +1757,60 @@ function idleScene(){
     const prog = compile(srcEl.value);
     buildScene([...prog.cells.values()]);
     const n = prog.cells.size;
-    hint.textContent = `Το κτίριο έχει ${n} ${n === 1 ? 'αίθουσα' : 'αίθουσες'} (μία για κάθε μεταβλητή ή σταθερά).`;
+    hint.textContent = L(`Το κτίριο έχει ${n} ${n === 1 ? 'αίθουσα' : 'αίθουσες'} (μία για κάθε μεταβλητή ή σταθερά).`, `The building has ${n} ${n === 1 ? 'classroom' : 'classrooms'} (one for each variable or constant).`);
   } catch (e) {
     if (!(e instanceof GErr)) throw e;
-    hint.textContent = `Προσοχή, γραμμή ${e.line}: ${e.message}`;
+    hint.textContent = L(`Προσοχή, γραμμή ${e.line}: `, `Careful, line ${e.line}: `) + e.message;
   }
 }
 const sel = $('#examples');
-EXAMPLES.forEach((ex, i) => { const o = document.createElement('option'); o.value = i; o.textContent = ex.name; sel.appendChild(o); });
+function fillExamples(){
+  const v = sel.value;
+  sel.innerHTML = '';
+  EXAMPLES.forEach((ex, i) => { const o = document.createElement('option'); o.value = i; o.textContent = ex[LANG].name; sel.appendChild(o); });
+  if (v !== '') sel.value = v;
+}
 sel.addEventListener('change', async () => {
   if (RT.running) { stopRun(); await RT.done; }
-  srcEl.value = EXAMPLES[sel.value].src; clearError(); setState('idle'); onEdit(); idleScene();
-  say('Νέο πρόγραμμα! Πάτα «Τρέξε» για να το εκτελέσω ή «Ένα βήμα» για να πηγαίνουμε σιγά-σιγά.');
+  srcEl.value = EXAMPLES[sel.value][LANG].src; clearError(); setState('idle'); onEdit(); idleScene();
+  say(L('Νέο πρόγραμμα! Πάτα «Τρέξε» για να το εκτελέσω ή «Ένα βήμα» για να πηγαίνουμε σιγά-σιγά.', 'New program! Press "Run" and I will run it, or "One step" to go slowly.'));
 });
 
-let saved = null, savedLv = null;
-try { saved = localStorage.getItem('spiti-src'); savedLv = localStorage.getItem('spiti-level'); } catch (_) {}
-srcEl.value = saved && saved.trim() ? saved : EXAMPLES[0].src;
+/* ======================= Αλλαγή γλώσσας ======================= */
+function applyLang(lang, first){
+  const old = LANG;
+  LANG = lang;
+  document.documentElement.lang = lang;
+  document.title = L('Το Σπίτι του Υπολογιστή', 'The Computer House');
+  document.querySelectorAll('[data-el]').forEach(el => { el.textContent = el.getAttribute('data-' + lang); });
+  document.querySelectorAll('.help').forEach(h => { h.hidden = h.lang !== lang; });
+  document.querySelectorAll('.flag').forEach(f => f.setAttribute('aria-pressed', String(f.dataset.lang === lang)));
+  // Αν ο κώδικας είναι ακόμα ένα από τα έτοιμα παραδείγματα, το δείχνουμε στη νέα γλώσσα
+  if (!first) {
+    const i = EXAMPLES.findIndex(ex => ex[old].src === srcEl.value);
+    if (i >= 0) { srcEl.value = EXAMPLES[i][lang].src; sel.value = String(i); updateGutter(); try { localStorage.setItem('spiti-src', srcEl.value); } catch (_) {} }
+  }
+  fillExamples();
+  updateSpeedName();
+  $('#modeHint').textContent = modeHint(RT.level);
+  setState(RT.state);
+  if (RT.state !== 'running') { clearError(); if (RT.state !== 'idle') setState('idle'); idleScene(); }
+  if (!first || !narrEl.textContent) say(L('Γεια! Ζω μέσα στον υπολογιστή. Πάτα «Τρέξε» για να εκτελέσω το πρόγραμμα.', 'Hi! I live inside the computer. Press "Run" and I will run the program.'));
+  try { localStorage.setItem('spiti-lang', lang); } catch (_) {}
+}
+document.querySelectorAll('.flag').forEach(f => f.addEventListener('click', () => { if (!RT.running && f.dataset.lang !== LANG) applyLang(f.dataset.lang); }));
+
+let saved = null, savedLv = null, savedLang = null;
+try { saved = localStorage.getItem('spiti-src'); savedLv = localStorage.getItem('spiti-level'); savedLang = localStorage.getItem('spiti-lang'); } catch (_) {}
+LANG = savedLang === 'en' || savedLang === 'el' ? savedLang : (/^el\b/i.test(navigator.language || '') ? 'el' : (savedLang ? 'el' : 'el'));
+fillExamples();
+srcEl.value = saved && saved.trim() ? saved : EXAMPLES[0][LANG].src;
 const lv0 = savedLv === 'adv' ? 'adv' : 'beg';
 document.getElementById(lv0 === 'adv' ? 'lvlAdv' : 'lvlBeg').checked = true;
+RT.level = lv0;
+updateGutter();
+applyLang(LANG, true);
 applyLevel(lv0);
-updateGutter(); setState('idle'); idleScene();
 })();
 </script>
 
