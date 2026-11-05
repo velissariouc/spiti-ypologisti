@@ -1,0 +1,1557 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Εκπαιδευτικό παιχνίδι: ένα ανθρωπάκι μέσα στον υπολογιστή εκτελεί προγράμματα σε ΓΛΩΣΣΑ.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+<title>Το Σπίτι του Υπολογιστή</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Commissioner:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: η λίστα εντολών (πρόγραμμα) αριστερά, τομή του κτιρίου δεξιά· σε κινητό στοιβάζονται */
+:root{
+  --bg:#e7eeeb; --surface:#ffffff; --surface-2:#f2f6f4; --ink:#1b2a28; --muted:#5a6b68; --line:#cfdad6;
+  --accent:#2f6b4f; --accent-ink:#ffffff; --hl:#ffe27a; --hl-ink:#3a2e00; --err:#b3261e; --err-bg:#fdecea;
+  --f-display:"Comfortaa","Trebuchet MS",sans-serif;
+  --f-body:"Commissioner","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0f1715; --surface:#17211e; --surface-2:#1e2a27; --ink:#e3ede9; --muted:#9bb0aa; --line:#2b3a36; --accent:#6cc69a; --accent-ink:#0b1712; --hl:#5c4b0e; --hl-ink:#ffeaa0; --err:#ff8a7a; --err-bg:#3a1915; color-scheme:dark }
+}
+:root[data-theme="dark"]{ --bg:#0f1715; --surface:#17211e; --surface-2:#1e2a27; --ink:#e3ede9; --muted:#9bb0aa; --line:#2b3a36; --accent:#6cc69a; --accent-ink:#0b1712; --hl:#5c4b0e; --hl-ink:#ffeaa0; --err:#ff8a7a; --err-bg:#3a1915; color-scheme:dark }
+
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.wrap{max-width:1520px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font:700 clamp(24px,3.4vw,38px)/1.1 var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:6px 0 0;max-width:72ch}
+.head-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.toggle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;cursor:pointer;user-select:none}
+.toggle input{width:18px;height:18px;accent-color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2);position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
+.seg input:checked + label{background:var(--accent);color:var(--accent-ink)}
+.seg input:focus-visible + label{outline:3px solid var(--hl);outline-offset:-3px}
+.seg input:disabled + label{cursor:not-allowed;opacity:.6}
+
+.layout{display:grid;grid-template-columns:minmax(0,410px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1020px){.layout{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.panel h2{font:700 16px/1.2 var(--f-display);margin:0}
+.panel h2 small{display:block;font:500 12px var(--f-body);color:var(--muted);margin-top:3px}
+.chip{font:600 12px var(--f-body);padding:3px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.live{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.chip.bad{background:var(--err-bg);color:var(--err);border-color:transparent}
+
+select,button{font:600 14px var(--f-body);border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:8px 12px}
+button{cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+button:disabled{opacity:.42;cursor:not-allowed}
+button:not(:disabled):hover{filter:brightness(1.06)}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row select{flex:1;min-width:0}
+.row.small button{font-size:13px;padding:6px 10px}
+.speed{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.speed input{flex:1;min-width:0;accent-color:var(--accent)}
+.speed output{min-width:7ch;font-weight:600;color:var(--ink)}
+
+.editor{position:relative;display:flex;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);height:420px;overflow:hidden}
+.gutter{margin:0;padding:10px 8px 10px 6px;text-align:right;color:var(--muted);font:13px/1.6 var(--f-mono);user-select:none;overflow:hidden;min-width:3em;border-right:1px solid var(--line)}
+#src{flex:1;min-width:0;border:0;resize:none;background:transparent;color:var(--ink);font:13px/1.6 var(--f-mono);padding:10px;outline:none;white-space:pre;overflow:auto;tab-size:2}
+#listing{position:absolute;inset:0;overflow:auto;padding:10px 0;font:13px/1.6 var(--f-mono);background:var(--surface-2)}
+.ln{display:flex;white-space:pre;padding-right:12px;min-width:max-content}
+.ln .no{width:3em;flex:none;text-align:right;padding-right:10px;color:var(--muted)}
+.ln.cur{background:var(--hl);color:var(--hl-ink);font-weight:600}
+.ln.cur .no{color:var(--hl-ink)}
+.ln.err{background:var(--err-bg);color:var(--err);font-weight:600}
+.editor:not(.locked) #listing{display:none}
+.editor.locked .gutter,.editor.locked #src{visibility:hidden}
+.err-box{background:var(--err-bg);color:var(--err);border-radius:10px;padding:10px 12px;font-weight:600;line-height:1.4}
+.hint{font-size:13px;color:var(--muted);margin:0;min-height:1.2em}
+
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.narr{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:10px 14px;min-height:3.4em;font-size:16px;line-height:1.4}
+.narr .who{font:700 12px/1.9 var(--f-display);color:var(--accent);white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.trip{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:14px;min-height:1.6em}
+.trip b{font-variant-numeric:tabular-nums}
+.dots{display:inline-flex;gap:5px}
+.dots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--accent)}
+.dots i.on{background:var(--accent)}
+.dots i.now{background:var(--hl);border-color:var(--ink)}
+.stats{display:flex;gap:8px 16px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
+.stats b{color:var(--ink);font-variant-numeric:tabular-nums}
+.scaler{position:relative;width:100%;border-radius:10px;overflow:hidden}
+
+/* Γράμμα (είσοδος από πληκτρολόγιο) */
+.letter{border-radius:10px;padding:14px 16px;background:#fffdf4;color:#2a2418;display:flex;flex-direction:column;gap:8px;
+  border:6px solid transparent;background-clip:padding-box;position:relative;box-shadow:0 0 0 1px #d8cfb8}
+.letter::before{content:"";position:absolute;inset:-6px;z-index:-1;border-radius:12px;background:repeating-linear-gradient(135deg,#c8372d 0 14px,#fffdf4 14px 22px,#2f5fa8 22px 36px,#fffdf4 36px 44px)}
+.letter-head{font:700 15px var(--f-display)}
+.letter label{font-size:14px}
+.letter-row{display:flex;gap:8px;flex-wrap:wrap}
+.letter input{flex:1;min-width:0;font:600 18px var(--f-mono);padding:8px 10px;border-radius:8px;border:2px solid #b9ad90;background:#fff;color:#2a2418}
+.letter button{background:#2f5fa8;color:#fff;border-color:transparent}
+.letter-err{color:#b3261e;font-weight:600;font-size:14px;min-height:1em}
+
+/* ---------------- Το κτίριο (εικονογράφηση με σταθερή παλέτα) ---------------- */
+#building{position:absolute;left:0;top:0;width:940px;transform-origin:0 0;overflow:hidden;font-family:var(--f-body);color:#1b2a28}
+#building *{box-sizing:border-box}
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,#78c1ea 0%,#bfe4f7 40%,#e4f4fb 100%)}
+.sun{position:absolute;left:56px;top:34px;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fff0a8 0 50%,#ffd23f 52% 100%);box-shadow:0 0 44px #ffe58a}
+.cloud{position:absolute;height:24px;border-radius:20px;background:#fff;opacity:.92}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.c1{left:772px;top:150px;width:96px}.c1::before{left:14px;top:-17px;width:40px;height:40px}.c1::after{left:46px;top:-10px;width:30px;height:30px}
+.c2{left:40px;top:150px;width:70px;opacity:.75}.c2::before{left:12px;top:-12px;width:28px;height:28px}.c2::after{left:32px;top:-8px;width:22px;height:22px}
+.facade{position:absolute;background-color:#b4533b;
+  background-image:linear-gradient(0deg,#8e3d2a 1px,transparent 1px),linear-gradient(90deg,#8e3d2a 1px,transparent 1px);
+  background-size:100% 14px,28px 28px;border-radius:4px 4px 0 0}
+.roofcap{position:absolute;height:18px;background:#5e3326;border-radius:4px}
+.hatch{position:absolute;width:56px;height:20px;background:#7d6b5a;border-radius:6px 6px 0 0;border:2px solid #4b3a2c}
+.slab{position:absolute;height:12px;background:#8a7a69}
+.stairs{position:absolute;background:#efe3cc;border:3px solid #5e3326;border-bottom:0}
+.stairs svg{position:absolute;left:0;bottom:0}
+.room{position:absolute;background:var(--wall);border:3px solid #5e3326;border-bottom:0}
+.room .door{position:absolute;left:8px;bottom:0;width:30px;height:76px;background:#9b6b43;border:2px solid #5c3d24;border-bottom:0;border-radius:3px 3px 0 0}
+.room .door::after{content:"";position:absolute;right:4px;top:38px;width:5px;height:5px;border-radius:50%;background:#e8c35a}
+.plate{position:absolute;left:46px;right:8px;top:6px;height:28px;background:#fff8e6;border:2px solid #5c3d24;border-radius:7px;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 6px;white-space:nowrap;overflow:hidden}
+.plate b{font:700 17px/1 var(--f-display);color:#1b2a28;overflow:hidden;text-overflow:ellipsis}
+.plate small{font:600 10px/1 var(--f-body);color:#6d5b44;text-transform:uppercase;letter-spacing:.06em}
+.board{position:absolute;left:46px;right:8px;top:40px;height:76px;background:#2e5d4b;border:5px solid #8a5a32;border-radius:3px;display:grid;place-items:center;overflow:hidden}
+.board > *{grid-area:1/1}
+.chalk{font:700 30px/1.05 var(--f-display);color:#f6f8f1;text-shadow:0 0 1px #fff,0 0 7px rgba(255,255,255,.28);padding:0 6px;text-align:center;word-break:break-word;transition:opacity .22s,filter .22s}
+.board.empty::after{content:"άδειος";font:600 13px var(--f-body);color:rgba(255,255,255,.35);font-style:italic}
+.board.read{animation:readGlow 1s ease-out}
+@keyframes readGlow{0%{box-shadow:0 0 0 0 #ffd23f}30%{box-shadow:0 0 0 7px #ffd23f}100%{box-shadow:0 0 0 0 transparent}}
+.board.erase .chalk{opacity:0;filter:blur(4px)}
+.board.write .chalk{animation:chalkIn .5s steps(10)}
+@keyframes chalkIn{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.desks{position:absolute;left:60px;right:14px;bottom:6px;display:flex;justify-content:space-around}
+.desks i{width:38px;height:12px;background:#c99b5c;border-radius:2px;box-shadow:4px 9px 0 -3px #6e4a2b,-4px 9px 0 -3px #6e4a2b}
+.t-int{--wall:#cde2f4}.t-real{--wall:#ddd6f3}.t-str{--wall:#f8dbc2}.t-bool{--wall:#d1eed8}.t-const{--wall:#e3ddcf}.t-none{--wall:#d8d2c8}
+.t-const .board{border-color:#6b6b6b}
+.t-none .plate{opacity:.6}
+.t-none .plate b{font:600 12px var(--f-body);color:#6d5b44}
+
+.office{position:absolute;background:#f6e6c6;border:3px solid #5e3326;border-bottom:0}
+.office .sign{position:absolute;left:12px;top:8px;font:700 14px/1 var(--f-display);background:#2f6b4f;color:#fff;padding:6px 10px;border-radius:6px;letter-spacing:.04em}
+.pin{position:absolute;left:12px;top:40px;width:184px;height:104px;background:#fffdf5;border:2px solid #b08850;padding:6px 8px;box-shadow:2px 3px 0 rgba(0,0,0,.12);transform:rotate(-1deg);overflow:hidden}
+.pin small,.calc small{display:block;font:700 10px/16px var(--f-body);text-transform:uppercase;letter-spacing:.07em;color:#7a6446;margin-bottom:2px}
+#instr{font:600 13px/1.35 var(--f-mono);color:#1b2a28;word-break:break-word}
+.pin.flash{animation:pinFlash .6s}
+@keyframes pinFlash{0%{background:#ffe27a}100%{background:#fffdf5}}
+.calc{position:absolute;left:206px;top:34px;width:196px;height:114px;background:#fff;background-image:repeating-linear-gradient(#fff 0 19px,#cfe3f5 19px 20px);background-position:0 4px;border:1px solid #9aabb8;padding:4px 8px;transform:rotate(1deg);box-shadow:2px 3px 0 rgba(0,0,0,.12);overflow:hidden}
+#calcLines div{font:600 13px/20px var(--f-mono);color:#1b2a28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#calcLines div.res{color:#b3261e;font-weight:700}
+#calcLines div.new{animation:pinFlash .7s}
+.desk{position:absolute;left:96px;bottom:0;width:190px;height:34px;background:#8a5a32;border-radius:4px 4px 0 0}
+.desk::before{content:"";position:absolute;left:20px;top:-14px;width:34px;height:14px;background:#4e5a63;border-radius:3px 3px 0 0}
+.desk::after{content:"";position:absolute;right:26px;top:-10px;width:44px;height:10px;background:#fff;border:1px solid #bbb}
+.lobby{position:absolute;background:#ece4d4;border:3px solid #5e3326;border-bottom:0;border-left:0;
+  background-image:repeating-linear-gradient(90deg,#d8cdb6 0 22px,#ece4d4 22px 44px);background-size:100% 26px;background-repeat:no-repeat;background-position:bottom}
+.lobby .lsign{position:absolute;left:50%;top:14px;transform:translateX(-50%);font:700 13px var(--f-display);letter-spacing:.15em;color:#5e3326}
+.plant{position:absolute;left:26px;bottom:26px;width:28px;height:30px;background:#a0522d;border-radius:0 0 6px 6px}
+.plant::before{content:"";position:absolute;left:-12px;top:-40px;width:52px;height:46px;border-radius:50% 50% 40% 40%;background:#3f8f5a}
+.frontdoor{position:absolute;width:20px;height:104px;background:#3a2a1f}
+.doorleaf{position:absolute;width:26px;height:104px;background:#9b6b43;border:2px solid #5c3d24;transform:skewY(-14deg);transform-origin:left bottom}
+.street{position:absolute;left:0;right:0;background:#8f989b}
+.street::before{content:"";position:absolute;left:0;right:0;top:0;height:14px;background:#cbc5b9}
+.mailbox{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center}
+.mb-box{position:relative;width:58px;height:40px;background:#2f6fb3;border-radius:22px 22px 4px 4px;border:2px solid #1d4a7a}
+.mb-box::before{content:"";position:absolute;left:12px;top:15px;width:30px;height:5px;border-radius:3px;background:#1d4a7a}
+.mb-flag{position:absolute;right:-8px;top:8px;width:6px;height:24px;background:#c8372d;transform-origin:50% 100%;transform:rotate(90deg);transition:transform .4s}
+.mb-flag::before{content:"";position:absolute;left:0;top:0;width:14px;height:9px;background:#c8372d}
+.mailbox.waiting .mb-flag{transform:rotate(0deg)}
+.mailbox.waiting .mb-box{animation:mbPulse 1.1s infinite}
+@keyframes mbPulse{50%{box-shadow:0 0 0 7px rgba(255,210,63,.75)}}
+.mb-post{width:9px;height:58px;background:#6b5a4a}
+.env-fly{position:absolute;width:34px;height:22px;background:#fffdf4;border:2px solid #c8372d;border-radius:3px;z-index:25;transition:left .6s ease-in,top .6s ease-in,transform .6s}
+.env-fly::before{content:"";position:absolute;left:2px;right:2px;top:1px;height:10px;border-bottom:2px solid #c8372d;clip-path:polygon(0 0,100% 0,50% 100%)}
+
+.score{position:absolute;width:540px}
+.score-top{width:170px;margin:0 auto;text-align:center;font:700 13px/1 var(--f-display);letter-spacing:.24em;color:#ffd23f;background:#1d1f22;border-radius:8px 8px 0 0;padding:6px 0}
+.score-screen{height:156px;background:#121212;border:8px solid #2b2e33;border-radius:8px;box-shadow:0 6px 0 #1a1c1f;
+  background-image:radial-gradient(circle,#252525 1.2px,transparent 1.6px);background-size:6px 6px;padding:8px 14px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+#scoreLines > div{font:700 19px/1.35 var(--f-mono);color:#ffb42e;text-shadow:0 0 6px rgba(255,170,40,.7);white-space:pre-wrap;word-break:break-word}
+.score .pole{position:absolute;width:12px;background:#4a4f57}
+
+.routes{position:absolute;left:0;top:0;z-index:18;pointer-events:none}
+.routes path{fill:none;stroke:#e4572e;stroke-width:4;stroke-dasharray:9 7;stroke-linecap:round;animation:dash .8s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-16}}
+.routes circle{fill:#fff;stroke:#e4572e;stroke-width:4}
+.routes text{font:700 13px var(--f-body);fill:#fff;paint-order:stroke;stroke:#e4572e;stroke-width:5px;stroke-linejoin:round}
+
+#person{position:absolute;width:40px;height:64px;transform:translate(-50%,-100%);z-index:20;pointer-events:none}
+#person svg{display:block;overflow:visible}
+#person.left svg{transform:scaleX(-1)}
+#person .leg{transform-box:fill-box;transform-origin:50% 0}
+#person.walking .leg.l{animation:legA .36s infinite alternate ease-in-out}
+#person.walking .leg.r{animation:legA .36s infinite alternate-reverse ease-in-out}
+#person.walking .pbody{animation:bob .18s infinite alternate}
+@keyframes legA{from{transform:rotate(24deg)}to{transform:rotate(-24deg)}}
+@keyframes bob{to{transform:translateY(-2px)}}
+.bubble{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);background:#fff;border:2px solid #1b2a28;border-radius:12px;padding:5px 8px;display:flex;flex-direction:column;gap:3px;align-items:center;box-shadow:0 3px 0 rgba(0,0,0,.15);white-space:nowrap}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-9px;width:14px;height:14px;background:#fff;border-right:2px solid #1b2a28;border-bottom:2px solid #1b2a28;transform:translateX(-50%) rotate(45deg)}
+.bubble span{font:700 13px/1.25 var(--f-mono);background:#fff3c4;padding:1px 7px;border-radius:6px;color:#1b2a28;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+
+.tag{position:absolute;z-index:15;background:#ffffff;border:2px dashed #2f6b4f;color:#1d4a35;border-radius:9px;padding:5px 9px;font:600 11.5px/1.3 var(--f-body);box-shadow:0 2px 0 rgba(0,0,0,.1)}
+.tag b{display:block;font:700 13px/1.25 var(--f-display);letter-spacing:.02em}
+.memband{position:absolute;z-index:15;left:5px;width:30px;background:#fff;border:2px dashed #2f6b4f;border-radius:9px;color:#1d4a35;display:flex;align-items:center;justify-content:center}
+.memband span{writing-mode:vertical-rl;transform:rotate(180deg);font:700 13px var(--f-display);letter-spacing:.08em;white-space:nowrap}
+#building.nolegend .tag,#building.nolegend .memband{display:none}
+
+/* Βοήθεια */
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+.help h2{font:700 17px var(--f-display);margin:0 0 4px}
+.map{display:grid;grid-template-columns:minmax(0,11em) minmax(0,1fr);gap:8px 14px;margin:0}
+.map dt{font-weight:700}
+.map dd{margin:0;color:var(--muted)}
+.map dd b{color:var(--ink);font-weight:600}
+.cmds{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.cmds li{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:12px;align-items:baseline}
+.cmds code{font:600 12.5px var(--f-mono);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 6px;white-space:pre-wrap;word-break:break-word}
+.cmds span{color:var(--muted);font-size:14px}
+@media (max-width:560px){.cmds li,.map{grid-template-columns:minmax(0,1fr)}.cmds li{gap:2px}.map dd{margin-bottom:6px}}
+@media (prefers-reduced-motion:reduce){#person.walking .leg,#person.walking .pbody,.mailbox.waiting .mb-box,.routes path{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Το Σπίτι του Υπολογιστή</h1>
+      <p class="sub">Μέσα στον υπολογιστή ζει ένα ανθρωπάκι. Διαβάζει τις εντολές σου στη ΓΛΩΣΣΑ μία-μία, τρέχει στις αίθουσες (μεταβλητές), κάνει πράξεις στο γραφείο του, περιμένει γράμματα στην εξώπορτα και γράφει τα αποτελέσματα στον μεγάλο πίνακα της ταράτσας.</p>
+    </div>
+    <div class="head-tools">
+      <div class="seg" role="radiogroup" aria-label="Επίπεδο">
+        <input type="radio" name="lvl" id="lvlBeg" value="beg" checked><label for="lvlBeg">Αρχάριος</label>
+        <input type="radio" name="lvl" id="lvlAdv" value="adv"><label for="lvlAdv">Προχωρημένος</label>
+      </div>
+      <label class="toggle" for="legend"><input type="checkbox" id="legend" checked> Δείξε τι είναι στ' αλήθεια</label>
+    </div>
+  </header>
+
+  <div class="layout">
+    <section class="panel" aria-label="Πρόγραμμα">
+      <div class="panel-head">
+        <h2>Λίστα εντολών<small>το πρόγραμμα που ακολουθεί το ανθρωπάκι</small></h2>
+        <span class="chip" id="statusChip">Επεξεργασία</span>
+      </div>
+      <div class="row">
+        <label for="examples" class="hint" style="min-height:0">Παράδειγμα:</label>
+        <select id="examples"></select>
+      </div>
+      <div class="editor" id="editor">
+        <pre class="gutter" id="gutter" aria-hidden="true">1</pre>
+        <textarea id="src" spellcheck="false" wrap="off" aria-label="Κώδικας σε ΓΛΩΣΣΑ"></textarea>
+        <div id="listing" aria-label="Εκτέλεση προγράμματος"></div>
+      </div>
+      <p class="hint" id="hint"></p>
+      <div class="err-box" id="errBox" hidden></div>
+      <div class="row">
+        <button class="primary" id="btnRun" type="button">▶ Τρέξε</button>
+        <button id="btnStep" type="button">Ένα βήμα</button>
+        <button id="btnPause" type="button" disabled>Παύση</button>
+        <button id="btnStop" type="button" disabled>■ Σταμάτα</button>
+      </div>
+      <div class="row small">
+        <button id="btnNext" type="button" disabled>Ως την επόμενη εντολή</button>
+        <button id="btnLoop" type="button" disabled>Ως το τέλος της επανάληψης</button>
+      </div>
+      <div class="speed">
+        <label for="speed">Ταχύτητα</label>
+        <input type="range" id="speed" min="1" max="5" step="1" value="3">
+        <output id="speedOut" for="speed">κανονικά</output>
+      </div>
+      <p class="hint" id="modeHint"></p>
+    </section>
+
+    <section class="stage" aria-label="Το κτίριο">
+      <div class="narr" aria-live="polite"><span class="who">Ανθρωπάκι</span><span id="narr">Γεια! Ζω μέσα στον υπολογιστή. Πάτα «Τρέξε» για να εκτελέσω το πρόγραμμα.</span></div>
+      <div class="trip" id="trip"></div>
+      <div class="scaler" id="scaler"><div id="building"></div></div>
+      <form class="letter" id="letter" hidden>
+        <div class="letter-head">Γράμμα για το ανθρωπάκι (πληκτρολόγιο)</div>
+        <label for="letterInput" id="letterLabel">Γράψε μια τιμή</label>
+        <div class="letter-row">
+          <input id="letterInput" autocomplete="off" enterkeyhint="send">
+          <button type="submit">Ρίξ' το στο γραμματοκιβώτιο</button>
+        </div>
+        <div class="letter-err" id="letterErr"></div>
+      </form>
+      <div class="stats"><span>Εντολές που εκτελέστηκαν: <b id="steps">0</b></span><span id="tripsStat">Δρομολόγια: <b id="trips">0</b></span><span>Τρέχουσα γραμμή: <b id="curLine">–</b></span></div>
+    </section>
+  </div>
+
+  <div class="help">
+    <section class="panel">
+      <h2>Τι είναι τι</h2>
+      <dl class="map">
+        <dt>Αίθουσα με πίνακα</dt><dd><b>Μεταβλητή</b> στη μνήμη RAM. Το ταμπελάκι είναι το όνομά της, ο πίνακας η τιμή της. Κάθε αίθουσα δέχεται ένα είδος τιμής (ακέραια, πραγματική, χαρακτήρες, λογική). Όταν γράφεται νέα τιμή, η παλιά σβήνεται.</dd>
+        <dt>Κλειδωμένη αίθουσα</dt><dd><b>Σταθερά</b>: παίρνει τιμή μία φορά και δεν αλλάζει ποτέ.</dd>
+        <dt>Γραφείο</dt><dd><b>ΚΜΕ (CPU)</b>: εδώ γίνονται οι πράξεις και οι συγκρίσεις, και εδώ διαβάζεται η επόμενη εντολή.</dd>
+        <dt>Πρόχειρο</dt><dd>Οι <b>καταχωρητές</b> της ΚΜΕ: λίγες θέσεις όπου κρατιούνται οι τιμές για την πράξη που γίνεται τώρα.</dd>
+        <dt>Ανθρωπάκι</dt><dd>Ο <b>επεξεργαστής</b> που εκτελεί τις εντολές με τη σειρά, μία κάθε φορά.</dd>
+        <dt>Δρομολόγιο</dt><dd>Κάθε <b>πρόσβαση</b> στη μνήμη ή σε συσκευή: φεύγει από το γραφείο, κάνει μία δουλειά και γυρίζει. Τα δρομολόγια κοστίζουν χρόνο.</dd>
+        <dt>Γραμματοκιβώτιο</dt><dd><b>Πληκτρολόγιο</b> (είσοδος): με τη ΔΙΑΒΑΣΕ το ανθρωπάκι περιμένει γράμμα με έναν αριθμό ή μια φράση.</dd>
+        <dt>Πίνακας ταράτσας</dt><dd><b>Οθόνη</b> (έξοδος): με τη ΓΡΑΨΕ γράφει τα αποτελέσματα εκεί, όπως στον πίνακα του γηπέδου.</dd>
+      </dl>
+    </section>
+    <section class="panel">
+      <h2>Οι εντολές της ΓΛΩΣΣΑΣ</h2>
+      <ul class="cmds">
+        <li><code>ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: α, β</code><span>Χτίζει αίθουσες. Τύποι: ΑΚΕΡΑΙΕΣ, ΠΡΑΓΜΑΤΙΚΕΣ, ΧΑΡΑΚΤΗΡΕΣ, ΛΟΓΙΚΕΣ.</span></li>
+        <li><code>ΣΤΑΘΕΡΕΣ
+  π = 3.14</code><span>Κλειδωμένη αίθουσα με σταθερή τιμή.</span></li>
+        <li><code>α &lt;- β * 2</code><span>Εκχώρηση: φέρνει τιμές από αίθουσες, κάνει την πράξη στο γραφείο, γράφει το αποτέλεσμα στην αίθουσα α.</span></li>
+        <li><code>ΔΙΑΒΑΣΕ α</code><span>Πάει στο γραμματοκιβώτιο και περιμένει γράμμα.</span></li>
+        <li><code>ΓΡΑΨΕ 'Γεια', α</code><span>Ανεβαίνει στην ταράτσα και γράφει στην οθόνη.</span></li>
+        <li><code>ΑΝ … ΤΟΤΕ
+ΑΛΛΙΩΣ_ΑΝ … ΤΟΤΕ
+ΑΛΛΙΩΣ
+ΤΕΛΟΣ_ΑΝ</code><span>Απόφαση: στο γραφείο ελέγχει τη συνθήκη και διαλέγει ποιες εντολές θα κάνει.</span></li>
+        <li><code>ΟΣΟ … ΕΠΑΝΑΛΑΒΕ
+ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ</code><span>Επανάληψη όσο ισχύει η συνθήκη (ελέγχει πρώτα).</span></li>
+        <li><code>ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ 10 ΜΕ_ΒΗΜΑ 1
+ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ</code><span>Επανάληψη με μετρητή.</span></li>
+        <li><code>ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ
+ΜΕΧΡΙΣ_ΟΤΟΥ …</code><span>Επανάληψη που ελέγχει στο τέλος (γίνεται τουλάχιστον μία φορά).</span></li>
+        <li><code>ΕΠΙΛΕΞΕ μ
+  ΠΕΡΙΠΤΩΣΗ 1..5
+  ΠΕΡΙΠΤΩΣΗ ΑΛΛΙΩΣ
+ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ</code><span>Πολλαπλή επιλογή.</span></li>
+        <li><code>+ - * / ^ DIV MOD
+= &lt;&gt; &lt; &gt; &lt;= &gt;=
+ΚΑΙ  Η  ΟΧΙ</code><span>Πράξεις και συγκρίσεις. Συναρτήσεις: Α_Μ, Α_Τ, Τ_Ρ, ΗΜ, ΣΥΝ, ΕΦ, ΛΟΓ, Ε. Σχόλια με <code>!</code></span></li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+
+/* ======================= Παραδείγματα ======================= */
+const EXAMPLES = [
+{name:'Γνωριμία (ΔΙΑΒΑΣΕ / ΓΡΑΨΕ)', src:
+`ΠΡΟΓΡΑΜΜΑ Γνωριμία
+ΜΕΤΑΒΛΗΤΕΣ
+  ΧΑΡΑΚΤΗΡΕΣ: όνομα
+  ΑΚΕΡΑΙΕΣ: ηλικία, σε_δέκα
+ΑΡΧΗ
+  ΓΡΑΨΕ 'Πώς σε λένε;'
+  ΔΙΑΒΑΣΕ όνομα
+  ΓΡΑΨΕ 'Πόσων χρονών είσαι;'
+  ΔΙΑΒΑΣΕ ηλικία
+  σε_δέκα <- ηλικία + 10
+  ΓΡΑΨΕ 'Γεια σου', όνομα
+  ΓΡΑΨΕ 'Σε 10 χρόνια θα είσαι', σε_δέκα
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Αντιμετάθεση (εκχώρηση)', src:
+`ΠΡΟΓΡΑΜΜΑ Αντιμετάθεση
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: α, β, προσωρινή
+ΑΡΧΗ
+  α <- 5
+  β <- 8
+  ! Για να ανταλλάξουμε τις τιμές
+  ! χρειαζόμαστε μια τρίτη αίθουσα
+  προσωρινή <- α
+  α <- β
+  β <- προσωρινή
+  ΓΡΑΨΕ 'α =', α, ' β =', β
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Μεγαλύτερος αριθμός (ΑΝ)', src:
+`ΠΡΟΓΡΑΜΜΑ Μεγαλύτερος
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: α, β
+ΑΡΧΗ
+  ΓΡΑΨΕ 'Δώσε δύο αριθμούς'
+  ΔΙΑΒΑΣΕ α, β
+  ΑΝ α > β ΤΟΤΕ
+    ΓΡΑΨΕ 'Μεγαλύτερος είναι ο', α
+  ΑΛΛΙΩΣ_ΑΝ α < β ΤΟΤΕ
+    ΓΡΑΨΕ 'Μεγαλύτερος είναι ο', β
+  ΑΛΛΙΩΣ
+    ΓΡΑΨΕ 'Είναι ίσοι!'
+  ΤΕΛΟΣ_ΑΝ
+  ΑΝ α MOD 2 = 0 ΤΟΤΕ
+    ΓΡΑΨΕ 'Ο', α, 'είναι ζυγός'
+  ΤΕΛΟΣ_ΑΝ
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Άθροισμα 1 έως ν (ΓΙΑ)', src:
+`ΠΡΟΓΡΑΜΜΑ Άθροισμα
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: ν, ι, Σ
+ΑΡΧΗ
+  ΓΡΑΨΕ 'Μέχρι ποιον αριθμό να προσθέσω;'
+  ΔΙΑΒΑΣΕ ν
+  Σ <- 0
+  ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ ν
+    Σ <- Σ + ι
+  ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ
+  ΓΡΑΨΕ 'Άθροισμα:', Σ
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Μάντεψε τον αριθμό (ΟΣΟ, ΣΤΑΘΕΡΕΣ)', src:
+`ΠΡΟΓΡΑΜΜΑ Μάντεψε
+ΣΤΑΘΕΡΕΣ
+  μυστικός = 7
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: μαντεψιά, προσπάθειες
+ΑΡΧΗ
+  προσπάθειες <- 1
+  ΓΡΑΨΕ 'Μάντεψε έναν αριθμό από 1 έως 10'
+  ΔΙΑΒΑΣΕ μαντεψιά
+  ΟΣΟ μαντεψιά <> μυστικός ΕΠΑΝΑΛΑΒΕ
+    ΑΝ μαντεψιά < μυστικός ΤΟΤΕ
+      ΓΡΑΨΕ 'Πιο πάνω!'
+    ΑΛΛΙΩΣ
+      ΓΡΑΨΕ 'Πιο κάτω!'
+    ΤΕΛΟΣ_ΑΝ
+    προσπάθειες <- προσπάθειες + 1
+    ΔΙΑΒΑΣΕ μαντεψιά
+  ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ
+  ΓΡΑΨΕ 'Μπράβο! Το βρήκες σε', προσπάθειες, 'προσπάθειες'
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Μέσος όρος βαθμών (ΜΕΧΡΙΣ_ΟΤΟΥ)', src:
+`ΠΡΟΓΡΑΜΜΑ Μέσος_Όρος
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: πλήθος
+  ΠΡΑΓΜΑΤΙΚΕΣ: βαθμός, άθροισμα, μο
+ΑΡΧΗ
+  πλήθος <- 0
+  άθροισμα <- 0
+  ΓΡΑΨΕ 'Δώσε βαθμούς (0 για τέλος)'
+  ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ
+    ΔΙΑΒΑΣΕ βαθμός
+    ΑΝ βαθμός > 0 ΤΟΤΕ
+      άθροισμα <- άθροισμα + βαθμός
+      πλήθος <- πλήθος + 1
+    ΤΕΛΟΣ_ΑΝ
+  ΜΕΧΡΙΣ_ΟΤΟΥ βαθμός = 0
+  ΑΝ πλήθος > 0 ΤΟΤΕ
+    μο <- άθροισμα / πλήθος
+    ΓΡΑΨΕ 'Μέσος όρος:', μο
+  ΤΕΛΟΣ_ΑΝ
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Μέρα της εβδομάδας (ΕΠΙΛΕΞΕ)', src:
+`ΠΡΟΓΡΑΜΜΑ Μέρα
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: μ
+ΑΡΧΗ
+  ΓΡΑΨΕ 'Δώσε αριθμό ημέρας (1-7)'
+  ΔΙΑΒΑΣΕ μ
+  ΕΠΙΛΕΞΕ μ
+    ΠΕΡΙΠΤΩΣΗ 1..5
+      ΓΡΑΨΕ 'Καθημερινή: σχολείο!'
+    ΠΕΡΙΠΤΩΣΗ 6, 7
+      ΓΡΑΨΕ 'Σαββατοκύριακο!'
+    ΠΕΡΙΠΤΩΣΗ ΑΛΛΙΩΣ
+      ΓΡΑΨΕ 'Δεν υπάρχει τέτοια μέρα'
+  ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`},
+{name:'Κενό πρόγραμμα', src:
+`ΠΡΟΓΡΑΜΜΑ Δικό_μου
+ΜΕΤΑΒΛΗΤΕΣ
+  ΑΚΕΡΑΙΕΣ: α
+ΑΡΧΗ
+
+ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ`}
+];
+
+/* ======================= Λεκτικός αναλυτής ======================= */
+class GErr extends Error { constructor(msg, line){ super(msg); this.line = line; } }
+const STOP = { isStop:true };
+
+const KW = new Set(['ΠΡΟΓΡΑΜΜΑ','ΣΤΑΘΕΡΕΣ','ΜΕΤΑΒΛΗΤΕΣ','ΑΚΕΡΑΙΕΣ','ΠΡΑΓΜΑΤΙΚΕΣ','ΧΑΡΑΚΤΗΡΕΣ','ΛΟΓΙΚΕΣ','ΑΡΧΗ','ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ',
+ 'ΓΡΑΨΕ','ΔΙΑΒΑΣΕ','ΑΝ','ΤΟΤΕ','ΑΛΛΙΩΣ','ΑΛΛΙΩΣ_ΑΝ','ΤΕΛΟΣ_ΑΝ','ΟΣΟ','ΕΠΑΝΑΛΑΒΕ','ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ','ΓΙΑ','ΑΠΟ','ΜΕΧΡΙ','ΜΕ_ΒΗΜΑ',
+ 'ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ','ΜΕΧΡΙΣ_ΟΤΟΥ','ΕΠΙΛΕΞΕ','ΠΕΡΙΠΤΩΣΗ','ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ','ΚΑΙ','Η','ΟΧΙ','DIV','MOD','ΑΛΗΘΗΣ','ΨΕΥΔΗΣ']);
+const rad = d => d * Math.PI / 180;
+const FUNCS = {
+  'Α_Μ': x => Math.trunc(x),
+  'Α_Τ': x => Math.abs(x),
+  'Τ_Ρ': x => { if (x < 0) throw new GErr('Η Τ_Ρ (τετραγωνική ρίζα) δεν δέχεται αρνητικό αριθμό.', RT.line); return Math.sqrt(x); },
+  'ΗΜ': x => Math.sin(rad(x)), 'ΣΥΝ': x => Math.cos(rad(x)), 'ΕΦ': x => Math.tan(rad(x)),
+  'ΛΟΓ': x => { if (x <= 0) throw new GErr('Ο ΛΟΓ θέλει θετικό αριθμό.', RT.line); return Math.log(x); },
+  'Ε': x => Math.exp(x)
+};
+const QUOTES = {"'":"'", '"':'"', '‘':'’', '’':'’', '“':'”', '”':'”', '«':'»'};
+const OPS2 = ['<-','<=','>=','<>','..'];
+const OPMAP = {'←':'<-','≤':'<=','≥':'>=','≠':'<>','×':'*','÷':'/'};
+const CMP = ['=','<>','<','>','<=','>='];
+
+function tokenize(src){
+  return src.split(/\r?\n/).map((text, idx) => {
+    const no = idx + 1, toks = []; let i = 0;
+    while (i < text.length){
+      const c = text[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if (c === '!') break;
+      if (QUOTES[c]) {
+        const close = QUOTES[c]; let j = text.indexOf(close, i + 1);
+        if (j < 0 && close !== c) j = text.indexOf(c, i + 1);
+        if (j < 0) throw new GErr('Άνοιξες εισαγωγικά αλλά δεν τα έκλεισες.', no);
+        toks.push({k:'str', v:text.slice(i + 1, j)}); i = j + 1; continue;
+      }
+      if (/[0-9]/.test(c)) {
+        let j = i; while (j < text.length && /[0-9]/.test(text[j])) j++;
+        if (text[j] === '.' && /[0-9]/.test(text[j + 1] || '')) { j++; while (j < text.length && /[0-9]/.test(text[j])) j++; }
+        if (j < text.length && /[\p{L}_]/u.test(text[j])) throw new GErr(`Ένα όνομα δεν μπορεί να ξεκινά με αριθμό («${text.slice(i).split(/[\s,]/)[0]}»).`, no);
+        toks.push({k:'num', v:Number(text.slice(i, j))}); i = j; continue;
+      }
+      if (/[\p{L}_]/u.test(c)) {
+        let j = i + 1; while (j < text.length && /[\p{L}\p{M}\p{N}_]/u.test(text[j])) j++;
+        const v = text.slice(i, j); toks.push({k:'word', v, n:norm(v)}); i = j; continue;
+      }
+      const two = text.substr(i, 2);
+      if (OPS2.includes(two)) { toks.push({k:'op', v:two}); i += 2; continue; }
+      if (OPMAP[c]) { toks.push({k:'op', v:OPMAP[c]}); i++; continue; }
+      if ('+-*/^(),:=<>[]'.includes(c)) { toks.push({k:'op', v:c}); i++; continue; }
+      throw new GErr(`Δεν ξέρω τι είναι το σύμβολο «${c}».`, no);
+    }
+    return {no, toks};
+  });
+}
+const tokText = t => !t ? '' : t.k === 'str' ? `'${t.v}'` : String(t.v);
+
+class TS {
+  constructor(toks, line){ this.t = toks; this.i = 0; this.line = line; }
+  peek(o = 0){ return this.t[this.i + o]; }
+  next(){ return this.t[this.i++]; }
+  end(){ return this.i >= this.t.length; }
+  isKw(k, o = 0){ const t = this.peek(o); return !!t && t.k === 'word' && t.n === k; }
+  isOp(v, o = 0){ const t = this.peek(o); return !!t && t.k === 'op' && t.v === v; }
+  expectKw(k, msg){ if (!this.isKw(k)) throw new GErr(msg || `Εδώ περίμενα τη λέξη ${k}.`, this.line); this.next(); }
+  expectOp(v, msg){ if (!this.isOp(v)) throw new GErr(msg || `Εδώ περίμενα «${v}».`, this.line); this.next(); }
+  expectEnd(){ if (!this.end()) throw new GErr(`Κάτι περισσεύει στο τέλος της γραμμής: «${tokText(this.peek())}».`, this.line); }
+  ident(what){
+    const t = this.next();
+    if (!t || t.k !== 'word') throw new GErr(`Εδώ περίμενα όνομα ${what}.`, this.line);
+    if (KW.has(t.n)) throw new GErr(`Η λέξη ${t.v} είναι δεσμευμένη από τη ΓΛΩΣΣΑ και δεν μπορεί να γίνει όνομα.`, this.line);
+    return t;
+  }
+}
+
+/* ======================= Εκφράσεις ======================= */
+function pExpr(ts){ return pOr(ts); }
+function pOr(ts){ let l = pAnd(ts); while (ts.isKw('Η')) { ts.next(); l = {t:'bin', op:'Η', l, r:pAnd(ts)}; } return l; }
+function pAnd(ts){ let l = pNot(ts); while (ts.isKw('ΚΑΙ')) { ts.next(); l = {t:'bin', op:'ΚΑΙ', l, r:pNot(ts)}; } return l; }
+function pNot(ts){ if (ts.isKw('ΟΧΙ')) { ts.next(); return {t:'un', op:'ΟΧΙ', e:pNot(ts)}; } return pCmp(ts); }
+function pCmp(ts){ let l = pAdd(ts); const t = ts.peek(); if (t && t.k === 'op' && CMP.includes(t.v)) { ts.next(); l = {t:'bin', op:t.v, l, r:pAdd(ts)}; } return l; }
+function pAdd(ts){ let l = pMul(ts); while (ts.isOp('+') || ts.isOp('-')) { const op = ts.next().v; l = {t:'bin', op, l, r:pMul(ts)}; } return l; }
+function pMul(ts){
+  let l = pUn(ts);
+  while (ts.isOp('*') || ts.isOp('/') || ts.isKw('DIV') || ts.isKw('MOD')) { const t = ts.next(); const op = t.k === 'op' ? t.v : t.n; l = {t:'bin', op, l, r:pUn(ts)}; }
+  return l;
+}
+function pUn(ts){ if (ts.isOp('-')) { ts.next(); return {t:'un', op:'-', e:pUn(ts)}; } if (ts.isOp('+')) { ts.next(); return pUn(ts); } return pPow(ts); }
+function pPow(ts){ const b = pPrim(ts); if (ts.isOp('^')) { ts.next(); return {t:'bin', op:'^', l:b, r:pUn(ts)}; } return b; }
+function pPrim(ts){
+  const t = ts.next();
+  if (!t) throw new GErr('Η έκφραση σταματά απότομα: κάτι λείπει στο τέλος της γραμμής.', ts.line);
+  if (t.k === 'num') return {t:'num', v:t.v};
+  if (t.k === 'str') return {t:'str', v:t.v};
+  if (t.k === 'op' && t.v === '(') { const e = pExpr(ts); ts.expectOp(')', 'Λείπει μια παρένθεση «)».'); return {t:'grp', e}; }
+  if (t.k === 'word') {
+    if (t.n === 'ΑΛΗΘΗΣ') return {t:'bool', v:true};
+    if (t.n === 'ΨΕΥΔΗΣ') return {t:'bool', v:false};
+    if (FUNCS[t.n] && ts.isOp('(')) { ts.next(); const a = pExpr(ts); ts.expectOp(')', 'Λείπει μια παρένθεση «)».'); return {t:'call', f:t.n, raw:t.v, a}; }
+    if (KW.has(t.n)) throw new GErr(`Η λέξη ${t.v} δεν ταιριάζει μέσα σε πράξη εδώ.`, ts.line);
+    return {t:'var', n:t.n, raw:t.v};
+  }
+  if (t.k === 'op' && (t.v === '<-')) throw new GErr('Το βέλος <- μπαίνει μόνο μία φορά, αμέσως μετά το όνομα της μεταβλητής.', ts.line);
+  throw new GErr(`Δεν περίμενα «${t.v}» σε αυτό το σημείο.`, ts.line);
+}
+
+/* ======================= Συντακτικός αναλυτής ======================= */
+const TYPES = {'ΑΚΕΡΑΙΕΣ':'ΑΚΕΡΑΙΑ','ΠΡΑΓΜΑΤΙΚΕΣ':'ΠΡΑΓΜΑΤΙΚΗ','ΧΑΡΑΚΤΗΡΕΣ':'ΧΑΡΑΚΤΗΡΑΣ','ΛΟΓΙΚΕΣ':'ΛΟΓΙΚΗ'};
+const STRAY = {
+  'ΤΕΛΟΣ_ΑΝ':'Βρήκα ΤΕΛΟΣ_ΑΝ χωρίς να έχει ανοίξει κάποιο ΑΝ.',
+  'ΑΛΛΙΩΣ':'Βρήκα ΑΛΛΙΩΣ χωρίς ΑΝ (ή μετά από ήδη ένα ΑΛΛΙΩΣ).',
+  'ΑΛΛΙΩΣ_ΑΝ':'Βρήκα ΑΛΛΙΩΣ_ΑΝ χωρίς ΑΝ (ή μετά από ΑΛΛΙΩΣ).',
+  'ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ':'Βρήκα ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ χωρίς να έχει ανοίξει ΟΣΟ ή ΓΙΑ.',
+  'ΜΕΧΡΙΣ_ΟΤΟΥ':'Βρήκα ΜΕΧΡΙΣ_ΟΤΟΥ χωρίς ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ.',
+  'ΠΕΡΙΠΤΩΣΗ':'Η ΠΕΡΙΠΤΩΣΗ μπαίνει μόνο μέσα σε ΕΠΙΛΕΞΕ.',
+  'ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ':'Βρήκα ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ χωρίς ΕΠΙΛΕΞΕ.',
+  'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ':'Το ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ ήρθε ενώ κάποια δομή (ΑΝ, ΟΣΟ, ΓΙΑ…) δεν έχει κλείσει.',
+  'ΑΡΧΗ':'Η ΑΡΧΗ γράφεται μία φορά, πριν από τις εντολές.',
+  'ΜΕΤΑΒΛΗΤΕΣ':'Οι ΜΕΤΑΒΛΗΤΕΣ δηλώνονται πριν από την ΑΡΧΗ.',
+  'ΣΤΑΘΕΡΕΣ':'Οι ΣΤΑΘΕΡΕΣ δηλώνονται πριν από τις ΜΕΤΑΒΛΗΤΕΣ.'
+};
+
+function parseProgram(src){
+  const lines = tokenize(src).filter(l => l.toks.length);
+  if (!lines.length) throw new GErr('Το πρόγραμμα είναι άδειο.', 1);
+  const lastNo = src.split(/\r?\n/).length;
+  let p = 0;
+  const L = () => lines[p];
+  const startsKw = (l, k) => !!l && l.toks[0].k === 'word' && l.toks[0].n === k;
+  const tsOf = l => new TS(l.toks, l.no);
+
+  let ts = tsOf(L());
+  if (!ts.isKw('ΠΡΟΓΡΑΜΜΑ')) throw new GErr('Το πρόγραμμα ξεκινά πάντα με: ΠΡΟΓΡΑΜΜΑ Όνομα', L().no);
+  ts.next(); const name = ts.ident('για το πρόγραμμα'); ts.expectEnd(); p++;
+
+  const decls = [];
+  if (startsKw(L(), 'ΣΤΑΘΕΡΕΣ')) {
+    p++;
+    while (L() && !startsKw(L(), 'ΜΕΤΑΒΛΗΤΕΣ') && !startsKw(L(), 'ΑΡΧΗ')) {
+      ts = tsOf(L()); const id = ts.ident('σταθεράς');
+      ts.expectOp('=', 'Μια σταθερά γράφεται έτσι: όνομα = τιμή');
+      const e = pExpr(ts); ts.expectEnd();
+      decls.push({raw:id.v, n:id.n, isConst:true, expr:e, line:L().no}); p++;
+    }
+  }
+  if (startsKw(L(), 'ΜΕΤΑΒΛΗΤΕΣ')) {
+    ts = tsOf(L()); ts.next(); ts.expectEnd(); p++;
+    while (L() && !startsKw(L(), 'ΑΡΧΗ')) {
+      ts = tsOf(L()); const t = ts.next();
+      if (!t || t.k !== 'word' || !TYPES[t.n]) throw new GErr('Εδώ γράφουμε τύπο: ΑΚΕΡΑΙΕΣ, ΠΡΑΓΜΑΤΙΚΕΣ, ΧΑΡΑΚΤΗΡΕΣ ή ΛΟΓΙΚΕΣ, και μετά «:» και τα ονόματα.', L().no);
+      ts.expectOp(':', 'Μετά τον τύπο βάζουμε άνω-κάτω τελεία «:»');
+      do { const id = ts.ident('μεταβλητής'); decls.push({raw:id.v, n:id.n, type:TYPES[t.n], line:L().no}); } while (ts.isOp(',') && ts.next());
+      ts.expectEnd(); p++;
+    }
+  }
+  if (!startsKw(L(), 'ΑΡΧΗ')) throw new GErr('Λείπει η λέξη ΑΡΧΗ πριν από τις εντολές.', L() ? L().no : lastNo);
+  ts = tsOf(L()); ts.next(); ts.expectEnd(); p++;
+
+  function parseBlock(terms){
+    const stmts = [];
+    for (;;) {
+      const l = L();
+      if (!l) throw new GErr(`Το πρόγραμμα τελείωσε, αλλά λείπει το ${terms.join(' ή ')}.`, lastNo);
+      const f = l.toks[0];
+      if (f.k === 'word' && terms.includes(f.n)) return stmts;
+      stmts.push(parseStmt());
+    }
+  }
+  function closeLine(kw){ const t = tsOf(L()); t.expectKw(kw); t.expectEnd(); const no = L().no; p++; return no; }
+
+  function parseStmt(){
+    const l = L(), line = l.no, ts = tsOf(l), f = ts.peek();
+    if (f.k === 'word') {
+      switch (f.n) {
+        case 'ΓΡΑΨΕ': {
+          ts.next(); const items = [];
+          if (!ts.end()) do { items.push(pExpr(ts)); } while (ts.isOp(',') && ts.next());
+          ts.expectEnd(); p++; return {t:'write', items, line};
+        }
+        case 'ΔΙΑΒΑΣΕ': {
+          ts.next(); const ids = [];
+          do { const id = ts.ident('μεταβλητής μετά τη ΔΙΑΒΑΣΕ'); ids.push({n:id.n, raw:id.v}); } while (ts.isOp(',') && ts.next());
+          ts.expectEnd(); p++; return {t:'read', ids, line};
+        }
+        case 'ΑΝ': {
+          ts.next(); const c = pExpr(ts); ts.expectKw('ΤΟΤΕ', 'Στο ΑΝ, μετά τη συνθήκη γράφουμε ΤΟΤΕ.'); ts.expectEnd(); p++;
+          const branches = [{c, body:parseBlock(['ΑΛΛΙΩΣ_ΑΝ','ΑΛΛΙΩΣ','ΤΕΛΟΣ_ΑΝ']), line}];
+          let els = null, elseLine = null;
+          for (;;) {
+            const l2 = L(), t2 = tsOf(l2), k = t2.next().n;
+            if (k === 'ΑΛΛΙΩΣ_ΑΝ') {
+              const c2 = pExpr(t2); t2.expectKw('ΤΟΤΕ', 'Στο ΑΛΛΙΩΣ_ΑΝ, μετά τη συνθήκη γράφουμε ΤΟΤΕ.'); t2.expectEnd(); p++;
+              branches.push({c:c2, body:parseBlock(['ΑΛΛΙΩΣ_ΑΝ','ΑΛΛΙΩΣ','ΤΕΛΟΣ_ΑΝ']), line:l2.no});
+            } else if (k === 'ΑΛΛΙΩΣ') {
+              if (t2.isKw('ΑΝ')) throw new GErr('Μήπως εννοείς ΑΛΛΙΩΣ_ΑΝ; Γράφεται μαζί, με κάτω παύλα.', l2.no);
+              t2.expectEnd(); p++; elseLine = l2.no; els = parseBlock(['ΤΕΛΟΣ_ΑΝ']);
+            } else { t2.expectEnd(); p++; break; }
+          }
+          return {t:'if', branches, els, elseLine, line};
+        }
+        case 'ΟΣΟ': {
+          ts.next(); const c = pExpr(ts); ts.expectKw('ΕΠΑΝΑΛΑΒΕ', 'Στο ΟΣΟ, μετά τη συνθήκη γράφουμε ΕΠΑΝΑΛΑΒΕ.'); ts.expectEnd(); p++;
+          const body = parseBlock(['ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ']); const endLine = closeLine('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ');
+          return {t:'while', c, body, line, endLine};
+        }
+        case 'ΓΙΑ': {
+          ts.next(); const id = ts.ident('μετρητή μετά το ΓΙΑ');
+          ts.expectKw('ΑΠΟ', 'Το ΓΙΑ γράφεται: ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ 10'); const from = pExpr(ts);
+          ts.expectKw('ΜΕΧΡΙ', 'Το ΓΙΑ γράφεται: ΓΙΑ ι ΑΠΟ 1 ΜΕΧΡΙ 10'); const to = pExpr(ts);
+          let step = null; if (ts.isKw('ΜΕ_ΒΗΜΑ')) { ts.next(); step = pExpr(ts); }
+          ts.expectEnd(); p++;
+          const body = parseBlock(['ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ']); const endLine = closeLine('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ');
+          return {t:'for', n:id.n, raw:id.v, from, to, step, body, line, endLine};
+        }
+        case 'ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ': {
+          ts.next(); ts.expectEnd(); p++;
+          const body = parseBlock(['ΜΕΧΡΙΣ_ΟΤΟΥ']);
+          const l2 = L(), t2 = tsOf(l2); t2.next(); const c = pExpr(t2); t2.expectEnd(); p++;
+          return {t:'repeat', body, c, line, untilLine:l2.no};
+        }
+        case 'ΕΠΙΛΕΞΕ': {
+          ts.next(); const e = pExpr(ts); ts.expectEnd(); p++;
+          const cases = []; let els = null, elseLine = null;
+          for (;;) {
+            const l2 = L(); if (!l2) throw new GErr('Λείπει το ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ.', lastNo);
+            const t2 = tsOf(l2), k = t2.peek().n;
+            if (k === 'ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ') { t2.next(); t2.expectEnd(); p++; break; }
+            if (k !== 'ΠΕΡΙΠΤΩΣΗ') throw new GErr('Μέσα στο ΕΠΙΛΕΞΕ, κάθε ομάδα εντολών ξεκινά με ΠΕΡΙΠΤΩΣΗ.', l2.no);
+            if (els) throw new GErr('Η ΠΕΡΙΠΤΩΣΗ ΑΛΛΙΩΣ πρέπει να είναι η τελευταία.', l2.no);
+            t2.next();
+            if (t2.isKw('ΑΛΛΙΩΣ')) { t2.next(); t2.expectEnd(); p++; elseLine = l2.no; els = parseBlock(['ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ','ΠΕΡΙΠΤΩΣΗ']); continue; }
+            const items = [];
+            do {
+              const tk = t2.peek();
+              if (tk && tk.k === 'op' && CMP.includes(tk.v)) { t2.next(); items.push({kind:'cmp', op:tk.v, a:pAdd(t2)}); }
+              else { const a = pAdd(t2); if (t2.isOp('..')) { t2.next(); items.push({kind:'range', a, b:pAdd(t2)}); } else items.push({kind:'eq', a}); }
+            } while (t2.isOp(',') && t2.next());
+            t2.expectEnd(); p++;
+            cases.push({items, body:parseBlock(['ΠΕΡΙΠΤΩΣΗ','ΤΕΛΟΣ_ΕΠΙΛΟΓΩΝ']), line:l2.no});
+          }
+          return {t:'select', e, cases, els, elseLine, line};
+        }
+        case 'ΤΕΛΟΣ': throw new GErr('Μήπως εννοείς ΤΕΛΟΣ_ΑΝ, ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ ή ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ; Γράφεται μαζί, με κάτω παύλα.', line);
+      }
+      if (STRAY[f.n]) throw new GErr(STRAY[f.n], line);
+      if (KW.has(f.n)) throw new GErr(`Η λέξη ${f.v} δεν μπορεί να ξεκινά εντολή.`, line);
+      ts.next();
+      if (ts.isOp('<-')) { ts.next(); if (ts.end()) throw new GErr(`Μετά το <- γράψε τι θα μπει στην αίθουσα «${f.v}».`, line); const e = pExpr(ts); ts.expectEnd(); p++; return {t:'assign', n:f.n, raw:f.v, e, line}; }
+      if (ts.isOp('=')) throw new GErr(`Για να δώσεις τιμή γράψε βέλος: ${f.v} <- ...  (το = είναι μόνο για σύγκριση).`, line);
+      throw new GErr(`Δεν καταλαβαίνω την εντολή «${f.v}». Μήπως ξέχασες το <- ή έγραψες λάθος μια λέξη;`, line);
+    }
+    throw new GErr('Δεν καταλαβαίνω αυτή τη γραμμή.', line);
+  }
+
+  const body = parseBlock(['ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ']);
+  const endLine = L().no; p++;
+  if (L()) throw new GErr('Υπάρχουν εντολές μετά το ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ.', L().no);
+  return {name:name.v, decls, body, endLine};
+}
+
+/* ======================= Τιμές & πράξεις ======================= */
+const TYPEINFO = {
+  'ΑΚΕΡΑΙΑ':   {cls:'t-int',  label:'ακέραια',    want:'ακέραιο αριθμό (π.χ. 7)'},
+  'ΠΡΑΓΜΑΤΙΚΗ':{cls:'t-real', label:'πραγματική', want:'αριθμό (π.χ. 7 ή 3.5)'},
+  'ΧΑΡΑΚΤΗΡΑΣ':{cls:'t-str',  label:'χαρακτήρες', want:'κείμενο (π.χ. Μαρία)'},
+  'ΛΟΓΙΚΗ':    {cls:'t-bool', label:'λογική',     want:'ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ'}
+};
+const fmtNum = x => Number.isInteger(x) ? String(x) : String(+x.toPrecision(10));
+const fmt = v => typeof v === 'boolean' ? (v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ') : typeof v === 'number' ? fmtNum(v) : String(v);
+const lit = v => typeof v === 'string' ? `'${v}'` : fmt(v);
+const kind = v => typeof v === 'number' ? (Number.isInteger(v) ? 'ακέραιο αριθμό' : 'πραγματικό αριθμό') : typeof v === 'string' ? 'κείμενο' : 'λογική τιμή';
+const typeOfVal = v => typeof v === 'number' ? (Number.isInteger(v) ? 'ΑΚΕΡΑΙΑ' : 'ΠΡΑΓΜΑΤΙΚΗ') : typeof v === 'string' ? 'ΧΑΡΑΚΤΗΡΑΣ' : 'ΛΟΓΙΚΗ';
+function fits(type, v){
+  switch (type) {
+    case 'ΑΚΕΡΑΙΑ': return typeof v === 'number' && Number.isInteger(v);
+    case 'ΠΡΑΓΜΑΤΙΚΗ': return typeof v === 'number';
+    case 'ΧΑΡΑΚΤΗΡΑΣ': return typeof v === 'string';
+    case 'ΛΟΓΙΚΗ': return typeof v === 'boolean';
+  }
+  return false;
+}
+function clean(x){
+  if (!isFinite(x)) throw new GErr('Ο αριθμός βγήκε τόσο μεγάλος που δεν χωράει πουθενά!', RT.line);
+  const r = Math.round(x); return Math.abs(x - r) < 1e-9 ? r : +x.toPrecision(15);
+}
+function needNum(v, op){ if (typeof v !== 'number') throw new GErr(`Η πράξη «${op}» θέλει αριθμούς, αλλά βρήκε ${kind(v)} (${lit(v)}).`, RT.line); }
+function needBool(v, op){ if (typeof v !== 'boolean') throw new GErr(`Το «${op}» θέλει ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ, αλλά βρήκε ${lit(v)}.`, RT.line); }
+const zeroDiv = () => new GErr('Διαίρεση με το μηδέν! Αυτό δεν μπορεί να το κάνει κανείς, ούτε το ανθρωπάκι.', RT.line);
+function compare(a, op, b){
+  if (typeof a !== typeof b) throw new GErr(`Δεν γίνεται σύγκριση ανάμεσα σε ${kind(a)} (${lit(a)}) και ${kind(b)} (${lit(b)}).`, RT.line);
+  if (typeof a === 'boolean' && op !== '=' && op !== '<>') throw new GErr('Οι λογικές τιμές συγκρίνονται μόνο με = και <>.', RT.line);
+  const d = typeof a === 'string' ? a.localeCompare(b, 'el') : (a < b ? -1 : a > b ? 1 : 0);
+  return {'=':d === 0, '<>':d !== 0, '<':d < 0, '>':d > 0, '<=':d <= 0, '>=':d >= 0}[op];
+}
+function ev(e){
+  switch (e.t) {
+    case 'num': case 'str': case 'bool': return e.v;
+    case 'grp': return ev(e.e);
+    case 'var': {
+      const c = RT.cells.get(e.n);
+      if (!c) throw new GErr(`Δεν υπάρχει αίθουσα με όνομα «${e.raw}».`, RT.line);
+      if (c.value === undefined) throw new GErr(`Ο πίνακας της αίθουσας «${c.raw}» είναι άδειος! Δώσε της πρώτα τιμή (με <- ή ΔΙΑΒΑΣΕ).`, RT.line);
+      return c.value;
+    }
+    case 'un': { const v = ev(e.e); if (e.op === '-') { needNum(v, '-'); return -v; } needBool(v, 'ΟΧΙ'); return !v; }
+    case 'call': { const v = ev(e.a); needNum(v, e.raw); return clean(FUNCS[e.f](v)); }
+    case 'bin': {
+      const a = ev(e.l), b = ev(e.r), op = e.op;
+      if (op === 'ΚΑΙ' || op === 'Η') { needBool(a, op); needBool(b, op); return op === 'ΚΑΙ' ? (a && b) : (a || b); }
+      if (CMP.includes(op)) return compare(a, op, b);
+      needNum(a, op); needNum(b, op);
+      switch (op) {
+        case '+': return clean(a + b);
+        case '-': return clean(a - b);
+        case '*': return clean(a * b);
+        case '/': if (b === 0) throw zeroDiv(); return clean(a / b);
+        case 'DIV': case 'MOD':
+          if (!Number.isInteger(a) || !Number.isInteger(b)) throw new GErr(`Το ${op} δουλεύει μόνο με ακέραιους αριθμούς.`, RT.line);
+          if (b === 0) throw zeroDiv();
+          return op === 'DIV' ? Math.trunc(a / b) : a % b;
+        case '^': return clean(Math.pow(a, b));
+      }
+    }
+  }
+  throw new GErr('Άγνωστη πράξη.', RT.line);
+}
+const OPSHOW = {'<=':'≤', '>=':'≥', '<>':'≠'};
+function show(e, sub){
+  switch (e.t) {
+    case 'num': return fmtNum(e.v);
+    case 'str': return `'${e.v}'`;
+    case 'bool': return e.v ? 'ΑΛΗΘΗΣ' : 'ΨΕΥΔΗΣ';
+    case 'var': { if (sub) { const c = RT.cells.get(e.n); if (c && c.value !== undefined) return lit(c.value); } return e.raw; }
+    case 'grp': return `(${show(e.e, sub)})`;
+    case 'un': return e.op === '-' ? `-${show(e.e, sub)}` : `ΟΧΙ ${show(e.e, sub)}`;
+    case 'call': return `${e.raw}(${show(e.a, sub)})`;
+    case 'bin': return `${show(e.l, sub)} ${sub ? (OPSHOW[e.op] || e.op) : e.op} ${show(e.r, sub)}`;
+  }
+  return '';
+}
+function varsOf(e, out = [], seen = new Set()){
+  if (!e) return out;
+  switch (e.t) {
+    case 'var': if (!seen.has(e.n)) { seen.add(e.n); out.push(e); } break;
+    case 'grp': case 'un': varsOf(e.e, out, seen); break;
+    case 'call': varsOf(e.a, out, seen); break;
+    case 'bin': varsOf(e.l, out, seen); varsOf(e.r, out, seen); break;
+  }
+  return out;
+}
+const isSimple = e => e.t === 'num' || e.t === 'str' || e.t === 'bool' || e.t === 'var';
+/* Πόσα βήματα (δρομολόγια + πράξεις στο γραφείο) χρειάζεται μια έκφραση στον αρχάριο */
+const E = e => e ? varsOf(e).length + (isSimple(e) ? 0 : 1) : 0;
+function firstSteps(s){
+  switch (s.t) {
+    case 'assign': return E(s.e) + 1;
+    case 'write': return s.items.reduce((n, e) => n + E(e), 0) + 1;
+    case 'read': return 2 * s.ids.length;
+    case 'if': return E(s.branches[0].c) + 1;
+    case 'while': return E(s.c) + 1;
+    case 'for': return E(s.from) + E(s.to) + E(s.step) + 1 + 3;
+    case 'repeat': return 0;
+    case 'select': return E(s.e);
+  }
+  return 0;
+}
+
+/* ======================= Έλεγχος πριν την εκτέλεση ======================= */
+function compile(src){
+  const prog = parseProgram(src);
+  const cells = new Map();
+  if (prog.decls.length > 15) throw new GErr('Το κτίριο χωράει μέχρι 15 αίθουσες (μεταβλητές και σταθερές μαζί).', prog.decls[15].line);
+  const saved = RT.cells; RT.cells = cells;
+  try {
+    for (const d of prog.decls) {
+      if (cells.has(d.n)) throw new GErr(`Το όνομα «${d.raw}» δηλώθηκε δύο φορές. Κάθε αίθουσα έχει δικό της όνομα.`, d.line);
+      const c = {raw:d.raw, n:d.n, type:d.type, isConst:!!d.isConst, value:undefined, line:d.line};
+      if (d.isConst) {
+        RT.line = d.line;
+        for (const v of varsOf(d.expr)) {
+          const o = cells.get(v.n);
+          if (!o || !o.isConst) throw new GErr(`Η σταθερά «${d.raw}» μπορεί να χρησιμοποιεί μόνο αριθμούς, κείμενο ή σταθερές που δηλώθηκαν πιο πάνω.`, d.line);
+        }
+        c.value = ev(d.expr); c.type = typeOfVal(c.value);
+      }
+      cells.set(d.n, c);
+    }
+  } finally { RT.cells = saved; }
+
+  const useE = (e, line) => { for (const v of varsOf(e)) if (!cells.has(v.n)) throw new GErr(`Δεν υπάρχει αίθουσα «${v.raw}». Δήλωσέ τη στις ΜΕΤΑΒΛΗΤΕΣ.`, line); };
+  const target = (n, raw, line, forRead) => {
+    const c = cells.get(n);
+    if (!c) throw new GErr(`Δεν υπάρχει αίθουσα «${raw}». Δήλωσέ τη στις ΜΕΤΑΒΛΗΤΕΣ.`, line);
+    if (c.isConst) throw new GErr(`Η «${raw}» είναι σταθερά: η αίθουσά της είναι κλειδωμένη και η τιμή της δεν αλλάζει.`, line);
+    if (forRead && c.type === 'ΛΟΓΙΚΗ') throw new GErr('Η ΔΙΑΒΑΣΕ δεν μπορεί να διαβάσει λογική μεταβλητή.', line);
+    return c;
+  };
+  const chk = stmts => stmts.forEach(s => {
+    switch (s.t) {
+      case 'assign': target(s.n, s.raw, s.line); useE(s.e, s.line); break;
+      case 'write': s.items.forEach(e => useE(e, s.line)); break;
+      case 'read': s.ids.forEach(id => target(id.n, id.raw, s.line, true)); break;
+      case 'if': s.branches.forEach(b => { useE(b.c, b.line); chk(b.body); }); if (s.els) chk(s.els); break;
+      case 'while': useE(s.c, s.line); chk(s.body); break;
+      case 'repeat': chk(s.body); useE(s.c, s.untilLine); break;
+      case 'for': {
+        const c = target(s.n, s.raw, s.line);
+        if (c.type !== 'ΑΚΕΡΑΙΑ' && c.type !== 'ΠΡΑΓΜΑΤΙΚΗ') throw new GErr(`Ο μετρητής του ΓΙΑ («${s.raw}») πρέπει να είναι αριθμητική μεταβλητή.`, s.line);
+        [s.from, s.to, s.step].forEach(e => e && useE(e, s.line)); chk(s.body); break;
+      }
+      case 'select': useE(s.e, s.line); s.cases.forEach(cs => { cs.items.forEach(it => { useE(it.a, cs.line); if (it.b) useE(it.b, cs.line); }); chk(cs.body); }); if (s.els) chk(s.els); break;
+    }
+  });
+  chk(prog.body);
+  prog.cells = cells;
+  return prog;
+}
+
+/* ======================= Σκηνή (κτίριο) ======================= */
+const G = {W:940, ROOF:240, FH:172, GH:212, STREET:44, STAIRS_X:105, ROOM_X0:170, ROOM_W:210, PER:3, OFFICE_X:362, MAIL_X:884, SCORE_X:470};
+let LAY = {nF:1, H:600, rooms:new Map()};
+const building = $('#building'), scaler = $('#scaler');
+const levelY = lv => lv < 0 ? G.ROOF - 16 : lv < LAY.nF ? G.ROOF + (lv + 1) * G.FH - 12 : G.ROOF + LAY.nF * G.FH + G.GH - 12;
+const OFFICE = () => ({x:G.OFFICE_X, lv:LAY.nF});
+const MAIL = () => ({x:G.MAIL_X - 42, lv:LAY.nF});
+const ROOF = () => ({x:G.SCORE_X - 120, lv:-1});
+const roomLoc = n => LAY.rooms.get(n);
+
+function stairSvg(w, h){
+  const n = 9, sx = (w - 20) / n, sy = (h - 6) / n; let x = 10, y = h, d = `M10 ${h}`;
+  for (let i = 0; i < n; i++) { y -= sy; d += ` L${x.toFixed(1)} ${y.toFixed(1)}`; x += sx; d += ` L${x.toFixed(1)} ${y.toFixed(1)}`; }
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${d} L${x.toFixed(1)} ${h} Z" fill="#d6c29c"/><path d="${d}" fill="none" stroke="#6b4f3a" stroke-width="2"/><path d="M14 ${h - 34} L${(w - 6).toFixed(1)} -26" stroke="#8a5a32" stroke-width="3" fill="none"/></svg>`;
+}
+const PERSON_SVG = `<svg width="40" height="64" viewBox="0 0 40 64" aria-hidden="true"><g class="pbody">
+<rect class="leg l" x="13" y="40" width="6" height="22" rx="3" fill="#2f4858"/>
+<rect class="leg r" x="21" y="40" width="6" height="22" rx="3" fill="#2f4858"/>
+<rect x="9" y="20" width="22" height="24" rx="8" fill="#e4572e"/>
+<rect x="5" y="22" width="5" height="16" rx="2.5" fill="#f0bf92"/>
+<rect x="30" y="22" width="5" height="16" rx="2.5" fill="#f0bf92"/>
+<circle cx="20" cy="11" r="9.5" fill="#f0bf92" stroke="#5a3a22" stroke-width="1"/>
+<path d="M10.5 9 Q12 0 20 1.5 Q29 0 29.5 9 Q25 5 20 6 Q14 5 10.5 9Z" fill="#5a3a22"/>
+<circle cx="17" cy="12" r="1.3" fill="#1b1b1b"/><circle cx="24" cy="12" r="1.3" fill="#1b1b1b"/>
+<path d="M17 16 Q20.5 18.6 24 16" stroke="#7a3b2a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+</g></svg>`;
+
+function buildScene(cells){
+  const nF = Math.max(1, Math.ceil(cells.length / G.PER));
+  LAY = {nF, H:G.ROOF + nF * G.FH + G.GH + G.STREET, rooms:new Map()};
+  const gTop = G.ROOF + nF * G.FH, gFeet = gTop + G.GH - 12;
+  let h = `<div class="sky"></div><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>`;
+  h += `<div class="score" style="left:${G.SCORE_X - 270}px;top:14px"><div class="score-top">ΟΘΟΝΗ</div><div class="score-screen"><div id="scoreLines"></div></div>
+        <div class="pole" style="left:120px;top:196px;height:${G.ROOF - 16 - 196}px"></div><div class="pole" style="right:120px;top:196px;height:${G.ROOF - 16 - 196}px"></div></div>`;
+  h += `<div class="tag" style="left:760px;top:44px;width:160px"><b>ΟΘΟΝΗ</b>έξοδος: εδώ φαίνονται τα αποτελέσματα (ΓΡΑΨΕ)</div>`;
+  h += `<div class="facade" style="left:40px;top:${G.ROOF - 12}px;width:780px;height:${nF * G.FH + G.GH + 12}px"></div>`;
+  h += `<div class="roofcap" style="left:32px;top:${G.ROOF - 18}px;width:796px"></div>`;
+  h += `<div class="hatch" style="left:${G.STAIRS_X - 28}px;top:${G.ROOF - 36}px"></div>`;
+  for (let f = 0; f <= nF; f++) {
+    const top = G.ROOF + f * G.FH, hh = (f < nF ? G.FH : G.GH) - 12;
+    h += `<div class="stairs" style="left:50px;top:${top}px;width:116px;height:${hh}px">${stairSvg(110, hh)}</div>`;
+    h += `<div class="slab" style="left:40px;top:${top + hh}px;width:780px"></div>`;
+  }
+  h += `<div class="memband" style="top:${G.ROOF + 4}px;height:${nF * G.FH - 16}px"><span>ΜΝΗΜΗ · RAM</span></div>`;
+  cells.forEach((c, i) => {
+    const f = Math.floor(i / G.PER), col = i % G.PER;
+    const left = G.ROOM_X0 + col * G.ROOM_W + 3, top = G.ROOF + f * G.FH + 6;
+    LAY.rooms.set(c.n, {x:left + 46 + (G.ROOM_W - 6 - 54) / 2, lv:f});
+    c.idx = i;
+    const ti = c.isConst ? {cls:'t-const', label:'σταθερά'} : TYPEINFO[c.type];
+    h += `<div class="room ${ti.cls}" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px">
+      <div class="door"></div><div class="plate"><b>${esc(c.raw)}</b><small>${ti.label}${c.isConst ? ' &#128274;' : ''}</small></div>
+      <div class="board empty" id="bd-${i}"><div class="chalk" id="b-${i}"></div></div><div class="desks"><i></i><i></i></div></div>`;
+  });
+  for (let i = cells.length; i < nF * G.PER; i++) {
+    const f = Math.floor(i / G.PER), col = i % G.PER, left = G.ROOM_X0 + col * G.ROOM_W + 3, top = G.ROOF + f * G.FH + 6;
+    h += `<div class="room t-none" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px"><div class="door"></div><div class="plate"><b>ελεύθερη αίθουσα</b></div><div class="desks"><i></i><i></i></div></div>`;
+  }
+  h += `<div class="office" style="left:${G.ROOM_X0 + 3}px;top:${gTop + 6}px;width:410px;height:${G.GH - 18}px">
+      <div class="sign">ΓΡΑΦΕΙΟ</div>
+      <div class="pin" id="pin"><small>Εντολή που εκτελώ</small><div id="instr">–</div></div>
+      <div class="calc"><small id="calcTitle">Πρόχειρο</small><div id="calcLines"></div></div>
+      <div class="desk"></div></div>`;
+  h += `<div class="tag" style="left:${G.ROOM_X0 + 112}px;top:${gTop - 20}px"><b>ΚΜΕ · CPU</b>πράξεις και αποφάσεις</div>`;
+  h += `<div class="lobby" style="left:586px;top:${gTop + 6}px;width:214px;height:${G.GH - 18}px"><div class="lsign">ΕΙΣΟΔΟΣ</div><div class="plant"></div></div>`;
+  h += `<div class="frontdoor" style="left:800px;top:${gFeet - 104}px"></div><div class="doorleaf" style="left:820px;top:${gFeet - 104}px"></div>`;
+  h += `<div class="street" style="top:${gFeet}px;height:${G.STREET + 12}px"></div>`;
+  h += `<div class="mailbox" id="mailbox" style="left:${G.MAIL_X}px;top:${gFeet + 2}px"><div class="mb-box"><span class="mb-flag"></span></div><div class="mb-post"></div></div>`;
+  h += `<div class="tag" style="left:842px;top:${gFeet - 196}px;width:94px"><b>ΠΛΗΚΤΡΟ&shy;ΛΟΓΙΟ</b>είσοδος (ΔΙΑΒΑΣΕ)</div>`;
+  h += `<svg class="routes" id="routes" width="${G.W}" height="${LAY.H}" viewBox="0 0 ${G.W} ${LAY.H}" aria-hidden="true" hidden>
+        <path id="routePath" d=""/><circle id="routeA" r="7" cx="0" cy="0"/><circle id="routeB" r="11" cx="0" cy="0"/><text id="routeT" x="0" y="0" text-anchor="middle"></text></svg>`;
+  h += `<div id="person"><div class="bubble" id="bubble" hidden></div>${PERSON_SVG}</div>`;
+  building.innerHTML = h;
+  building.style.height = LAY.H + 'px';
+  cells.forEach(paintBoard);
+  setCalcTitle();
+  placeAt(OFFICE());
+  fit();
+}
+function fit(){
+  const w = scaler.clientWidth || G.W;
+  const s = Math.min(1.2, w / G.W);
+  building.style.transform = `scale(${s})`;
+  scaler.style.height = Math.ceil(LAY.H * s) + 'px';
+}
+new ResizeObserver(fit).observe(scaler);
+
+const boardSize = t => { const n = [...t].length; return n <= 4 ? 34 : n <= 7 ? 26 : n <= 11 ? 19 : n <= 18 ? 15 : 12; };
+function paintBoard(c){
+  const el = document.getElementById('b-' + c.idx); if (!el) return;
+  const t = c.value === undefined ? '' : fmt(c.value);
+  el.textContent = t; el.style.fontSize = boardSize(t) + 'px';
+  el.parentElement.classList.toggle('empty', c.value === undefined);
+}
+
+/* Διαδρομή (προεπισκόπηση δρομολογίου) */
+function routePts(a, b){
+  const ya = levelY(a.lv) - 8, yb = levelY(b.lv) - 8, pts = [[a.x, ya]];
+  if (a.lv !== b.lv) pts.push([G.STAIRS_X, ya], [G.STAIRS_X, yb]);
+  pts.push([b.x, yb]);
+  return pts;
+}
+function drawRoute(target, label){
+  const svg = $('#routes'); if (!svg) return;
+  const pts = routePts(P, target);
+  $('#routePath').setAttribute('d', 'M' + pts.map(p => p.join(' ')).join(' L'));
+  const [ax, ay] = pts[0], [bx, by] = pts[pts.length - 1];
+  const A = $('#routeA'), B = $('#routeB'), T = $('#routeT');
+  A.setAttribute('cx', ax); A.setAttribute('cy', ay);
+  B.setAttribute('cx', bx); B.setAttribute('cy', by);
+  T.setAttribute('x', bx); T.setAttribute('y', by - 18); T.textContent = label || '';
+  svg.hidden = false;
+}
+function clearRoute(){ const svg = $('#routes'); if (svg) svg.hidden = true; }
+
+/* ======================= Χρόνος, ακύρωση, κίνηση ======================= */
+const RT = {cells:new Map(), line:0, state:'idle', mode:'run', level:'beg', steps:0, trips:0, loopDepth:0, until:null, dots:{total:0, done:0},
+            dead:true, running:false, done:Promise.resolve(), release:null, letter:null, src:[]};
+const cancels = new Set();
+const MULTS = [0.55, 1, 1.8, 3.4, 0];
+const SPEED_NAMES = ['πολύ αργά', 'αργά', 'κανονικά', 'γρήγορα', 'αστραπή'];
+const speedEl = $('#speed');
+const mult = () => MULTS[speedEl.value - 1];
+const turbo = () => speedEl.value === '5';
+const BEG = () => RT.level === 'beg';
+function sleep(ms){
+  return new Promise((res, rej) => {
+    if (RT.dead) return rej(STOP);
+    const c = () => { clearTimeout(t); rej(STOP); };
+    const t = setTimeout(() => { cancels.delete(c); RT.dead ? rej(STOP) : res(); }, ms);
+    cancels.add(c);
+  });
+}
+function waitFor(setup){
+  return new Promise((res, rej) => {
+    if (RT.dead) return rej(STOP);
+    const c = () => rej(STOP); cancels.add(c);
+    setup(v => { cancels.delete(c); res(v); });
+  });
+}
+function tick(){ if (RT.dead) throw STOP; }
+async function wait(ms){ if (turbo()) { tick(); return; } await sleep(ms / mult()); }
+
+let P = {x:G.OFFICE_X, lv:1};
+const personEl = () => $('#person');
+function placeAt(loc){
+  const el = personEl(); if (!el) return;
+  el.style.transition = 'none'; el.style.left = loc.x + 'px'; el.style.top = levelY(loc.lv) + 'px';
+  el.classList.remove('walking');
+  P = {x:loc.x, lv:loc.lv};
+}
+async function glide(x, y, dist){
+  const el = personEl();
+  const ms = Math.max(60, dist / (240 * mult()) * 1000);
+  el.classList.add('walking');
+  el.style.transition = `left ${ms}ms linear, top ${ms}ms linear`;
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+  try { await sleep(ms); } finally { el.classList.remove('walking'); }
+}
+async function walkX(x){
+  const d = Math.abs(x - P.x); if (d < 1) return;
+  personEl().classList.toggle('left', x < P.x);
+  await glide(x, levelY(P.lv), d); P.x = x;
+}
+async function walkTo(loc){
+  if (turbo()) { tick(); placeAt(loc); return; }
+  if (loc.lv !== P.lv) {
+    await walkX(G.STAIRS_X);
+    const y = levelY(loc.lv), d = Math.abs(y - levelY(P.lv));
+    await glide(G.STAIRS_X, y, d * 1.25); P.lv = loc.lv;
+  }
+  await walkX(loc.x);
+}
+
+/* ======================= Μικρά βοηθητικά UI ======================= */
+const narrEl = $('#narr');
+const say = t => { narrEl.textContent = t; };
+function carry(items){
+  const b = $('#bubble'); if (!b) return;
+  if (!items || !items.length) { b.hidden = true; b.innerHTML = ''; return; }
+  b.innerHTML = items.map(t => `<span>${esc(t)}</span>`).join(''); b.hidden = false;
+}
+function setCalcTitle(){ const t = $('#calcTitle'); if (t) t.textContent = BEG() ? 'Πρόχειρο' : 'Πρόχειρο · καταχωρητές'; }
+function calcClear(){ const b = $('#calcLines'); if (b) b.innerHTML = ''; }
+function calcAdd(text, res){
+  const b = $('#calcLines'); if (!b) return;
+  b.querySelectorAll('.new').forEach(x => x.classList.remove('new'));
+  const d = document.createElement('div'); d.textContent = text; d.title = text;
+  d.className = (res ? 'res ' : '') + 'new';
+  b.appendChild(d);
+  while (b.children.length > 4) b.firstChild.remove();
+}
+function flashRead(c){ const b = document.getElementById('bd-' + c.idx); if (!b) return; b.classList.remove('read'); void b.offsetWidth; b.classList.add('read'); }
+async function writeBoard(c, v){
+  const b = document.getElementById('bd-' + c.idx);
+  if (!turbo() && b && c.value !== undefined) { b.classList.add('erase'); await wait(320); }
+  c.value = v; paintBoard(c);
+  if (b) { b.classList.remove('erase'); if (!turbo()) { b.classList.remove('write'); void b.offsetWidth; b.classList.add('write'); await wait(520); b.classList.remove('write'); } }
+}
+async function scoreWrite(text){
+  const box = $('#scoreLines'); const d = document.createElement('div'); box.appendChild(d);
+  while (box.children.length > 40) box.firstChild.remove();
+  if (turbo()) { d.textContent = text; tick(); return; }
+  const chars = [...text]; const per = Math.max(8, 34 / mult());
+  for (let i = 0; i < chars.length; i++) { d.textContent += chars[i]; if (i % 2 === 1) await sleep(per * 2); }
+  if (!chars.length) d.innerHTML = '&nbsp;';
+}
+function highlight(line, cls = 'cur'){
+  document.querySelectorAll('#listing .ln.' + cls).forEach(x => x.classList.remove(cls));
+  const el = document.querySelector(`#listing .ln[data-l="${line}"]`); if (!el) return;
+  el.classList.add(cls);
+  const box = $('#listing'), top = el.offsetTop, bot = top + el.offsetHeight;
+  if (top < box.scrollTop + 24) box.scrollTop = Math.max(0, top - 60);
+  else if (bot > box.scrollTop + box.clientHeight - 24) box.scrollTop = bot - box.clientHeight + 60;
+}
+function renderListing(src){
+  $('#listing').innerHTML = src.split(/\r?\n/).map((t, i) => `<div class="ln" data-l="${i + 1}"><span class="no">${i + 1}</span><span>${esc(t) || ' '}</span></div>`).join('');
+}
+function renderTrip(){
+  const box = $('#trip');
+  $('#trips').textContent = RT.trips;
+  if (!BEG() || !RT.running || !RT.dots.total) { box.innerHTML = ''; return; }
+  const {total, done} = RT.dots, n = Math.max(total, done);
+  let dots = '';
+  for (let i = 1; i <= n; i++) dots += `<i class="${i < done ? 'on' : i === done ? 'now' : ''}"></i>`;
+  box.innerHTML = `<span>Εντολή γραμμής <b>${RT.line}</b> · βήμα <b>${Math.max(done, 0)}</b> από <b>${n}</b></span><span class="dots" aria-hidden="true">${dots}</span>`;
+}
+
+/* ======================= Εκτέλεση ======================= */
+async function pauseHere(){
+  setChip('Πάτα «Ένα βήμα»', true);
+  await waitFor(r => { RT.release = r; });
+  setState('running');
+}
+/* Σημείο ελέγχου στην αρχή κάθε γραμμής. total = πόσα βήματα θα κάνει η γραμμή στον αρχάριο */
+async function checkpoint(line, total = 0){
+  RT.line = line; highlight(line);
+  $('#curLine').textContent = line;
+  RT.steps++; $('#steps').textContent = RT.steps;
+  RT.dots = {total, done:0}; renderTrip(); clearRoute();
+  if (RT.steps > 4000) throw new GErr('Το ανθρωπάκι κουράστηκε! Πάνω από 4000 εντολές — μήπως η επανάληψη δεν σταματά ποτέ;', line);
+  if (RT.until && RT.until.kind === 'line') { RT.until = null; RT.mode = 'step'; setState('running'); }
+  if (RT.mode === 'step' && (!BEG() || total === 0)) await pauseHere();
+  else if (turbo()) { if (RT.steps % 20 === 0) await sleep(0); else tick(); }
+}
+/* Ένα βήμα του αρχάριου: ένα δρομολόγιο (target) ή μια δουλειά στο γραφείο (target = null) */
+async function pt(desc, target, label){
+  if (!BEG()) return;
+  RT.dots.done++;
+  if (target) RT.trips++;
+  renderTrip();
+  if (target && !turbo()) drawRoute(target, label); else clearRoute();
+  say(desc);
+  if (RT.mode === 'step') await pauseHere();
+  else await wait(target ? 650 : 250);
+}
+async function decide(text){
+  if (BEG()) await pt('Απόφαση: ' + text, null);
+  else { say(text); await wait(750); }
+}
+async function backToOffice(){ await walkTo(OFFICE()); clearRoute(); }
+async function fetchInstr(line){
+  if (!BEG() && !turbo()) say(`Πάω στο γραφείο να διαβάσω την εντολή της γραμμής ${line}.`);
+  await walkTo(OFFICE());
+  const ins = $('#instr'); if (ins) ins.textContent = (RT.src[line - 1] || '').trim();
+  const pin = $('#pin'); if (pin && !turbo()) { pin.classList.remove('flash'); void pin.offsetWidth; pin.classList.add('flash'); }
+  calcClear();
+  await wait(BEG() ? 200 : 380);
+}
+async function evalAnimated(e){
+  const vs = varsOf(e), held = [];
+  for (const v of vs) {
+    const c = RT.cells.get(v.n);
+    if (BEG()) await pt(`Δρομολόγιο: γραφείο → αίθουσα «${c.raw}» στη RAM → γραφείο, για να φέρω την τιμή της.`, roomLoc(v.n), c.raw);
+    else say(`Πάω στην αίθουσα «${c.raw}» να δω τι γράφει ο πίνακας.`);
+    await walkTo(roomLoc(v.n));
+    flashRead(c);
+    if (c.value === undefined) throw new GErr(`Ο πίνακας της αίθουσας «${c.raw}» είναι άδειος! Δώσε της πρώτα τιμή (με <- ή ΔΙΑΒΑΣΕ).`, RT.line);
+    if (BEG()) {
+      carry([`${c.raw} = ${lit(c.value)}`]);
+      say(`Ο πίνακας της «${c.raw}» γράφει ${lit(c.value)}. Το κρατάω (η τιμή μένει και στον πίνακα) και γυρίζω στο γραφείο.`);
+      await wait(700);
+      await backToOffice();
+      calcAdd(`${c.raw} = ${lit(c.value)}`); carry(null);
+      say(`Έγραψα «${c.raw} = ${lit(c.value)}» στο πρόχειρο.`);
+      await wait(450);
+    } else {
+      held.push(`${c.raw} = ${lit(c.value)}`); carry(held);
+      say(`Ο πίνακας της «${c.raw}» γράφει ${lit(c.value)}. Το σημειώνω στο μπλοκάκι μου (η τιμή μένει και στον πίνακα).`);
+      await wait(700);
+    }
+  }
+  const v = ev(e);
+  if (!isSimple(e)) {
+    const sh = show(e, true);
+    if (BEG()) await pt(`Στο γραφείο: κάνω την πράξη με τις τιμές του πρόχειρου.`, null);
+    else if (vs.length) { say('Γυρίζω στο γραφείο για να κάνω την πράξη.'); await walkTo(OFFICE()); }
+    calcAdd(`${sh} ${typeof v === 'boolean' ? '→' : '='} ${lit(v)}`, true);
+    say(typeof v === 'boolean' ? `Στο γραφείο ελέγχω: ${sh} → ${fmt(v)}.` : `Στο γραφείο υπολογίζω: ${sh} = ${lit(v)}.`);
+    if (!BEG()) carry([`= ${lit(v)}`]);
+    await wait(900);
+  }
+  return v;
+}
+async function store(n, v){
+  const c = RT.cells.get(n);
+  if (!fits(c.type, v)) throw new GErr(`Η αίθουσα «${c.raw}» δέχεται μόνο ${TYPEINFO[c.type].want}, αλλά πήγα να γράψω ${lit(v)} (${kind(v)}).`, RT.line);
+  const old = c.value;
+  if (BEG()) await pt(`Δρομολόγιο: γραφείο → αίθουσα «${c.raw}» στη RAM → γραφείο, για να γράψω ${lit(v)} στον πίνακά της.`, roomLoc(n), c.raw);
+  carry([`${lit(v)} → ${c.raw}`]);
+  say(old === undefined ? `Πάω στην αίθουσα «${c.raw}» να γράψω ${lit(v)} στον πίνακα.` : `Πάω στην αίθουσα «${c.raw}»: σβήνω το ${lit(old)} και γράφω ${lit(v)}. Η παλιά τιμή χάνεται!`);
+  await walkTo(roomLoc(n));
+  await writeBoard(c, v);
+  carry(null);
+  if (BEG()) { say(`Έγραψα ${lit(v)} στην αίθουσα «${c.raw}». Γυρίζω στο γραφείο.`); await backToOffice(); }
+}
+function needCond(v, w){ if (typeof v !== 'boolean') throw new GErr(`Η συνθήκη του ${w} πρέπει να βγάζει ΑΛΗΘΗΣ ή ΨΕΥΔΗΣ (π.χ. α > 5), όχι ${lit(v)}.`, RT.line); }
+function parseInput(type, raw){
+  const t = raw.trim();
+  if (type === 'ΑΚΕΡΑΙΑ') return /^[+-]?\d+$/.test(t) ? {ok:true, v:Number(t)} : {ok:false, msg:`Αυτή η αίθουσα θέλει ακέραιο αριθμό (π.χ. 7), όχι «${t}».`};
+  if (type === 'ΠΡΑΓΜΑΤΙΚΗ') { const u = t.replace(',', '.'); return /^[+-]?\d+(\.\d+)?$/.test(u) ? {ok:true, v:Number(u)} : {ok:false, msg:`Αυτή η αίθουσα θέλει αριθμό (π.χ. 7 ή 3.5), όχι «${t}».`}; }
+  return {ok:true, v:raw};
+}
+const letterEl = $('#letter');
+function openLetter(c, resolve){
+  RT.letter = {c, resolve};
+  $('#letterLabel').textContent = `Το ανθρωπάκι περιμένει για την αίθουσα «${c.raw}». Γράψε ${TYPEINFO[c.type].want}:`;
+  $('#letterErr').textContent = '';
+  const inp = $('#letterInput'); inp.value = '';
+  inp.inputMode = c.type === 'ΧΑΡΑΚΤΗΡΑΣ' ? 'text' : 'decimal';
+  letterEl.hidden = false;
+  try { letterEl.scrollIntoView({block:'nearest', behavior:'smooth'}); inp.focus({preventScroll:true}); } catch (_) {}
+}
+function hideLetter(){ letterEl.hidden = true; RT.letter = null; }
+letterEl.addEventListener('submit', ev2 => {
+  ev2.preventDefault();
+  if (!RT.letter) return;
+  const r = parseInput(RT.letter.c.type, $('#letterInput').value);
+  if (!r.ok) { $('#letterErr').textContent = r.msg; say(`Άνοιξα το γράμμα αλλά δεν ταιριάζει: ${r.msg} Στείλε άλλο.`); return; }
+  const fn = RT.letter.resolve; hideLetter(); fn(r.v);
+});
+async function letterArrives(){
+  if (turbo()) return;
+  const y = levelY(LAY.nF);
+  const env = document.createElement('div'); env.className = 'env-fly';
+  env.style.left = (G.W + 10) + 'px'; env.style.top = (y - 160) + 'px';
+  building.appendChild(env); void env.offsetWidth;
+  env.style.left = (G.MAIL_X - 17) + 'px'; env.style.top = (y - 92) + 'px'; env.style.transform = 'rotate(-12deg)';
+  try { await sleep(650); } finally { env.remove(); }
+}
+function matchCase(v, it){
+  if (it.kind === 'eq') return compare(v, '=', ev(it.a));
+  if (it.kind === 'range') return compare(v, '>=', ev(it.a)) && compare(v, '<=', ev(it.b));
+  return compare(v, it.op, ev(it.a));
+}
+function enterLoop(){ RT.loopDepth++; refreshButtons(); }
+function leaveLoop(){
+  RT.loopDepth--;
+  if (!RT.dead && RT.until && RT.until.kind === 'loop' && RT.loopDepth < RT.until.depth) {
+    RT.until = null; RT.mode = 'step'; setState('running');
+    say('Η επανάληψη τελείωσε. Συνεχίζουμε βήμα-βήμα.');
+  } else refreshButtons();
+}
+
+async function execBlock(stmts){ for (const s of stmts) await exec(s); }
+async function exec(s){
+  await checkpoint(s.line, firstSteps(s));
+  switch (s.t) {
+    case 'assign': {
+      await fetchInstr(s.line);
+      say(`Η εντολή λέει: υπολόγισε «${show(s.e)}» και γράψ' το στον πίνακα της αίθουσας «${s.raw}».`); await wait(650);
+      const v = await evalAnimated(s.e);
+      await store(s.n, v);
+      return;
+    }
+    case 'write': {
+      await fetchInstr(s.line);
+      say('Η εντολή ΓΡΑΨΕ λέει: δείξε κάτι στην οθόνη, στον μεγάλο πίνακα της ταράτσας.'); await wait(600);
+      const parts = [];
+      for (const it of s.items) parts.push(fmt(await evalAnimated(it)));
+      const text = parts.join(' ');
+      const short = text.length > 26 ? text.slice(0, 25) + '…' : (text || '(κενή γραμμή)');
+      if (BEG()) await pt(`Δρομολόγιο: γραφείο → ταράτσα (οθόνη) → γραφείο, για να γράψω «${short}».`, ROOF(), 'οθόνη');
+      carry([short]);
+      say('Ανεβαίνω στην ταράτσα να το γράψω στην οθόνη.');
+      await walkTo(ROOF());
+      carry(null);
+      say('Γράφω στην οθόνη: ' + (text || '(κενή γραμμή)'));
+      await scoreWrite(text);
+      await wait(350);
+      if (BEG()) { say('Το έγραψα στην οθόνη. Γυρίζω στο γραφείο.'); await backToOffice(); }
+      return;
+    }
+    case 'read': {
+      await fetchInstr(s.line);
+      for (const id of s.ids) {
+        const c = RT.cells.get(id.n);
+        if (BEG()) await pt(`Δρομολόγιο: γραφείο → γραμματοκιβώτιο (πληκτρολόγιο) → γραφείο, για να φέρω γράμμα για την αίθουσα «${c.raw}».`, MAIL(), 'γραμματοκιβώτιο');
+        say(`Η εντολή ΔΙΑΒΑΣΕ λέει: φέρε τιμή από το πληκτρολόγιο για την αίθουσα «${c.raw}». Κατεβαίνω στο γραμματοκιβώτιο της εξώπορτας.`);
+        await walkTo(MAIL());
+        const mb = $('#mailbox'); mb.classList.add('waiting');
+        carry(['περιμένω γράμμα…']);
+        say(`Περιμένω στο γραμματοκιβώτιο… Γράψε ${TYPEINFO[c.type].want} στο γράμμα και στείλ' το!`);
+        const v = await waitFor(r => openLetter(c, r));
+        mb.classList.remove('waiting');
+        await letterArrives();
+        carry([`γράμμα: ${lit(v)}`]);
+        if (BEG()) {
+          say(`Ήρθε γράμμα! Γράφει ${lit(v)}. Το παίρνω και γυρίζω στο γραφείο.`); await wait(600);
+          await backToOffice();
+          calcAdd(`γράμμα: ${lit(v)}`); carry(null);
+          say(`Έγραψα το γράμμα (${lit(v)}) στο πρόχειρο. Τώρα πρέπει να το πάω στην αίθουσα «${c.raw}».`); await wait(450);
+        } else { say(`Ήρθε γράμμα! Γράφει ${lit(v)}. Το πάω στην αίθουσα «${c.raw}».`); await wait(650); }
+        await store(id.n, v);
+      }
+      return;
+    }
+    case 'if': {
+      for (let k = 0; k < s.branches.length; k++) {
+        const b = s.branches[k], w = k ? 'ΑΛΛΙΩΣ_ΑΝ' : 'ΑΝ';
+        if (k) await checkpoint(b.line, E(b.c) + 1);
+        await fetchInstr(b.line);
+        say(`Η εντολή ${w} λέει: έλεγξε αν ισχύει «${show(b.c)}».`); await wait(650);
+        const v = await evalAnimated(b.c); needCond(v, w);
+        if (v) { await decide('Η συνθήκη είναι ΑΛΗΘΗΣ → εκτελώ τις εντολές μετά το ΤΟΤΕ.'); await execBlock(b.body); return; }
+        await decide(`Η συνθήκη είναι ΨΕΥΔΗΣ → προσπερνάω τις εντολές αυτού του ${w}.`);
+      }
+      if (s.els) { await checkpoint(s.elseLine, 1); await fetchInstr(s.elseLine); await decide('Καμία συνθήκη δεν ίσχυε → εκτελώ τις εντολές του ΑΛΛΙΩΣ.'); await execBlock(s.els); }
+      return;
+    }
+    case 'while': {
+      enterLoop();
+      try {
+        for (let first = true; ; first = false) {
+          if (!first) await checkpoint(s.line, E(s.c) + 1);
+          await fetchInstr(s.line);
+          say(`Η εντολή ΟΣΟ λέει: όσο ισχύει «${show(s.c)}», κάνε ξανά τις εντολές.`); await wait(550);
+          const v = await evalAnimated(s.c); needCond(v, 'ΟΣΟ');
+          if (!v) { await decide('Η συνθήκη είναι ΨΕΥΔΗΣ → η επανάληψη τελειώνει, πάω μετά το ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ.'); return; }
+          await decide('Η συνθήκη είναι ΑΛΗΘΗΣ → εκτελώ τις εντολές της επανάληψης.');
+          await execBlock(s.body);
+          await checkpoint(s.endLine, 1); await fetchInstr(s.endLine);
+          await decide('ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ → γυρίζω πάνω στο ΟΣΟ να ξαναελέγξω τη συνθήκη.');
+        }
+      } finally { leaveLoop(); }
+    }
+    case 'for': {
+      await fetchInstr(s.line);
+      say(`Η εντολή ΓΙΑ λέει: μέτρα με την αίθουσα «${s.raw}» από ${show(s.from)} μέχρι ${show(s.to)}${s.step ? ' με βήμα ' + show(s.step) : ''}.`); await wait(800);
+      const a = await evalAnimated(s.from), b = await evalAnimated(s.to), st = s.step ? await evalAnimated(s.step) : 1;
+      needNum(a, 'ΓΙΑ'); needNum(b, 'ΓΙΑ'); needNum(st, 'ΜΕ_ΒΗΜΑ');
+      if (st === 0) throw new GErr('Το ΜΕ_ΒΗΜΑ δεν μπορεί να είναι 0: η επανάληψη δεν θα τελείωνε ποτέ.', s.line);
+      await store(s.n, a);
+      const V = {t:'var', n:s.n, raw:s.raw};
+      const cond = {t:'bin', op:st > 0 ? '<=' : '>=', l:V, r:{t:'num', v:b}};
+      const inc = {t:'bin', op:st > 0 ? '+' : '-', l:V, r:{t:'num', v:Math.abs(st)}};
+      enterLoop();
+      try {
+        for (let first = true; ; first = false) {
+          if (!first) { await checkpoint(s.line, 3); await fetchInstr(s.line); }
+          say(`Ελέγχω αν ο μετρητής «${s.raw}» έφτασε στο τέλος.`); await wait(400);
+          const ok = await evalAnimated(cond);
+          if (!ok) { await decide(`Ο μετρητής πέρασε το ${fmt(b)} → η επανάληψη τελειώνει.`); return; }
+          await decide('Δεν πέρασε ακόμα το τέλος → εκτελώ τις εντολές μέσα στο ΓΙΑ.');
+          await execBlock(s.body);
+          await checkpoint(s.endLine, 3); await fetchInstr(s.endLine);
+          say(`ΤΕΛΟΣ_ΕΠΑΝΑΛΗΨΗΣ: ${st > 0 ? 'αυξάνω' : 'μειώνω'} τον μετρητή «${s.raw}» κατά ${fmt(Math.abs(st))} και γυρίζω στο ΓΙΑ.`); await wait(600);
+          await store(s.n, await evalAnimated(inc));
+        }
+      } finally { leaveLoop(); }
+    }
+    case 'repeat': {
+      await fetchInstr(s.line);
+      say('ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ: πρώτα κάνω τις εντολές και ελέγχω στο τέλος.'); await wait(650);
+      enterLoop();
+      try {
+        for (let first = true; ; first = false) {
+          if (!first) { await checkpoint(s.line, 0); await fetchInstr(s.line); }
+          await execBlock(s.body);
+          await checkpoint(s.untilLine, E(s.c) + 1); await fetchInstr(s.untilLine);
+          say(`Η εντολή ΜΕΧΡΙΣ_ΟΤΟΥ λέει: σταμάτα όταν ισχύσει «${show(s.c)}».`); await wait(550);
+          const v = await evalAnimated(s.c); needCond(v, 'ΜΕΧΡΙΣ_ΟΤΟΥ');
+          if (v) { await decide('Η συνθήκη ισχύει → η επανάληψη τελειώνει.'); return; }
+          await decide('Δεν ισχύει ακόμα → γυρίζω στην ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ.');
+        }
+      } finally { leaveLoop(); }
+    }
+    case 'select': {
+      await fetchInstr(s.line);
+      say(`Η εντολή ΕΠΙΛΕΞΕ λέει: δες πόσο κάνει «${show(s.e)}» και διάλεξε την περίπτωση που ταιριάζει.`); await wait(650);
+      const v = await evalAnimated(s.e);
+      await walkTo(OFFICE());
+      for (const cs of s.cases) {
+        await checkpoint(cs.line, 1);
+        const hit = cs.items.some(it => matchCase(v, it));
+        calcAdd(`${lit(v)} ; ${(RT.src[cs.line - 1] || '').trim()}`, hit);
+        await decide(hit ? `Το ${lit(v)} ταιριάζει σε αυτή την ΠΕΡΙΠΤΩΣΗ → εκτελώ τις εντολές της.` : `Το ${lit(v)} δεν ταιριάζει εδώ → πάω στην επόμενη ΠΕΡΙΠΤΩΣΗ.`);
+        if (hit) { await execBlock(cs.body); return; }
+      }
+      if (s.els) { await checkpoint(s.elseLine, 1); await decide('Δεν ταίριαξε καμία → ΠΕΡΙΠΤΩΣΗ ΑΛΛΙΩΣ.'); await execBlock(s.els); }
+      return;
+    }
+  }
+}
+
+async function runProgram(prog){
+  say(`Καλημέρα! Θα εκτελέσω το πρόγραμμα «${prog.name}». Ξεκινάω από το γραφείο μου.`);
+  await wait(700);
+  await execBlock(prog.body);
+  await checkpoint(prog.endLine, 0);
+  await walkTo(OFFICE());
+  const ins = $('#instr'); if (ins) ins.textContent = 'ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ';
+  calcClear();
+  carry(['τέλος!']);
+  say(`ΤΕΛΟΣ_ΠΡΟΓΡΑΜΜΑΤΟΣ: εκτέλεσα όλες τις εντολές της λίστας${BEG() ? ` με ${RT.trips} δρομολόγια` : ''}. Τώρα ξεκουράζομαι!`);
+}
+
+/* ======================= Κουμπιά & καταστάσεις ======================= */
+const srcEl = $('#src');
+const btnRun = $('#btnRun'), btnStep = $('#btnStep'), btnPause = $('#btnPause'), btnStop = $('#btnStop'), btnNext = $('#btnNext'), btnLoop = $('#btnLoop');
+function setChip(t, live, bad){ const c = $('#statusChip'); c.textContent = t; c.classList.toggle('live', !!live); c.classList.toggle('bad', !!bad); }
+function refreshButtons(){
+  const running = RT.state === 'running';
+  btnNext.hidden = !BEG();
+  btnNext.disabled = !running;
+  btnLoop.disabled = !(running && RT.loopDepth > 0);
+  document.querySelectorAll('input[name="lvl"]').forEach(r => { r.disabled = running; });
+}
+function setState(s){
+  RT.state = s;
+  const running = s === 'running';
+  btnRun.textContent = running ? (RT.mode === 'step' ? '▶ Συνέχεια' : '▶ Τρέξε') : (s === 'idle' ? '▶ Τρέξε' : '▶ Ξανά');
+  btnRun.disabled = running && RT.mode === 'run';
+  btnPause.disabled = !(running && RT.mode === 'run');
+  btnStop.textContent = running ? '■ Σταμάτα' : '✎ Διόρθωσε';
+  btnStop.disabled = s === 'idle';
+  $('#editor').classList.toggle('locked', s !== 'idle');
+  if (s === 'idle') setChip('Επεξεργασία');
+  else if (s === 'running') setChip(RT.mode === 'step' ? 'Βήμα-βήμα' : 'Εκτελείται', true);
+  else if (s === 'done') setChip('Τέλος');
+  else setChip('Σφάλμα', false, true);
+  refreshButtons();
+  if (!running) renderTrip();
+}
+function release(){ if (RT.release) { const r = RT.release; RT.release = null; r(); } }
+function stopRun(){ RT.dead = true; for (const c of [...cancels]) c(); cancels.clear(); RT.release = null; hideLetter(); clearRoute(); }
+function showError(msg, line){
+  const b = $('#errBox'); b.hidden = false; b.textContent = (line ? `Γραμμή ${line}: ` : '') + msg;
+  if (line) highlight(line, 'err');
+}
+function clearError(){ $('#errBox').hidden = true; }
+
+async function start(mode){
+  if (RT.running) { stopRun(); await RT.done; }
+  clearError();
+  const src = srcEl.value;
+  RT.src = src.split(/\r?\n/);
+  renderListing(src);
+  let prog;
+  try { prog = compile(src); }
+  catch (e) { if (!(e instanceof GErr)) throw e; setState('error'); showError(e.message, e.line); say('Δεν μπορώ να ξεκινήσω: κάτι στη λίστα εντολών δεν το καταλαβαίνω. Δες το κόκκινο μήνυμα.'); return; }
+  RT.mode = mode; RT.dead = false; RT.running = true; RT.steps = 0; RT.trips = 0; RT.loopDepth = 0; RT.until = null; RT.cells = prog.cells;
+  RT.dots = {total:0, done:0};
+  $('#steps').textContent = '0'; $('#curLine').textContent = '–';
+  buildScene([...RT.cells.values()]);
+  setState('running'); renderTrip();
+  RT.done = (async () => {
+    try { await runProgram(prog); setState('done'); }
+    catch (e) {
+      if (e && e.isStop) return;
+      setState('error');
+      if (e instanceof GErr) { showError(e.message, e.line || RT.line); carry(['ωχ!']); say('Σταμάτησα! ' + e.message); }
+      else { console.error(e); showError('Απρόσμενο σφάλμα: ' + (e && e.message)); }
+    } finally {
+      RT.running = false; RT.dead = true; RT.until = null; hideLetter(); clearRoute(); refreshButtons(); renderTrip();
+      const mb = $('#mailbox'); if (mb) mb.classList.remove('waiting');
+    }
+  })();
+}
+
+btnRun.addEventListener('click', () => {
+  if (RT.state === 'running') { RT.mode = 'run'; RT.until = null; setState('running'); release(); }
+  else start('run');
+});
+btnStep.addEventListener('click', () => {
+  if (RT.state === 'running') { RT.mode = 'step'; RT.until = null; setState('running'); release(); }
+  else start('step');
+});
+btnNext.addEventListener('click', () => {
+  if (RT.state !== 'running') return;
+  RT.until = {kind:'line'}; RT.mode = 'run'; setState('running'); release();
+});
+btnLoop.addEventListener('click', () => {
+  if (RT.state !== 'running' || RT.loopDepth < 1) return;
+  RT.until = {kind:'loop', depth:RT.loopDepth}; RT.mode = 'run'; setState('running'); release();
+  say('Τρέχω μέχρι να τελειώσει η επανάληψη…');
+});
+btnPause.addEventListener('click', () => { if (RT.state === 'running') { RT.mode = 'step'; RT.until = null; setState('running'); say('Παύση: θα σταματήσω στο επόμενο βήμα. Πάτα «Ένα βήμα» ή «Συνέχεια».'); } });
+btnStop.addEventListener('click', async () => {
+  if (RT.running) { stopRun(); await RT.done; say('Σταμάτησες την εκτέλεση. Μπορείς να αλλάξεις το πρόγραμμα.'); }
+  else say('Άλλαξε το πρόγραμμα και πάτα ξανά «Τρέξε».');
+  carry(null); clearError(); setState('idle'); setTimeout(() => srcEl.focus(), 0);
+});
+speedEl.addEventListener('input', () => { $('#speedOut').textContent = SPEED_NAMES[speedEl.value - 1]; });
+$('#legend').addEventListener('change', e => building.classList.toggle('nolegend', !e.target.checked));
+
+const MODE_HINTS = {
+  beg:'Αρχάριος: κάθε «Ένα βήμα» είναι ένα δρομολόγιο του ανθρωπάκου (γραφείο → κάπου → γραφείο) ή μία δουλειά στο γραφείο. Η κόκκινη διακεκομμένη γραμμή δείχνει πού θα πάει.',
+  adv:'Προχωρημένος: κάθε «Ένα βήμα» εκτελεί μια ολόκληρη γραμμή. Το ανθρωπάκι μαζεύει πολλές τιμές σε μία διαδρομή, όπως ένας γρήγορος επεξεργαστής με καταχωρητές.'
+};
+function applyLevel(lv){
+  RT.level = lv;
+  $('#modeHint').textContent = MODE_HINTS[lv];
+  $('#tripsStat').hidden = lv !== 'beg';
+  setCalcTitle(); refreshButtons(); renderTrip();
+  try { localStorage.setItem('spiti-level', lv); } catch (_) {}
+}
+document.querySelectorAll('input[name="lvl"]').forEach(r => r.addEventListener('change', () => { if (r.checked) applyLevel(r.value); }));
+
+/* ======================= Επεξεργαστής ======================= */
+const gutter = $('#gutter');
+function updateGutter(){ const n = srcEl.value.split('\n').length; let s = ''; for (let i = 1; i <= n; i++) s += i + '\n'; gutter.textContent = s; gutter.scrollTop = srcEl.scrollTop; }
+srcEl.addEventListener('scroll', () => { gutter.scrollTop = srcEl.scrollTop; });
+srcEl.addEventListener('keydown', e => {
+  if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); const a = srcEl.selectionStart, b = srcEl.selectionEnd; srcEl.setRangeText('  ', a, b, 'end'); onEdit(); }
+});
+let editTimer = 0;
+function onEdit(){
+  updateGutter();
+  try { localStorage.setItem('spiti-src', srcEl.value); } catch (_) {}
+  clearTimeout(editTimer); editTimer = setTimeout(idleScene, 350);
+}
+srcEl.addEventListener('input', onEdit);
+function idleScene(){
+  if (RT.running) return;
+  const hint = $('#hint');
+  try {
+    const prog = compile(srcEl.value);
+    buildScene([...prog.cells.values()]);
+    const n = prog.cells.size;
+    hint.textContent = `Το κτίριο έχει ${n} ${n === 1 ? 'αίθουσα' : 'αίθουσες'} (μία για κάθε μεταβλητή ή σταθερά).`;
+  } catch (e) {
+    if (!(e instanceof GErr)) throw e;
+    hint.textContent = `Προσοχή, γραμμή ${e.line}: ${e.message}`;
+  }
+}
+const sel = $('#examples');
+EXAMPLES.forEach((ex, i) => { const o = document.createElement('option'); o.value = i; o.textContent = ex.name; sel.appendChild(o); });
+sel.addEventListener('change', async () => {
+  if (RT.running) { stopRun(); await RT.done; }
+  srcEl.value = EXAMPLES[sel.value].src; clearError(); setState('idle'); onEdit(); idleScene();
+  say('Νέο πρόγραμμα! Πάτα «Τρέξε» για να το εκτελέσω ή «Ένα βήμα» για να πηγαίνουμε σιγά-σιγά.');
+});
+
+let saved = null, savedLv = null;
+try { saved = localStorage.getItem('spiti-src'); savedLv = localStorage.getItem('spiti-level'); } catch (_) {}
+srcEl.value = saved && saved.trim() ? saved : EXAMPLES[0].src;
+const lv0 = savedLv === 'adv' ? 'adv' : 'beg';
+document.getElementById(lv0 === 'adv' ? 'lvlAdv' : 'lvlBeg').checked = true;
+applyLevel(lv0);
+updateGutter(); setState('idle'); idleScene();
+})();
+</script>
+
+</body>
+</html>
