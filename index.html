@@ -79,10 +79,11 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .hint{font-size:13px;color:var(--muted);margin:0;min-height:1.2em}
 
 .stage{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:10px}
-.narr{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:10px 14px;min-height:3.4em;font-size:16px;line-height:1.4}
-.narr .who{font:700 12px/1.9 var(--f-display);color:var(--accent);white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
-.trip{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:14px;min-height:1.6em}
-.trip b{font-variant-numeric:tabular-nums}
+.leftcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.narr{display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;padding:12px 16px;min-height:6.2em;font-size:16px;line-height:1.45}
+.narr .who{font:700 12px/1.4 var(--f-display);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.trip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
+.trip:empty{display:none}
 .dots{display:inline-flex;gap:5px}
 .dots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--accent)}
 .dots i.on{background:var(--accent)}
@@ -241,6 +242,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
   </header>
 
   <div class="layout">
+   <div class="leftcol">
     <section class="panel" aria-label="Πρόγραμμα">
       <div class="panel-head">
         <h2>Λίστα εντολών<small>το πρόγραμμα που ακολουθεί το ανθρωπάκι</small></h2>
@@ -274,10 +276,10 @@ button:not(:disabled):hover{filter:brightness(1.06)}
       </div>
       <p class="hint" id="modeHint"></p>
     </section>
+    <div class="narr" aria-live="polite"><span class="who">Τι σκέφτεται το ανθρωπάκι</span><span id="narr">Γεια! Ζω μέσα στον υπολογιστή. Πάτα «Τρέξε» για να εκτελέσω το πρόγραμμα.</span></div>
+   </div>
 
     <section class="stage" aria-label="Το κτίριο">
-      <div class="narr" aria-live="polite"><span class="who">Ανθρωπάκι</span><span id="narr">Γεια! Ζω μέσα στον υπολογιστή. Πάτα «Τρέξε» για να εκτελέσω το πρόγραμμα.</span></div>
-      <div class="trip" id="trip"></div>
       <div class="scaler" id="scaler"><div id="building"></div></div>
       <form class="letter" id="letter" hidden>
         <div class="letter-head">Γράμμα για το ανθρωπάκι (πληκτρολόγιο)</div>
@@ -288,7 +290,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
         </div>
         <div class="letter-err" id="letterErr"></div>
       </form>
-      <div class="stats"><span>Εντολές που εκτελέστηκαν: <b id="steps">0</b></span><span id="tripsStat">Δρομολόγια: <b id="trips">0</b></span><span>Τρέχουσα γραμμή: <b id="curLine">–</b></span></div>
+      <div class="stats"><span>Εντολές που εκτελέστηκαν: <b id="steps">0</b></span><span id="tripsStat">Δρομολόγια: <b id="trips">0</b></span><span>Τρέχουσα γραμμή: <b id="curLine">–</b></span><span class="trip" id="trip"></span></div>
     </section>
   </div>
 
@@ -1115,7 +1117,7 @@ function renderTrip(){
   const {total, done} = RT.dots, n = Math.max(total, done);
   let dots = '';
   for (let i = 1; i <= n; i++) dots += `<i class="${i < done ? 'on' : i === done ? 'now' : ''}"></i>`;
-  box.innerHTML = `<span>Εντολή γραμμής <b>${RT.line}</b> · βήμα <b>${Math.max(done, 0)}</b> από <b>${n}</b></span><span class="dots" aria-hidden="true">${dots}</span>`;
+  box.innerHTML = `<span>Βήμα: <b>${Math.max(done, 0)}</b> από <b>${n}</b></span><span class="dots" aria-hidden="true">${dots}</span>`;
 }
 
 /* ======================= Εκτέλεση ======================= */
