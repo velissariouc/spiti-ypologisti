@@ -122,10 +122,10 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .room{position:absolute;background:var(--wall);border:3px solid #5e3326;border-bottom:0}
 .room .door{position:absolute;left:8px;bottom:0;width:30px;height:76px;background:#9b6b43;border:2px solid #5c3d24;border-bottom:0;border-radius:3px 3px 0 0}
 .room .door::after{content:"";position:absolute;right:4px;top:38px;width:5px;height:5px;border-radius:50%;background:#e8c35a}
-.plate{position:absolute;left:46px;right:8px;top:6px;height:28px;background:#fff8e6;border:2px solid #5c3d24;border-radius:7px;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 6px;white-space:nowrap;overflow:hidden}
-.plate b{font:700 17px/1 var(--f-display);color:#1b2a28;overflow:hidden;text-overflow:ellipsis}
-.plate small{font:600 10px/1 var(--f-body);color:#6d5b44;text-transform:uppercase;letter-spacing:.06em}
-.board{position:absolute;left:46px;right:8px;top:40px;height:76px;background:#2e5d4b;border:5px solid #8a5a32;border-radius:3px;display:grid;place-items:center;overflow:hidden}
+.plate{position:absolute;left:46px;right:8px;top:5px;height:38px;background:#fff8e6;border:2px solid #5c3d24;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0 5px;white-space:nowrap;overflow:hidden}
+.plate b{font:700 17px/1.05 var(--f-display);color:#1b2a28;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.plate small{font:600 9px/1 var(--f-body);color:#6d5b44;letter-spacing:.08em}
+.board{position:absolute;left:46px;right:8px;top:48px;height:70px;background:#2e5d4b;border:5px solid #8a5a32;border-radius:3px;display:grid;place-items:center;overflow:hidden}
 .board > *{grid-area:1/1}
 .chalk{font:700 30px/1.05 var(--f-display);color:#f6f8f1;text-shadow:0 0 1px #fff,0 0 7px rgba(255,255,255,.28);padding:0 6px;text-align:center;word-break:break-word;transition:opacity .22s,filter .22s}
 .board.empty::after{content:"άδειος";font:600 13px var(--f-body);color:rgba(255,255,255,.35);font-style:italic}
@@ -940,7 +940,7 @@ function buildScene(cells){
     c.idx = i;
     const ti = c.isConst ? {cls:'t-const', label:'σταθερά'} : TYPEINFO[c.type];
     h += `<div class="room ${ti.cls}" style="left:${left}px;top:${top}px;width:${G.ROOM_W - 6}px;height:${G.FH - 18}px">
-      <div class="door"></div><div class="plate"><b>${esc(c.raw)}</b><small>${ti.label}${c.isConst ? ' &#128274;' : ''}</small></div>
+      <div class="door"></div><div class="plate"><b style="font-size:${plateSize(c.raw)}px">${esc(c.raw)}</b><small>${norm(ti.label)}${c.isConst ? ' &#128274;' : ''}</small></div>
       <div class="board empty" id="bd-${i}"><div class="chalk" id="b-${i}"></div></div><div class="desks"><i></i><i></i></div></div>`;
   });
   for (let i = cells.length; i < nF * G.PER; i++) {
@@ -976,6 +976,7 @@ function fit(){
 }
 new ResizeObserver(fit).observe(scaler);
 
+const plateSize = t => { const n = [...t].length; return n <= 8 ? 17 : n <= 11 ? 14 : n <= 14 ? 12 : 10; };
 const boardSize = t => { const n = [...t].length; return n <= 4 ? 34 : n <= 7 ? 26 : n <= 11 ? 19 : n <= 18 ? 15 : 12; };
 function paintBoard(c){
   const el = document.getElementById('b-' + c.idx); if (!el) return;
