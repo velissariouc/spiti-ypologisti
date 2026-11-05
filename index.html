@@ -1001,9 +1001,9 @@ function drawRoute(target, label){
   A.setAttribute('cx', ax); A.setAttribute('cy', ay);
   B.setAttribute('cx', bx); B.setAttribute('cy', by);
   T.setAttribute('x', bx); T.setAttribute('y', by - 18); T.textContent = label || '';
-  svg.hidden = false;
+  svg.removeAttribute('hidden');   // σε SVG η ιδιότητα .hidden δεν υπάρχει· μόνο το attribute
 }
-function clearRoute(){ const svg = $('#routes'); if (svg) svg.hidden = true; }
+function clearRoute(){ const svg = $('#routes'); if (svg) svg.setAttribute('hidden', ''); }
 
 /* ======================= Χρόνος, ακύρωση, κίνηση ======================= */
 const RT = {cells:new Map(), line:0, state:'idle', mode:'run', level:'beg', steps:0, trips:0, loopDepth:0, until:null, dots:{total:0, done:0},
