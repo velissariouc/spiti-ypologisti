@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Konstantinos Velissariou">
 <meta name="description" content="Εκπαιδευτικό παιχνίδι: ένα ανθρωπάκι μέσα στον υπολογιστή εκτελεί προγράμματα σε ΓΛΩΣΣΑ.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
 <title>Το Σπίτι του Υπολογιστή</title>
@@ -249,6 +250,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
 .cmds li{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:12px;align-items:baseline}
 .cmds code{font:600 12.5px var(--f-mono);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 6px;white-space:pre-wrap;word-break:break-word}
 .cmds span{color:var(--muted);font-size:14px}
+.copy{text-align:center;color:var(--muted);font-size:13px;margin:18px 16px 24px}
 @media (max-width:560px){.cmds li,.map{grid-template-columns:minmax(0,1fr)}.cmds li{gap:2px}.map dd{margin-bottom:6px}}
 @media (prefers-reduced-motion:reduce){#person.walking .leg,#person.walking .pbody,.mailbox.waiting .mb-box,.routes path{animation:none}}
 </style>
@@ -467,6 +469,7 @@ AND  OR  NOT</code><span>Operations and comparisons. Functions: INT, ABS, SQRT, 
     </section>
   </div>
 </div>
+<footer class="copy">© 2026 Konstantinos Velissariou</footer>
 
 <script>
 (() => {
