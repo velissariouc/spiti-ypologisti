@@ -41,6 +41,9 @@ h1{font:700 clamp(24px,3.4vw,38px)/1.1 var(--f-display);margin:0;text-wrap:balan
 .toggle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;cursor:pointer;user-select:none}
 .toggle input{width:18px;height:18px;accent-color:var(--accent)}
 .toggle.byval{background:#fff4c2;color:#5a4300;border:1px dashed #c9a227;border-radius:10px;padding:5px 10px}
+.toggle.byval.off{opacity:.55;cursor:not-allowed}
+.toggle.byval .bvnote{display:none;font-weight:500;font-size:12px}
+.toggle.byval.off .bvnote{display:inline}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2);position:relative}
 .seg input{position:absolute;opacity:0;pointer-events:none}
 .seg label{padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
@@ -277,7 +280,7 @@ button:not(:disabled):hover{filter:brightness(1.06)}
         <input type="radio" name="lvl" id="lvlAdv" value="adv"><label for="lvlAdv" data-el="Προχωρημένος" data-en="Advanced">Προχωρημένος</label>
       </div>
       <label class="toggle" for="legend"><input type="checkbox" id="legend" checked> <span data-el="Δείξε τι είναι στ' αλήθεια" data-en="Show what things really are"></span></label>
-      <label class="toggle byval" for="byVal" id="byValWrap" hidden><input type="checkbox" id="byVal"> <span data-el="Δείξε τι θα γινόταν με πέρασμα με τιμή" data-en="Show what would happen with pass by value"></span></label>
+      <label class="toggle byval" for="byVal" id="byValWrap" hidden><input type="checkbox" id="byVal"> <span data-el="Δείξε τι θα γινόταν με πέρασμα με τιμή" data-en="Show what would happen with pass by value"></span> <span class="bvnote" data-el="(μόνο για ΔΙΑΔΙΚΑΣΙΑ· οι συναρτήσεις παίρνουν πάντα αντίγραφα)" data-en="(PROCEDURE only; functions always get copies)"></span></label>
     </div>
   </header>
 
@@ -2178,6 +2181,11 @@ async function callUnit(su, args, isFunc){
   RT.frames.push({unit:su, cells});
   RT.cells = cells;
   rebuildScene();
+  if (isFunc && !RT.funcHint && !turbo()) {
+    RT.funcHint = true;
+    say(L('Η συνάρτηση παίρνει πάντα αντίγραφα των τιμών (πέρασμα με τιμή): γι’ αυτό οι αίθουσές της γράφουν «ΑΝΤΙΓΡΑΦΟ». Ταμπέλες με βέλος (πέρασμα με αναφορά) έχουν μόνο οι διαδικασίες.', 'A function always gets copies of the values (pass by value): that is why its classrooms say "COPY". Signs with an arrow (pass by reference) exist only in procedures.'));
+    await wait(1800);
+  }
   const refs = binds.filter(b => b.k === 'ref' || b.k === 'arrRef').length;
   if (refs && !turbo()) { say(L('Οι παράμετροι με αναφορά δεν παίρνουν δικό τους πίνακα: παίρνουν ταμπέλα με βέλος προς τις αίθουσες του προγράμματος που κάλεσε.', 'Parameters by reference get no board of their own: they get a sign with an arrow to the classrooms of the caller.')); await wait(1100); }
   if (binds.some(b => b.k === 'arrVal') && !turbo()) { say(L('Ο πίνακας περνάει με τιμή: ο νέος όροφος παίρνει φωτοτυπία όλου του διαδρόμου.', 'The array is passed by value: the new floor gets a photocopy of the whole corridor.')); await wait(1100); }
@@ -2446,7 +2454,11 @@ function refreshButtons(){
   btnLoop.disabled = !(running && RT.loopDepth > 0);
   document.querySelectorAll('input[name="lvl"]').forEach(r => { r.disabled = running; });
   document.querySelectorAll('.flag').forEach(f => { f.disabled = running; });
-  byValEl.disabled = running;
+  // Ο διακόπτης «με τιμή» αφορά μόνο διαδικασίες: οι συναρτήσεις παίρνουν πάντα αντίγραφα
+  const hasProc = /(^|\n)[ \t]*(ΔΙΑΔΙΚΑΣΙΑ|PROCEDURE)[ \t(]/.test(norm(srcEl.value));
+  byValEl.disabled = running || !hasProc;
+  $('#byValWrap').classList.toggle('off', !hasProc);
+  $('#byValWrap').title = hasProc ? '' : L('Το πρόγραμμα δεν έχει ΔΙΑΔΙΚΑΣΙΑ. Οι συναρτήσεις παίρνουν πάντα αντίγραφα (με τιμή).', 'The program has no PROCEDURE. Functions always get copies (by value).');
 }
 function setState(s){
   RT.state = s;
@@ -2481,7 +2493,7 @@ async function start(mode){
   let prog;
   try { prog = compile(src); }
   catch (e) { if (!(e instanceof GErr)) throw e; setState('error'); showError(e.message, e.line); say(L('Δεν μπορώ να ξεκινήσω: κάτι στη λίστα εντολών δεν το καταλαβαίνω. Δες το κόκκινο μήνυμα.', 'I cannot start: there is something in the instruction list I do not understand. See the red message.')); return; }
-  RT.prog = prog; RT.fmemo = new Map();
+  RT.prog = prog; RT.fmemo = new Map(); RT.funcHint = false;
   RT.forceValue = !BEG() && byValEl.checked;
   RT.frames = [{unit:prog.main, cells:instantiate(prog.main)}];
   RT.cells = RT.frames[0].cells;
@@ -2490,9 +2502,9 @@ async function start(mode){
   $('#steps').textContent = '0'; $('#curLine').textContent = '–';
   buildScene(RT.frames);
   setState('running'); renderTrip();
-  if (RT.forceValue && prog.subs.size) say(L('Δοκιμή: αυτή τη φορά και οι διαδικασίες θα πάρουν τις παραμέτρους τους με τιμή (αντίγραφα), για να δούμε τη διαφορά.', 'Experiment: this time procedures also get their parameters by value (copies), so we can see the difference.'));
+  if (RT.forceValue && [...prog.subs.values()].some(u => u.kind === 'proc')) say(L('Δοκιμή: αυτή τη φορά και οι διαδικασίες θα πάρουν τις παραμέτρους τους με τιμή (αντίγραφα), για να δούμε τη διαφορά.', 'Experiment: this time procedures also get their parameters by value (copies), so we can see the difference.'));
   RT.done = (async () => {
-    try { if (RT.forceValue && prog.subs.size) await wait(1500); await runProgram(prog); setState('done'); }
+    try { if (RT.forceValue && [...prog.subs.values()].some(u => u.kind === 'proc')) await wait(1500); await runProgram(prog); setState('done'); }
     catch (e) {
       if (e && e.isStop) return;
       setState('error');
@@ -2556,7 +2568,7 @@ document.querySelectorAll('input[name="lvl"]').forEach(r => r.addEventListener('
 
 /* ======================= Επεξεργαστής ======================= */
 const gutter = $('#gutter');
-function updateGutter(){ const n = srcEl.value.split('\n').length; let s = ''; for (let i = 1; i <= n; i++) s += i + '\n'; gutter.textContent = s; gutter.scrollTop = srcEl.scrollTop; }
+function updateGutter(){ const n = srcEl.value.split('\n').length; let s = ''; for (let i = 1; i <= n; i++) s += i + '\n'; gutter.textContent = s; gutter.scrollTop = srcEl.scrollTop; refreshButtons(); }
 srcEl.addEventListener('scroll', () => { gutter.scrollTop = srcEl.scrollTop; });
 srcEl.addEventListener('keydown', e => {
   if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); const a = srcEl.selectionStart, b = srcEl.selectionEnd; srcEl.setRangeText('  ', a, b, 'end'); onEdit(); }
