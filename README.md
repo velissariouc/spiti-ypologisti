@@ -31,6 +31,12 @@ DIV, MOD, ^, ΚΑΙ / Η / ΟΧΙ και οι συναρτήσεις Α_Μ, Α_�
 
 Είναι ένα μόνο αρχείο (`index.html`) χωρίς εξαρτήσεις και ανοίγει και τοπικά στον browser.
 
+## Ανάπτυξη
+
+- Ο πηγαίος κώδικας είναι το ίδιο το `index.html` (HTML, CSS και JavaScript μαζί). Δεν υπάρχει βήμα build.
+- Τεστ με node: `node tools/test-game.js` (σύνταξη, όλα τα παραδείγματα σε ελληνικά/αγγλικά, μηνύματα λαθών).
+- Μετά το `git push` στο `main` το GitHub Pages ενημερώνεται σε 1–2 λεπτά.
+
 ## English
 
 **The Computer House** is a bilingual (Greek / English) educational game about the basic ideas of a computer.
